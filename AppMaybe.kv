@@ -1,0 +1,92 @@
+
+<LogInScreen>:
+
+    BoxLayout:
+        orientation: 'vertical'
+        canvas:
+            Color:
+                rgba: 46/255, 25/255, 25/255, 1
+            Rectangle:
+                size: self.size
+
+            Color:
+                rgba: 0.4, 0.4, 0.4, 0.6
+            RoundedRectangle:
+                pos: self.width/2 - root.screen_width*3/8, self.height/3 - root.screen_height/4
+                size: self.width*3/4, self.height*2/3
+                radius: [(self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20)]
+        Label:
+            id: app_name
+            size_hint: 1, None
+            height: root.height/4
+            #pos_hint: {"x" : 0, "top" : 1}
+            text: 'Insert App Name Here'
+            font_size: self.width/10
+
+        BoxLayout:
+            id: LogInLayout
+            orientation: 'vertical'
+            size_hint: 3/4, 1
+            pos_hint: {"center_x": 0.5, "top": 0}
+            Label:
+                id: LoginLabel
+                text: 'Login'
+                font_size: self.height / 2
+                size_hint: 1, None
+                height: root.height / 12
+                halign: 'center'
+                valign: 'top'
+                padding_y: self.height / 4
+            Label:
+                id: username
+                text: 'username:'
+                height: root.height / 50
+                text_size: self.size
+                font_size: self.height
+                padding_x: self.width / 20
+                size_hint: 1, None
+
+            TextInput:
+                id: UsernameInput
+                multiline: False
+                background_color: [0,0,0,0]
+            Label:
+                id: password
+                text: 'password:'
+                height: root.height / 50
+                text_size: self.size
+                font_size: self.height
+                halign: 'left'
+                padding_x: self.width / 20
+                size_hint: 1, None
+            TextInput:
+                id: PasswordInput
+                multiline: False
+                background_color: [0,0,0,0]
+            MDRectangleFlatButton:
+                text: "Log in"
+                theme_text_color: "Custom"
+                text_color: "white"
+                line_color: "red"
+                size_hint: 0.6, 0.2
+                pos_hint: {"center_x" : 0.5}
+                on_press:
+                    root.manager.transition.direction = 'right'
+                    root.checkLogin()
+
+        Label:
+            size_hint: 1, 1/8
+
+
+
+
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'L'
+        Button:
+            text: 'TO SCREEN UNO'
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.manager.current = '1'
