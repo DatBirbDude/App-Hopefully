@@ -354,23 +354,55 @@
             Button:
                 text: "Load"
                 on_release: root.load(filechooser.path, filechooser.selection)
+<Photo@Button>:
+    wid: self.wid
+    image: self.image
+    title: self.title
+    label: self.label
+    BoxLayout:
+        orientation: "horizontal"
+        size: self.parent.size      # match the button's size
+        pos: self.parent.pos        # match the button's position
+        padding: 5
+        spacing: 10
 
+        Image:
+            size_hint: None, 1
+            source: root.image
+            size: 64, 64
+            valign: "middle"
+
+
+        Label:
+            size_hint: None, 1
+            text: root.label
+            valign: "middle"
+            size: 400, 64
+            text_size: self.size
+<PhotoList@GridLayout>
+    id: output
+    cols: 1
+    size_hint_y: None
+    height: self.minimum_height
+    Photo:
+        wid: "0"
+        image: "ico/apple.png"
+        title: "xapple"
+        label: "Apple: Super Sweet\nPicked On: 12/26/2014, 2:01 PM"
 <PhotosScreen>:
     BoxLayout:
         orientation: 'vertical'
-        BoxLayout:
-            size_hint_y: None
-            height: 30
-            Button:
-                text: 'Load'
-                on_release: root.show_load()
-        Image:
-            source: 'temp.png'
-            size: self.texture_size
-    BoxLayout:
-        Label:
-            text: 'Nah man go back'
-
+#        BoxLayout:
+#            size_hint_y: None
+#            height: 30
+#            Button:
+#                text: 'Load'
+#                on_release: root.show_load()
+#        Image:
+#            source: 'temp.png'
+#            size: self.texture_size
+        PhotoList:
+            height: 100
         Button:
             text: 'Go back'
             on_press:
