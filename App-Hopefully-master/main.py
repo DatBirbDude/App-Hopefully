@@ -9,7 +9,7 @@ from kivy.graphics import Color, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import NumericProperty, StringProperty, ObjectProperty #Sam added ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivymd.app import MDApp
@@ -17,6 +17,11 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.uix.button import MDRoundFlatButton, MDIconButton
 from kivymd.uix.card import MDCard
+
+#Sam's import lines below
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
+import os
 
 class BaseScreen(Screen):
     def contact_button_press(self):
@@ -142,7 +147,7 @@ class DayNumsLayout(BoxLayout):
                 Line(circle=[Window.width * (3/18 + i/9), Window.height * 76.8/100, Window.width / 20], width=1)
 
     def my_callback(self, instr):
-        print('hi lol')
+        print('no plz')
 
     def week_change(self, change):
         for i in range(0, len(self.day_of_weekdays)):
@@ -158,11 +163,28 @@ class DayNumsLayout(BoxLayout):
         self.is_selected[button] = True
         self.cb.ask_update()
 
-
+#The next few classes are samples from official kivy documentation, don't touch them or it will break everything ok?
+class LoadDialog(FloatLayout):
+    load = ObjectProperty(None)
+    cancel = ObjectProperty(None)
 class PhotosScreen(BaseScreen):
-    pass
+    loadfile = ObjectProperty(None)
+    savefile = ObjectProperty(None)
+    text_input = ObjectProperty(None)
+    def dismiss_popup(self):
+        self._popup.dismiss()
 
+    def show_load(self):
+        content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+        self._popup = Popup(title="Load file", content=content,
+                            size_hint=(0.9, 0.9))
+        self._popup.open()
+    def load(self, path, filename):
+        with open(os.path.join(path, filename[0])) as stream:
+            self.text_input.text = stream.read()
 
+        self.dismiss_popup()
+#End Sam breaking things
 class ClubsScreen(BaseScreen):
     pass
 
@@ -196,5 +218,6 @@ if __name__ == '__main__':
     with open('Calendar.json', "w") as result:
             json.dump(in_file, result)
     '''
+#Vincent if you want to comment control code, at least explain why
 
     AppMaybe().run()
