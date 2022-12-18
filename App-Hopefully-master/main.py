@@ -22,6 +22,7 @@ from kivymd.uix.card import MDCard
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 import os
+import shutil
 
 class BaseScreen(Screen):
     def contact_button_press(self):
@@ -163,7 +164,7 @@ class DayNumsLayout(BoxLayout):
         self.is_selected[button] = True
         self.cb.ask_update()
 
-#The next few classes are samples from official kivy documentation, don't touch them or it will break everything ok?
+#The next class is a sample from official kivy documentation, don't touch it or it will break everything
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
@@ -171,6 +172,7 @@ class PhotosScreen(BaseScreen):
     loadfile = ObjectProperty(None)
     savefile = ObjectProperty(None)
     text_input = ObjectProperty(None)
+    img_input = ObjectProperty(None)
     def dismiss_popup(self):
         self._popup.dismiss()
 
@@ -180,10 +182,11 @@ class PhotosScreen(BaseScreen):
                             size_hint=(0.9, 0.9))
         self._popup.open()
     def load(self, path, filename):
-        with open(os.path.join(path, filename[0])) as stream:
-            self.text_input.text = stream.read()
-
+        shutil.copy(os.path.join(path, filename[0]), os.path.join(os.getcwd(),"temp.png"))
         self.dismiss_popup()
+
+                #This is the starter logic to image sharing, we just need to update the copy indexes and come up with a dynamic loader to make these things appear
+
 #End Sam breaking things
 class ClubsScreen(BaseScreen):
     pass

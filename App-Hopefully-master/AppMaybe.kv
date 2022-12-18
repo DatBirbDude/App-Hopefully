@@ -356,7 +356,6 @@
                 on_release: root.load(filechooser.path, filechooser.selection)
 
 <PhotosScreen>:
-    text_input: text_input
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
@@ -365,15 +364,9 @@
             Button:
                 text: 'Load'
                 on_release: root.show_load()
-
-        BoxLayout:
-            TextInput:
-                id: text_input
-                text: ''
-
-            RstDocument:
-                text: text_input.text
-                show_errors: True
+        Image:
+            source: 'temp.png'
+            size: self.texture_size
     BoxLayout:
         Label:
             text: 'Nah man go back'
@@ -383,7 +376,7 @@
             on_press:
                 root.manager.transition.direction = 'right'
                 root.manager.current = 'main'
-
+#End Sam seperator
 <ClubsScreen>:
     BoxLayout:
         Label:
