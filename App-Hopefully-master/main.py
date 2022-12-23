@@ -9,9 +9,12 @@ from kivy.graphics import Color, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import NumericProperty, StringProperty, ObjectProperty #Sam added ObjectProperty
+from kivy.properties import NumericProperty, StringProperty, ObjectProperty, ColorProperty, \
+    ListProperty  # Sam added ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -27,6 +30,8 @@ import os
 import shutil
 from kivy.config import Config
 Config.set('graphics','resizable',0)
+
+
 class BaseScreen(Screen):
     def contact_button_press(self):
         self.manager.current = 'contact'
@@ -75,6 +80,7 @@ class MainScreen(BaseScreen):
 
     def photos_button_press(self):
         self.manager.current = 'photos'
+
     def clubs_button_press(self):
         self.manager.current = 'clubs'
 
@@ -122,24 +128,17 @@ class DayNumsLayout(BoxLayout):
     is_selected = [False, False, False, False, False, False, False]
     is_being_clicked = [False, False, False, False, False, False, False]
 
+    select_color = [Color(0, 0, 0, 0), Color(0, 0, 0, 0), Color(0, 0, 0, 0),
+                    Color(0, 0, 0, 0), Color(0, 0, 0, 0), Color(0, 0, 0, 0),
+                    Color(0, 0, 0, 0)]
+
     def __init__(self, **kwargs):
         self.size_hint = [1, None]
         self.height = Window.height / 20
         self.pos_hint = {'center_x' : 0.5, 'center_y' : 0.5}
         super().__init__(**kwargs)
-        back_arrow = MDIconButton(size_hint=[1/9, 1], icon='ArrowBackIcon.png', )
-        self.add_widget(back_arrow)
-        for i in range(0, 7):
-            day_num = Button(size_hint=[None, 1], width=Window.width / 9, font_name='Fonts/Vogue.ttf',
-                             color=[246/255, 232/255, 234/255, 1], on_press=lambda x: self.on_being_clicked(i),
-                             on_release=lambda x: self.on_select(i), text='O', background_color=[0, 0, 0, 0.5])
-            self.add_widget(day_num)
-        forward_arrow = MDIconButton(size_hint=[1/9, 1], width=Window.width / 18, icon='ArrowForwardIcon.png')
-        self.add_widget(forward_arrow)
 
         with self.canvas:
-
-            self.cb = Callback(self.my_callback)
 
             for i in range(0, 7):
                 if self.is_selected[i]:
@@ -147,26 +146,59 @@ class DayNumsLayout(BoxLayout):
                 else:
                     Color(0, 0, 0, 0)
 
+                Line(circle=[Window.width * (1/1000), Window.height * 76.8/100, Window.width / 20], width=1)
+
+    def update_canvas(self):
+
+        with self.canvas:
+
+            for i in range(0, 7):
+                if self.is_selected[i]:
+                    Color(239/255, 98/255, 108/255, 1)
+                else:
+                    Color(49/255, 47/255, 47/255, 1)
+
                 Line(circle=[Window.width * (3/18 + i/9), Window.height * 76.8/100, Window.width / 20], width=1)
 
     def my_callback(self, instr):
-        print('no plz')
+        pass
 
     def week_change(self, change):
         for i in range(0, len(self.day_of_weekdays)):
-            self.day_of_weekdays[i] = str(
+            self.day_of_weekdays[i] = StringProperty(
                 CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + i + change)
 
+    previously_selected_day = -1
+
     def on_being_clicked(self, button):
-        self.is_being_clicked[button] = True
-        self.canvas.ask_update()
-
-    def on_select(self, button):
-        self.is_being_clicked[button] = False
         self.is_selected[button] = True
-        self.cb.ask_update()
 
-#The next class is a sample from official kivy documentation, don't touch it or it will break everything
+        try:
+            self.is_selected[self.previously_selected_day] = False
+        finally:
+            self.previously_selected_day = button
+            self.update_canvas()
+
+
+class DayNumsLabels(Widget):
+    Window.size = (280, 650)
+
+    day_labels = []
+
+    box_layout = BoxLayout(pos=[Window.width / 9, Window.height * 5/10], size=[Window.width, Window.height / 20], )
+    for i in range(0, 7):
+        day_label = Label(text=DayNumsLayout.day_of_weekdays[i], size_hint=[None, 1], width=box_layout.width / 9)
+        day_labels.append(day_label)
+        box_layout.add_widget(day_label)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(self.box_layout)
+
+
+
+
+# The next class is a sample from official kivy documentation, don't touch it or it will break everything
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
@@ -249,5 +281,6 @@ if __name__ == '__main__':
             json.dump(in_file, result)
     '''
 #Vincent if you want to comment control code, at least explain why
+    #L nah
 
     AppMaybe().run()
