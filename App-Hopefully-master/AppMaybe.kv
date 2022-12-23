@@ -286,6 +286,8 @@
 
 <ListLayout>:
 
+    DayNumsLabels:
+
     BoxLayout:
 
         orientation: 'vertical'
@@ -332,6 +334,86 @@
                 font_name: 'Fonts/Vogue.ttf'
 
         DayNumsLayout:
+
+            MDIconButton:
+                size_hint: [1/9, 1]
+                icon: 'ArrowBackIcon.png'
+                on_press: self.parent.week_change(-1)
+
+            Button:
+                id: day_num_1
+                size_hint: [None, 1]
+                width: root.width / 9
+                font_name: 'Fonts/Vogue.ttf'
+                color: [246/255, 232/255, 234/255, 1]
+                text: self.parent.day_of_weekdays[0]
+                background_color: [0, 0, 0, 0]
+                on_press: self.parent.on_being_clicked(0)
+
+            Button:
+                id: day_num_2
+                size_hint: [None, 1]
+                width: root.width / 9
+                font_name: 'Fonts/Vogue.ttf'
+                color: [246/255, 232/255, 234/255, 1]
+                text: self.parent.day_of_weekdays[1]
+                background_color: [0, 0, 0, 0]
+                on_press: self.parent.on_being_clicked(1)
+
+            Button:
+                id: day_num_3
+                size_hint: [None, 1]
+                width: root.width / 9
+                font_name: 'Fonts/Vogue.ttf'
+                color: [246/255, 232/255, 234/255, 1]
+                text: self.parent.day_of_weekdays[2]
+                background_color: [0, 0, 0, 0]
+                on_press: self.parent.on_being_clicked(2)
+
+            Button:
+                id: day_num_4
+                size_hint: [None, 1]
+                width: root.width / 9
+                font_name: 'Fonts/Vogue.ttf'
+                color: [246/255, 232/255, 234/255, 1]
+                text: self.parent.day_of_weekdays[3]
+                background_color: [0, 0, 0, 0]
+                on_press: self.parent.on_being_clicked(3)
+
+            Button:
+                id: day_num_5
+                size_hint: [None, 1]
+                width: root.width / 9
+                font_name: 'Fonts/Vogue.ttf'
+                color: [246/255, 232/255, 234/255, 1]
+                text: self.parent.day_of_weekdays[4]
+                background_color: [0, 0, 0, 0]
+                on_press: self.parent.on_being_clicked(4)
+
+            Button:
+                id: day_num_6
+                size_hint: [None, 1]
+                width: root.width / 9
+                font_name: 'Fonts/Vogue.ttf'
+                color: [246/255, 232/255, 234/255, 1]
+                text: self.parent.day_of_weekdays[5]
+                background_color: [0, 0, 0, 0]
+                on_press: self.parent.on_being_clicked(5)
+
+            Button:
+                id: day_num_7
+                size_hint: [None, 1]
+                width: root.width / 9
+                font_name: 'Fonts/Vogue.ttf'
+                color: [246/255, 232/255, 234/255, 1]
+                text: self.parent.day_of_weekdays[6]
+                background_color: [0, 0, 0, 0]
+                on_press: self.parent.on_being_clicked(6)
+
+            MDIconButton:
+                size_hint: [1/9, 1]
+                icon: 'ArrowForwardIcon.png'
+                on_press: self.parent.week_change(1)
 
         Label:
 
