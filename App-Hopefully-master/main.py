@@ -126,7 +126,7 @@ class DayNumsLayout(BoxLayout):
                        str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + 6)]
 
     is_selected = [False, False, False, False, False, False, False]
-    is_being_clicked = [False, False, False, False, False, False, False]
+    is_selected[CalendarInfo.weekday_offset] = True
 
     select_color = [Color(0, 0, 0, 0), Color(0, 0, 0, 0), Color(0, 0, 0, 0),
                     Color(0, 0, 0, 0), Color(0, 0, 0, 0), Color(0, 0, 0, 0),
@@ -146,7 +146,7 @@ class DayNumsLayout(BoxLayout):
                 else:
                     Color(0, 0, 0, 0)
 
-                Line(circle=[Window.width * (1/1000), Window.height * 76.8/100, Window.width / 20], width=1)
+                Line(circle=[Window.width * (3/18 + i/9), Window.height * 76.8/100, Window.width / 20], width=1)
 
     def update_canvas(self):
 
@@ -165,18 +165,35 @@ class DayNumsLayout(BoxLayout):
 
     def week_change(self, change):
         for i in range(0, len(self.day_of_weekdays)):
-            self.day_of_weekdays[i] = StringProperty(
-                CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + i + change)
+            self.day_of_weekdays[i] = str(CalendarInfo.day + 7 * change - CalendarInfo.weekday_offset + i)
+            if int(self.day_of_weekdays[i]) > 0:
+                DayNumsLabels.day_labels[i].text = self.day_of_weekdays[i]
+            else:
+                DayNumsLabels.day_labels[i].text = ''
+        if 0 < (CalendarInfo.day - CalendarInfo.weekday_offset + 6 + 7 * change) or change > 0:
+            if (CalendarInfo.day - CalendarInfo.weekday_offset + 7 * change) < CalendarInfo.month_range[1] or change < 0:
+                CalendarInfo.day += 7 * change
+                if 0 > CalendarInfo.day or CalendarInfo.day > CalendarInfo.month_range[1]:
+                    try:
+                        self.is_selected[self.previously_selected_day] = False
+                    finally:
+                        self.update_canvas()
+        print(CalendarInfo.day)
 
-    previously_selected_day = -1
+    previously_selected_day = CalendarInfo.weekday_offset
 
     def on_being_clicked(self, button):
-        self.is_selected[button] = True
-
-        try:
-            self.is_selected[self.previously_selected_day] = False
-        finally:
-            self.previously_selected_day = button
+        if CalendarInfo.month_range[1] >= int(self.day_of_weekdays[button]) > 0:
+            self.is_selected[button] = True
+            CalendarInfo.day += button - CalendarInfo.weekday_offset
+            CalendarInfo.weekday_offset = (calendar.weekday(CalendarInfo.year, CalendarInfo.month,
+                                                            CalendarInfo.day) + 1) % 7
+            if button != self.previously_selected_day:
+                try:
+                    self.is_selected[self.previously_selected_day] = False
+                finally:
+                    self.previously_selected_day = button
+            print(CalendarInfo.day)
             self.update_canvas()
 
 
@@ -185,9 +202,10 @@ class DayNumsLabels(Widget):
 
     day_labels = []
 
-    box_layout = BoxLayout(pos=[Window.width / 9, Window.height * 5/10], size=[Window.width, Window.height / 20], )
+    box_layout = BoxLayout(pos=[Window.width / 9, Window.height * 7.42/10], size=[Window.width, Window.height / 20], )
     for i in range(0, 7):
-        day_label = Label(text=DayNumsLayout.day_of_weekdays[i], size_hint=[None, 1], width=box_layout.width / 9)
+        day_label = Label(text=DayNumsLayout.day_of_weekdays[i], size_hint=[None, 1], width=box_layout.width / 9,
+                          color=[246/255, 232/255, 234/255, 1], font_name='Fonts/Vogue.ttf')
         day_labels.append(day_label)
         box_layout.add_widget(day_label)
 
