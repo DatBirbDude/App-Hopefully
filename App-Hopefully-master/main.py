@@ -1,11 +1,14 @@
 import json
+import math
 from calendar import Calendar
 import calendar
 import datetime
 
 import jicson
+import numpy
+from kivy.clock import Clock
 
-from kivy.graphics import Color, RoundedRectangle, Canvas, Line, Callback
+from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
 from kivy.lang import Builder
@@ -33,11 +36,19 @@ Config.set('graphics','resizable',0)
 
 
 class BaseScreen(Screen):
+
+    int_width = Window.width
+    int_height = Window.height
+
     def contact_button_press(self):
         self.manager.current = 'contact'
 
     def settings_button_press(self):
         self.manager.current = 'settings'
+
+    def on_size(self, instance, value):
+        self.width = value[0]
+        self.height = value[1]
 
 
 class LogInScreen(Screen):
@@ -104,7 +115,61 @@ class CalendarInfo(BaseScreen):
 
 
 class CalendarScreen(CalendarInfo):
-    pass
+    def month_change(self, change):  # Error: If you go back and forth between months, it won't go to the right day
+        if (CalendarInfo.month == 12 and change > 0) or (CalendarInfo.month == 1 and change < 0):
+            CalendarInfo.year += math.ceil(numpy.sign(change) * change / 12) * numpy.sign(change)
+        CalendarInfo.month = (CalendarInfo.month + change - 1) % 12 + 1
+        CalendarInfo.month_range = calendar.monthrange(CalendarInfo.year, CalendarInfo.month)
+        CalendarInfo.weekday_offset = (calendar.weekday(CalendarInfo.year, CalendarInfo.month, CalendarInfo.day) + 1) % 7
+        MonthAndYearLabel.label.text = str(CalendarInfo.months[CalendarInfo.month]) + ' ' + str(CalendarInfo.year)
+        if change < 0:
+            for i in range(0, 7):
+                DayNumsLayout.day_of_weekdays[i] = str(CalendarInfo.day - CalendarInfo.weekday_offset + i + 7)
+                DayNumsLabels.day_labels[i].text = DayNumsLayout.day_of_weekdays[i]
+        else:
+            for i in range(0, 7):
+                DayNumsLayout.day_of_weekdays[i] = str(CalendarInfo.day - CalendarInfo.weekday_offset + i)
+                DayNumsLabels.day_labels[i].text = DayNumsLayout.day_of_weekdays[i]
+        CalendarInfo.day = int(DayNumsLayout.day_of_weekdays[DayNumsLayout.is_selected.index(True)])
+        CalendarInfo.weekday_offset = (calendar.weekday(CalendarInfo.year, CalendarInfo.month, CalendarInfo.day) + 1) % 7
+        print(CalendarInfo.day)
+        print(CalendarInfo.month)
+        print(CalendarInfo.year)
+
+
+    def on_size(self, instance, value):
+        # Updating DayNumsLabels in the .py file
+        DayNumsLabels.size = Window.size
+        DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 7.42/10]
+        DayNumsLabels.box_layout.size = [DayNumsLabels.size[0], DayNumsLabels.size[1] / 20]
+        for label in DayNumsLabels.day_labels:
+            label.width = DayNumsLabels.box_layout.width / 9
+
+        # Updating MonthAndYearLabel in the .py file
+        MonthAndYearLabel.size = Window.size
+        MonthAndYearLabel.label.pos = [MonthAndYearLabel.size[0] / 2, MonthAndYearLabel.size[1] * 7/8]
+        MonthAndYearLabel.label.size = [MonthAndYearLabel.size[0] / 100, MonthAndYearLabel.size[1] / 100]
+
+        # Updating EventWidget in the .py file
+        EventWidgets.size = Window.size
+
+
+class MonthAndYearLabel(Widget):
+
+    size = Window.size
+
+    label = Label(text=str(CalendarInfo.months[CalendarInfo.month]) + ' ' + str(CalendarInfo.year),
+                  font_name='Fonts/Vogue.ttf',
+                  pos=[size[0] / 10, size[1] / 2],
+                  # Any change to pos or size has to also be changed in on_size method
+                  size=[size[0] / 2, size[1] * 7/8],
+                  color=[246 / 255, 232 / 255, 234 / 255, 1])
+
+    num_events = 0
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(self.label)
 
 
 class MonthLayout(CalendarInfo):
@@ -112,7 +177,80 @@ class MonthLayout(CalendarInfo):
 
 
 class ListLayout(CalendarInfo):
-    pass
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(EventWidgets())
+
+
+class EventWidgets(Widget):
+    size = (280, 650)
+    num_events = 0
+    event_rects = []
+
+    event_nums = []
+    summaries = []
+    descriptions = []
+
+    event_cards = []
+
+    # I'm low-key proud of this even though it's probably wildly inefficient and doesn't work yet
+    temp = open('Calendar.json')
+    cal = json.load(temp)
+    for i in range(0, len(cal['VCALENDAR'][0]['VEVENT'])):
+        event = cal['VCALENDAR'][0]['VEVENT'][i]
+        year = int(event['DTSTART'][0:3])
+        month = int(event['DTSTART'][4:5])
+        day = int(event['DTSTART'][6:7])
+        try:
+            duration = int(event['DURATION'][1])
+        except KeyError:
+            duration = 1
+        if year == CalendarInfo.year and month == CalendarInfo.month and day + duration > CalendarInfo.day >= day:
+            # ^ There's a logic error L BOZO
+            num_events += 1
+            event_nums.append(i)
+            try:
+                summaries.append(event['SUMMARY;ENCODING=QUOTED-PRINTABLE'])
+            except KeyError:
+                summaries.append('')
+            try:
+                descriptions.append(event['DESCRIPTION;ENCODING=QUOTED-PRINTABLE'])
+            except KeyError:
+                descriptions.append('')
+
+    for i in range(0, num_events):
+        event_card = []
+        event_card.append(Label(text=summaries[i],
+                                size=[size[0] / 20, size[1] / 20],
+                                pos=[size[0] / 20, size[1] * (3.5/5 + i/8)]))
+        event_card.append(Label(text=descriptions[i],
+                                size=[size[0] / 20, size[1] / 20],
+                                pos=[size[0] / 20, size[1] * (3/5 + i/8)]))
+        event_cards.append(event_card)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        with self.canvas:
+
+            Color(246 / 255, 232 / 255, 234 / 255, 1)
+
+            for i in range(0, self.num_events):
+                self.event_rects.append(RoundedRectangle(size=[self.size[0] * 9/10, self.size[1] / 10],
+                                                         pos=[self.size[0] / 20, self.size[1] * (3/5 - i/8)],
+                                                         radius=(self.height / 20, self.height / 20)))
+
+        for i in range(0, self.num_events):
+            for o in range(0, 2):
+                self.add_widget(self.event_cards[i][o])
+
+
+
+
+
+
+
 
 
 class DayNumsLayout(BoxLayout):
@@ -164,12 +302,6 @@ class DayNumsLayout(BoxLayout):
         pass
 
     def week_change(self, change):
-        for i in range(0, len(self.day_of_weekdays)):
-            self.day_of_weekdays[i] = str(CalendarInfo.day + 7 * change - CalendarInfo.weekday_offset + i)
-            if int(self.day_of_weekdays[i]) > 0:
-                DayNumsLabels.day_labels[i].text = self.day_of_weekdays[i]
-            else:
-                DayNumsLabels.day_labels[i].text = ''
         if 0 < (CalendarInfo.day - CalendarInfo.weekday_offset + 6 + 7 * change) or change > 0:
             if (CalendarInfo.day - CalendarInfo.weekday_offset + 7 * change) < CalendarInfo.month_range[1] or change < 0:
                 CalendarInfo.day += 7 * change
@@ -178,6 +310,12 @@ class DayNumsLayout(BoxLayout):
                         self.is_selected[self.previously_selected_day] = False
                     finally:
                         self.update_canvas()
+        for i in range(0, len(self.day_of_weekdays)):
+            self.day_of_weekdays[i] = str(CalendarInfo.day - CalendarInfo.weekday_offset + i)
+            if CalendarInfo.month_range[1] >= int(self.day_of_weekdays[i]) > 0:
+                DayNumsLabels.day_labels[i].text = self.day_of_weekdays[i]
+            else:
+                DayNumsLabels.day_labels[i].text = ''
         print(CalendarInfo.day)
 
     previously_selected_day = CalendarInfo.weekday_offset
@@ -198,11 +336,12 @@ class DayNumsLayout(BoxLayout):
 
 
 class DayNumsLabels(Widget):
-    Window.size = (280, 650)
+    size = (Window.width, Window.height)  # This is a temporary fix that doesn't shift with size
 
     day_labels = []
 
-    box_layout = BoxLayout(pos=[Window.width / 9, Window.height * 7.42/10], size=[Window.width, Window.height / 20], )
+    box_layout = BoxLayout(pos=[size[0] / 9, size[1] * 7.42/10],
+                           size=[size[0], size[1] / 20])
     for i in range(0, 7):
         day_label = Label(text=DayNumsLayout.day_of_weekdays[i], size_hint=[None, 1], width=box_layout.width / 9,
                           color=[246/255, 232/255, 234/255, 1], font_name='Fonts/Vogue.ttf')
@@ -211,6 +350,7 @@ class DayNumsLabels(Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.size = (Window.width, Window.height)
         self.add_widget(self.box_layout)
 
 
@@ -296,7 +436,7 @@ if __name__ == '__main__':
     '''
     in_file = jicson.fromFile('Calendar.ics')
     with open('Calendar.json', "w") as result:
-            json.dump(in_file, result)
+            json.dump(in_file, result, indent=4)
     '''
 #Vincent if you want to comment control code, at least explain why
     #L nah
