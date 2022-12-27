@@ -20,7 +20,6 @@
             id: app_name
             size_hint: 1, None
             height: root.height/4 - root.height / 12
-            #pos_hint: {"x" : 0, "top" : 1}
             text: 'Star Light'
             font_name: 'Fonts/TransformersMovie.ttf'
             font_size: self.width/6
@@ -334,12 +333,16 @@
                 text_color: 246/255, 232/255, 234/255, 1
                 font_name: 'Fonts/Vogue.ttf'
 
-        DayNumsLayout:
+        BoxLayout:
+
+            size_hint: [1, None]
+            height: root.height / 20
+            pos_hint: {'center_x' : 0.5, 'center_y' : 0.5}
 
             MDIconButton:
                 size_hint: [1/9, 1]
                 icon: 'ArrowBackIcon.png'
-                on_press: self.parent.week_change(-1)
+                on_press: root.day_nums_layout.week_change(-1)
 
             Button:
                 id: day_num_1
@@ -348,7 +351,7 @@
                 font_name: 'Fonts/Vogue.ttf'
                 color: [246/255, 232/255, 234/255, 1]
                 background_color: [0, 0, 0, 0]
-                on_press: self.parent.on_being_clicked(0)
+                on_press: root.day_nums_layout.on_being_clicked(0)
 
             Button:
                 id: day_num_2
@@ -357,7 +360,7 @@
                 font_name: 'Fonts/Vogue.ttf'
                 color: [246/255, 232/255, 234/255, 1]
                 background_color: [0, 0, 0, 0]
-                on_press: self.parent.on_being_clicked(1)
+                on_press: root.day_nums_layout.on_being_clicked(1)
 
             Button:
                 id: day_num_3
@@ -366,7 +369,7 @@
                 font_name: 'Fonts/Vogue.ttf'
                 color: [246/255, 232/255, 234/255, 1]
                 background_color: [0, 0, 0, 0]
-                on_press: self.parent.on_being_clicked(2)
+                on_press: root.day_nums_layout.on_being_clicked(2)
 
             Button:
                 id: day_num_4
@@ -375,7 +378,7 @@
                 font_name: 'Fonts/Vogue.ttf'
                 color: [246/255, 232/255, 234/255, 1]
                 background_color: [0, 0, 0, 0]
-                on_press: self.parent.on_being_clicked(3)
+                on_press: root.day_nums_layout.on_being_clicked(3)
 
             Button:
                 id: day_num_5
@@ -384,7 +387,7 @@
                 font_name: 'Fonts/Vogue.ttf'
                 color: [246/255, 232/255, 234/255, 1]
                 background_color: [0, 0, 0, 0]
-                on_press: self.parent.on_being_clicked(4)
+                on_press: root.day_nums_layout.on_being_clicked(4)
 
             Button:
                 id: day_num_6
@@ -393,7 +396,7 @@
                 font_name: 'Fonts/Vogue.ttf'
                 color: [246/255, 232/255, 234/255, 1]
                 background_color: [0, 0, 0, 0]
-                on_press: self.parent.on_being_clicked(5)
+                on_press: root.day_nums_layout.on_being_clicked(5)
 
             Button:
                 id: day_num_7
@@ -402,12 +405,12 @@
                 font_name: 'Fonts/Vogue.ttf'
                 color: [246/255, 232/255, 234/255, 1]
                 background_color: [0, 0, 0, 0]
-                on_press: self.parent.on_being_clicked(6)
+                on_press: root.day_nums_layout.on_being_clicked(6)
 
             MDIconButton:
                 size_hint: [1/9, 1]
                 icon: 'ArrowForwardIcon.png'
-                on_press: self.parent.week_change(1)
+                on_press: root.day_nums_layout.week_change(1)
 
         Label:
 
