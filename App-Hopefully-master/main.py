@@ -37,37 +37,50 @@ Config.set('graphics', 'resizable', 0)
 user_name = ''
 
 
+# Function to change properties when size is changed
+def on_size(instance, value):
+    # Updating DayNumsLabels in the .py file
+    DayNumsLabels.size = Window.size
+    DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 7.42 / 10]
+    DayNumsLabels.box_layout.size = [DayNumsLabels.size[0], DayNumsLabels.size[1] / 20]
+    for label in DayNumsLabels.day_labels:
+        label.width = DayNumsLabels.box_layout.width / 9
+
+    # Updating MonthAndYearLabel in the .py file
+    MonthAndYearLabel.size = Window.size
+    MonthAndYearLabel.label.pos = [MonthAndYearLabel.size[0] / 2, MonthAndYearLabel.size[1] * 7 / 8]
+    MonthAndYearLabel.label.size = [MonthAndYearLabel.size[0] / 100, MonthAndYearLabel.size[1] / 100]
+
+    # Updating EventWidget in the .py file
+    EventWidgets.size = Window.size
+
+
+# Parent screen - Allows settings, contact, and back buttons to work
 class BaseScreen(Screen):
     int_width = Window.width
     int_height = Window.height
 
+    # Changes to the "contact administration" screen
     def contact_button_press(self):
         self.manager.transition.direction = 'left'
         self.manager.current = 'contact'
 
+    # Changes to the "settings" screen
     def settings_button_press(self):
         self.manager.transition.direction = 'left'
         self.manager.current = 'settings'
 
+    # Changes to the "main" screen
     def back_button_press(self):
         self.manager.current = 'main'
 
-    def on_size(self, instance, value):
-        self.width = value[0]
-        self.height = value[1]
 
-
+# Log In Screen (Screen appears directly after opening app
 class LogInScreen(Screen):
+    # allows "log in" screen to edit the user's username
     global user_name
-    user_name = 'Vincent Barilar0'
-    screen_width = NumericProperty(100)
-    screen_height = NumericProperty(100)
 
-    def on_size(self, instance, value):
-        self.screen_width = value[0]
-        self.screen_height = value[1]
-        print(value)
-
+    # Changes to "main" screen if the user logs in with valid credentials (in Credentials.json)
     def check_login(self):
         global user_name
         logins = json.load(open('Credentials.json'))
@@ -81,35 +94,32 @@ class LogInScreen(Screen):
         self.ids.PasswordInput.text = ''
 
 
+# Screen with buttons to guide to every other screen
 class MainScreen(BaseScreen):
-    screen_width = Window.width
-    screen_height = Window.height
 
-    buffer = (int(screen_width) + int(screen_height)) / 80
-
-    contact_button_color = [239 / 255, 98 / 255, 108 / 255, 1]
-    clubs_button_color = [34 / 255, 24 / 255, 28 / 255, 0.8]
-    photos_button_color = [34 / 255, 24 / 255, 28 / 255, 0.8]
-    calendar_button_color = [34 / 255, 24 / 255, 28 / 255, 0.8]
+    # Creates buffer variable, which is changed based on the size of the screen
+    buffer = (Window.height + Window.width) / 80
 
     def on_size(self, instance, value):
-        self.screen_width = value[0]
-        self.screen_height = value[1]
-        self.buffer = int(self.screen_width) / 25
-        print(value)
+        self.buffer = int(value[0] + value[1]) / 80
 
+    # Changes to "calendar" screen
     def calendar_button_press(self):
         self.manager.current = 'calendar'
 
+    # Changes to "photos" screen
     def photos_button_press(self):
         self.manager.current = 'photos'
 
+    # Changes to "clubs" screen
     def clubs_button_press(self):
         self.manager.current = 'clubs'
 
 
+# Screen that allows for bug reports and logging out
 class SettingsScreen(BaseScreen):
 
+    # Takes user input from bug report and appends to Bugs.json
     def report_bug(self):
         global user_name
         new_bug_report = {
@@ -126,27 +136,32 @@ class SettingsScreen(BaseScreen):
         self.ids.BugInput.text = ''
 
 
-
+# Parent class with all necessary date information
 class CalendarInfo(BaseScreen):
     months = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
               7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'}
 
-    date = datetime.date.today()
+    date = datetime.date.today()  # Gets today's date
     year = date.year
     month = date.month
     day = date.day
     month_range = calendar.monthrange(year, month)
-    weekday_offset = (date.weekday() + 1) % 7
-    week_diff = 0
+    weekday_offset = (date.weekday() + 1) % 7  # Formats days to always go from sunday to saturday
 
 
+# Screen that shows the events on a given day
 class CalendarScreen(CalendarInfo):
 
+    # Increments or decrements the month
     def month_change(self, change):
         if (CalendarInfo.month == 12 and change > 0) or (CalendarInfo.month == 1 and change < 0):
             CalendarInfo.year += math.ceil(numpy.sign(change) * change / 12) * numpy.sign(change)
+        # ^ changes year when necessary ^
+
         CalendarInfo.month = (CalendarInfo.month + change - 1) % 12 + 1
         CalendarInfo.month_range = calendar.monthrange(CalendarInfo.year, CalendarInfo.month)
+        # ^ Updates CalendarInfo.month and CalendarInfo.month_range ^
+
         if CalendarInfo.day <= CalendarInfo.month_range[1]:
             CalendarInfo.weekday_offset = (calendar.weekday(CalendarInfo.year, CalendarInfo.month,
                                                             CalendarInfo.day) + 1) % 7
@@ -154,7 +169,12 @@ class CalendarScreen(CalendarInfo):
             CalendarInfo.day = CalendarInfo.month_range[1]
             CalendarInfo.weekday_offset = (calendar.weekday(CalendarInfo.year, CalendarInfo.month,
                                                             CalendarInfo.day) + 1) % 7
+        # ^ Deals with edge case of going from the end of a month with fewer days than the previous ^
+        # i.e. March 30 --> Feb 30 (Doesn't exist)
+
         MonthAndYearLabel.label.text = str(CalendarInfo.months[CalendarInfo.month]) + ' ' + str(CalendarInfo.year)
+        # ^ Updates the Month/Year label ^
+
         for i in range(0, 7):
             DayNumsLayout.day_of_weekdays[i] = str(CalendarInfo.day - CalendarInfo.weekday_offset + i)
             if CalendarInfo.month_range[1] >= int(DayNumsLayout.day_of_weekdays[i]) > 0:
@@ -163,32 +183,18 @@ class CalendarScreen(CalendarInfo):
                 DayNumsLabels.day_labels[i].text = ''
             DayNumsLayout.is_selected[i] = False
         DayNumsLayout.is_selected[CalendarInfo.weekday_offset] = True
+        # ^ Updates the labels that show the selected day and surrounding days ^
+
         ListLayout.day_nums_layout.update_canvas()
         ListLayout.event_widgets.set_events()
-        print(CalendarInfo.day)
-        print(CalendarInfo.month)
-        print(CalendarInfo.year)
-
-    def on_size(self, instance, value):
-        # Updating DayNumsLabels in the .py file
-        DayNumsLabels.size = Window.size
-        DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 7.42 / 10]
-        DayNumsLabels.box_layout.size = [DayNumsLabels.size[0], DayNumsLabels.size[1] / 20]
-        for label in DayNumsLabels.day_labels:
-            label.width = DayNumsLabels.box_layout.width / 9
-
-        # Updating MonthAndYearLabel in the .py file
-        MonthAndYearLabel.size = Window.size
-        MonthAndYearLabel.label.pos = [MonthAndYearLabel.size[0] / 2, MonthAndYearLabel.size[1] * 7 / 8]
-        MonthAndYearLabel.label.size = [MonthAndYearLabel.size[0] / 100, MonthAndYearLabel.size[1] / 100]
-
-        # Updating EventWidget in the .py file
-        EventWidgets.size = Window.size
+        # ^ Updates other Calendar properties ^
 
 
+# Self Explanatory
 class MonthAndYearLabel(Widget):
     size = Window.size
 
+    # Label that displays month and year
     label = Label(text=str(CalendarInfo.months[CalendarInfo.month]) + ' ' + str(CalendarInfo.year),
                   font_name='Fonts/Vogue.ttf',
                   pos=[size[0] / 10, size[1] / 2],
@@ -200,13 +206,15 @@ class MonthAndYearLabel(Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(self.label)
+        self.add_widget(self.label)  # adds month/year label
 
 
+# Unused possible calendar layout
 class MonthLayout(CalendarInfo):
     pass
 
 
+# Creates widgets that display the events on the "calendar" screen
 class EventWidgets(Widget):
     size = Window.size
     num_events = 0
@@ -218,6 +226,7 @@ class EventWidgets(Widget):
     text_buffer_x = size[0] / 60
     text_buffer_y = size[1] / 200
 
+    # Goes through Calendar.json and finds the events on a given day
     # I'm low-key proud of this even though it's probably wildly inefficient
     def do_the_json(self):
 
@@ -233,7 +242,7 @@ class EventWidgets(Widget):
             month = int(event['DTSTART'][4:6])
             day = int(event['DTSTART'][6:8])
             try:
-                duration = int(event['DURATION'][1])
+                duration = int(event['DURATION'][1])  # Duration of the event in days
             except KeyError:
                 duration = 1
             if year == CalendarInfo.year and month == CalendarInfo.month and day + duration > CalendarInfo.day >= day:
@@ -241,13 +250,14 @@ class EventWidgets(Widget):
                 try:
                     self.summaries.append(event['SUMMARY;ENCODING=QUOTED-PRINTABLE'])
                 except KeyError:
-                    self.summaries.append('')
+                    self.summaries.append('')  # Edge case
                 try:
                     self.descriptions.append(event['DESCRIPTION;ENCODING=QUOTED-PRINTABLE'])
                 except KeyError:
-                    self.descriptions.append('')
+                    self.descriptions.append('')  # Edge case
+            # ^ Appends the event's summary and description (if they exist) ^
 
-    def create_event_labels(self):
+    def create_event_labels(self):`
         self.event_cards = []
         print(len(self.event_cards))
         for i in range(0, self.num_events):
@@ -411,13 +421,13 @@ class MiniEventWidgets(Widget):
 class DayNumsLayout(Widget):
     size = (280, 650)
 
-    day_of_weekdays = [str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff),
-                       str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + 1),
-                       str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + 2),
-                       str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + 3),
-                       str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + 4),
-                       str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + 5),
-                       str(CalendarInfo.day - CalendarInfo.weekday_offset + CalendarInfo.week_diff + 6)]
+    day_of_weekdays = [str(CalendarInfo.day - CalendarInfo.weekday_offset),
+                       str(CalendarInfo.day - CalendarInfo.weekday_offset + 1),
+                       str(CalendarInfo.day - CalendarInfo.weekday_offset + 2),
+                       str(CalendarInfo.day - CalendarInfo.weekday_offset + 3),
+                       str(CalendarInfo.day - CalendarInfo.weekday_offset + 4),
+                       str(CalendarInfo.day - CalendarInfo.weekday_offset + 5),
+                       str(CalendarInfo.day - CalendarInfo.weekday_offset + 6)]
 
     is_selected = [False, False, False, False, False, False, False]
     is_selected[CalendarInfo.weekday_offset] = True
