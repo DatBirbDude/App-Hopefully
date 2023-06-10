@@ -136,6 +136,7 @@ class SettingsScreen(BaseScreen):
         self.ids.BugInput.text = ''
 
 
+
 # Parent class with all necessary date information
 class CalendarInfo(BaseScreen):
     months = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
@@ -192,14 +193,14 @@ class CalendarScreen(CalendarInfo):
 
 # Self Explanatory
 class MonthAndYearLabel(Widget):
-    size = Window.size
+    size = (280, 650)
 
     # Label that displays month and year
     label = Label(text=str(CalendarInfo.months[CalendarInfo.month]) + ' ' + str(CalendarInfo.year),
                   font_name='Fonts/Vogue.ttf',
-                  pos=[size[0] / 10, size[1] / 2],
+                  pos=[size[0] / 10, size[1] * 10/12],
                   # Any change to pos or size has to also be changed in on_size method
-                  size=[size[0] / 2, size[1] * 7 / 8],
+                  size=[size[0] * 7/9, size[1] * 1 / 12],
                   color=[246 / 255, 232 / 255, 234 / 255, 1])
 
     num_events = 0
@@ -257,7 +258,7 @@ class EventWidgets(Widget):
                     self.descriptions.append('')  # Edge case
             # ^ Appends the event's summary and description (if they exist) ^
 
-    def create_event_labels(self):`
+    def create_event_labels(self):
         self.event_cards = []
         print(len(self.event_cards))
         for i in range(0, self.num_events):
@@ -511,7 +512,7 @@ class ListLayout(CalendarInfo):
 
 
 class DayNumsLabels(Widget):
-    size = (Window.width, Window.height)  # This is a temporary fix that doesn't shift with size
+    size = (280, 650)  # This is a temporary fix that doesn't shift with size
 
     day_labels = []
 
