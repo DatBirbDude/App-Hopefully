@@ -1,0 +1,39 @@
+<Connected>
+
+This is 00:33 Sam.
+
+Come in Vincent.
+
+We will be failing this project.
+
+I don't know what I'm doing.
+
+You don't know what I'm doing.
+
+I don't know what you're doing.
+
+Ben doesn't care what we're doing.
+
+But I got a soot for cheep today.
+
+I think it looks nice.
+
+Was only like $300.
+
+I'm currently sitting here, not understanding sockets.
+
+Send help.
+
+Maybe I should use HTTP protocol.
+
+I don't need sockets.
+
+I just hate HTTP.
+
+But it would do the job better.
+
+I'll go learn HTTP for python.
+
+00:36 Sam signing off.
+
+<Terminated>
