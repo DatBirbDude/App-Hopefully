@@ -1,0 +1,8 @@
+{
+  "posts": [
+    { "path" : "test.png",
+      "author" : "test",
+      "time" : "now"
+    }
+  ]
+}
