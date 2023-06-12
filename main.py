@@ -34,6 +34,9 @@ import os
 import shutil
 from kivy.config import Config
 
+# Our own files below
+import client
+
 Config.set('graphics', 'resizable', 0)
 user_name = ''
 
