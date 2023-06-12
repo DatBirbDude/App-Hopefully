@@ -4,4 +4,6 @@ import requests
 print("The client helper is here!")
 
 def login(username, password):
-    return
+    res = requests.get("http://glitchtech.top:6/login", params = {"username": username, "password": password})
+    print(res.text)
+    return res.text

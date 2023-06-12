@@ -40,6 +40,9 @@ import client
 Config.set('graphics', 'resizable', 0)
 user_name = ''
 
+#Everything that runs on the server is toggleable with this yay
+LOCAL=True
+
 
 # Function to change properties when size is changed
 def on_size(instance, value):
@@ -88,6 +91,8 @@ class LogInScreen(Screen):
     def check_login(self):
         global user_name
         logins = json.load(open('Credentials.json'))
+        if(not LOCAL):
+            client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
 
         if self.ids.UsernameInput.text in logins['admins']:
             if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
