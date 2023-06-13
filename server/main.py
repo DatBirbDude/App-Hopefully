@@ -9,16 +9,21 @@ serverPort = 6
 class HopefullyServer(BaseHTTPRequestHandler):
     
     def do_GET(self):
-        p = self.path
+        p = self.path.split("?")
+        #Refer to p[0] for get path
         query = urlparse(self.path).query
-        query_components = dict(qc.split("=") for qc in query.split("&"))
-        c = query_components["username"]
+        if(len(query)>0):
+            query_components = dict(qc.split("=") for qc in query.split("&"))
         self.send_response(200)
         self.send_header("Content-type", "text/json")
         self.end_headers()
-        if(p=="/supersecret"):
+        if(p[0]=="/login"):
+            username = query_components["username"]
+            password = query_components["password"]
+            self.wfile.write(bytes("Lol your login is " + username + ":" +  password + "\n", "utf-8"))
+        if(p[0]=="/supersecret"):
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
-        self.wfile.write(bytes("Error 469: Ben detected! Request rejected. We apologize for the inconvenience. =" + p + "=!" + query + "!", "utf-8"))
+        self.wfile.write(bytes("Error 469: Ben detected! Request rejected. We apologize for the inconvenience. =" + p[0] + "=!" + query + "!", "utf-8"))
 
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), HopefullyServer)
