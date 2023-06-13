@@ -1,6 +1,7 @@
 # Python 3 server example
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
+import json
 from urllib.parse import urlparse
 
 hostName = "glitchtech.top"
@@ -20,6 +21,12 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if(p[0]=="/login"):
             username = query_components["username"]
             password = query_components["password"]
+            logins = json.load(open('creds.json'))
+            if username in logins['admins']:
+                if password == logins['admins'][username]['Password']:
+                    self.wfile.write(bytes("Name: " + logins['admins'][username]['Name']) + "\n", "utf-8"))
+            self.ids.UsernameInput.text = ''
+            self.ids.PasswordInput.text = ''
             self.wfile.write(bytes("Lol your login is " + username + ":" +  password + "\n", "utf-8"))
         if(p[0]=="/supersecret"):
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
