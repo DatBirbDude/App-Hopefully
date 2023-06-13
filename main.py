@@ -91,16 +91,15 @@ class LogInScreen(Screen):
     def check_login(self):
         global user_name
         logins = json.load(open('Credentials.json'))
-        if(not LOCAL):
+        if LOCAL:
+            if self.ids.UsernameInput.text in logins['admins']:
+                if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
+                    user_name = logins['admins'][self.ids.UsernameInput.text]['Name']
+                    self.manager.current = 'main'
+            self.ids.UsernameInput.text = ''
+            self.ids.PasswordInput.text = ''
+        else:
             client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
-
-        if self.ids.UsernameInput.text in logins['admins']:
-            if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
-                user_name = logins['admins'][self.ids.UsernameInput.text]['Name']
-                self.manager.current = 'main'
-
-        self.ids.UsernameInput.text = ''
-        self.ids.PasswordInput.text = ''
 
 
 # Screen with buttons to guide to every other screen
