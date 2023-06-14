@@ -8,7 +8,12 @@ hostName = "glitchtech.top"
 serverPort = 6
 
 class HopefullyServer(BaseHTTPRequestHandler):
-    
+    def login(self, user, pass):
+        logins = json.load(open('creds.json'))
+        if username in logins['admins']:
+            if password == logins['admins'][username]['Password']:
+                name = logins['admins'][username]['Name']
+                self.wfile.write(bytes("Name: " + name + "\n", "utf-8"))
     def do_GET(self):
         p = self.path.split("?")
         #Refer to p[0] for get path
@@ -21,12 +26,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if(p[0]=="/login"):
             username = query_components["username"]
             password = query_components["password"]
-            logins = json.load(open('creds.json'))
-            if username in logins['admins']:
-                if password == logins['admins'][username]['Password']:
-                    self.wfile.write(bytes("Name: " + logins['admins'][username]['Name']) + "\n", "utf-8"))
-            self.ids.UsernameInput.text = ''
-            self.ids.PasswordInput.text = ''
+            login(self, username, password)
             self.wfile.write(bytes("Lol your login is " + username + ":" +  password + "\n", "utf-8"))
         if(p[0]=="/supersecret"):
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
