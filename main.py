@@ -32,6 +32,8 @@ from kivy.logger import Logger
 from kivy.uix.scrollview import ScrollView
 import os
 import shutil
+from threading import Thread
+from kivy.clock import Clock
 from kivy.config import Config
 
 # Our own files below
@@ -45,6 +47,13 @@ admin=False
 #Everything that runs on the server is toggleable with this yay
 LOCAL=False
 
+#Thread decorator to be used to live update the app
+def mainthread(func):
+    def delayed_func(*args):
+        def callback_func(dt):
+            func(*args)
+        Clock.schedule_once(callback_func, 0)
+    return delayed_func
 
 # Function to change properties when size is changed
 def on_size(instance, value):
@@ -129,8 +138,8 @@ class MainScreen(BaseScreen):
         self.manager.current = 'calendar'
 
     # Changes to "photos" screen
-    def photos_button_press(self):
-        self.manager.current = 'photos'
+    def posts_button_press(self):
+        self.manager.current = 'posts'
 
     # Changes to "clubs" screen
     def clubs_button_press(self):
@@ -551,65 +560,30 @@ class DayNumsLabels(Widget):
         self.add_widget(self.box_layout)
 
 
+
+
 # The next class is a sample from official kivy documentation, don't touch it or it will break everything
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
+class PostsScreen(BaseScreen):
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.height = Window.height * 74/12
+class Posts(GridLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.cols = 1
+        self.rows = 2
+        self.ButtonCheckConnection = Button(text="Loading Button")
+        self.ButtonCheckConnection.bind(on_press=self.start_load_thread)
+        self.add_widget(self.ButtonCheckConnection)
 
-class PhotosScreen(Screen):
-    loadfile = ObjectProperty(None)
-    savefile = ObjectProperty(None)
-    text_input = ObjectProperty(None)
-    img_input = ObjectProperty(None)
-
-    def on_enter(self):
-        print("debug")
-        self.layout = PhotoList(cols=1)
-        ib = Photo(
-            wid="2",
-            image="ico/strawberry.png",
-            title="strawberry",
-            label="Strawberry: Yummy Yummy\nPicked On: 5/6/2014, 2:01 PM"
-        )
-        self.layout.add_widget(ib)
-        # Doesn't recognize new widget?
-
-    def dismiss_popup(self):
-        self._popup.dismiss()
-
-    def show_load(self):
-        content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
-        self._popup = Popup(title="Load file", content=content,
-                            size_hint=(0.9, 0.9))
-        self._popup.open()
-
-    def load(self, path, filename):
-        shutil.copy(os.path.join(path, filename[0]), os.path.join(os.getcwd(), "temp.png"))
-        self.dismiss_popup()
-
-        # This is the starter logic to image sharing, we just need to update the copy indexes and come up with a dynamic loader to make these things appear
-
-
-class Post():
-    def make(self, filepath, author, timestamp):
-        f = open("Photos/index.json")
-        d = json.load(f)
-        for i in d["posts"]:
-            return
-
-
-class Photo(Button):
-    wid = StringProperty('')
-    image = StringProperty('')
-    title = StringProperty('')
-    label = StringProperty('')
-    pass
-
-
-class PhotoList(GridLayout):
-    pass
-
+    def start_load_thread(self, *args):
+        Thread(target=self.loadPosts, daemon=True).start()
+    def loadPosts(self, *_):
+        return
 
 # End Sam breaking things
 
@@ -960,7 +934,7 @@ class AppMaybe(MDApp):
         log_in_screen = LogInScreen(name='log_in')
         main_screen = MainScreen(name='main')
         calendar_screen = CalendarScreen(name='calendar')
-        photos_screen = PhotosScreen(name='photos')
+        posts_screen = PostsScreen(name='posts')
         clubs_screen_v2 = ClubsScreenV2(name='clubs')
         clubs_screen = ClubsScreen(name='N/A')
         contact_screen = ContactScreen(name='contact')
@@ -971,7 +945,7 @@ class AppMaybe(MDApp):
         sm.add_widget(log_in_screen)
         sm.add_widget(main_screen)
         sm.add_widget(calendar_screen)
-        sm.add_widget(photos_screen)
+        sm.add_widget(posts_screen)
         sm.add_widget(clubs_screen_v2)
         sm.add_widget(clubs_screen)
         sm.add_widget(contact_screen)
