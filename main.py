@@ -34,8 +34,14 @@ import os
 import shutil
 from kivy.config import Config
 
+# Our own files below
+import client
+
 Config.set('graphics', 'resizable', 0)
 user_name = ''
+
+#Everything that runs on the server is toggleable with this yay
+LOCAL=True
 
 
 # Function to change properties when size is changed
@@ -85,14 +91,15 @@ class LogInScreen(Screen):
     def check_login(self):
         global user_name
         logins = json.load(open('Credentials.json'))
-
-        if self.ids.UsernameInput.text in logins['admins']:
-            if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
-                user_name = logins['admins'][self.ids.UsernameInput.text]['Name']
-                self.manager.current = 'main'
-
-        self.ids.UsernameInput.text = ''
-        self.ids.PasswordInput.text = ''
+        if LOCAL:
+            if self.ids.UsernameInput.text in logins['admins']:
+                if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
+                    user_name = logins['admins'][self.ids.UsernameInput.text]['Name']
+                    self.manager.current = 'main'
+            self.ids.UsernameInput.text = ''
+            self.ids.PasswordInput.text = ''
+        else:
+            client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
 
 
 # Screen with buttons to guide to every other screen
