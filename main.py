@@ -37,11 +37,13 @@ from kivy.config import Config
 # Our own files below
 import client
 
+#Global variables that we use
 Config.set('graphics', 'resizable', 0)
 user_name = ''
+admin=False
 
 #Everything that runs on the server is toggleable with this yay
-LOCAL=True
+LOCAL=False
 
 
 # Function to change properties when size is changed
@@ -86,10 +88,12 @@ class BaseScreen(Screen):
 class LogInScreen(Screen):
     # allows "log in" screen to edit the user's username
     global user_name
+    global admin
 
     # Changes to "main" screen if the user logs in with valid credentials (in Credentials.json)
     def check_login(self):
         global user_name
+        global admin
         logins = json.load(open('Credentials.json'))
         if LOCAL:
             if self.ids.UsernameInput.text in logins['admins']:
@@ -99,7 +103,16 @@ class LogInScreen(Screen):
             self.ids.UsernameInput.text = ''
             self.ids.PasswordInput.text = ''
         else:
-            client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
+            priv = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
+            if priv==2:
+                admin = True
+                self.manager.current = 'main'
+            elif priv==1:
+                self.manager.current = 'main'
+            else:
+                #Vincent I need you to implement an in-app notif for this message
+                print("Login not found")
+
 
 
 # Screen with buttons to guide to every other screen
