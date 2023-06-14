@@ -32,6 +32,7 @@ from kivy.logger import Logger
 from kivy.uix.scrollview import ScrollView
 import os
 import shutil
+from kivy.uix.image import Image, AsyncImage
 from threading import Thread
 from kivy.clock import Clock
 from kivy.config import Config
@@ -582,8 +583,13 @@ class Posts(GridLayout):
 
     def start_load_thread(self, *args):
         Thread(target=self.loadPosts, daemon=True).start()
+    @mainthread
     def loadPosts(self, *_):
-        return
+        p = open("posts.json")
+        posts = json.load(p)
+        for item in posts["posts"]:
+                print(item["url"])
+                self.add_widget(AsyncImage(source=item["url"]))
 
 # End Sam breaking things
 
