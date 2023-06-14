@@ -10,10 +10,12 @@ serverPort = 6
 def login(self, username, password):
     l = open('creds.json')
     logins = json.load(l)
-    if username in logins['admins']:
-        if password == logins['admins'][username]['Password']:
-            name = logins['admins'][username]['Name']
+    if username in logins['users']:
+        if password == logins['users'][username]['Password']:
+            name = logins['users'][username]['Name']
             self.wfile.write(bytes("Name: " + name + "\n", "utf-8"))
+        if(logins['users'][username]['Admin']):
+            self.wfile.write(bytes("You are an admin!\n", "utf-8"))
     l.close()
     return
 
