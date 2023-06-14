@@ -13,14 +13,11 @@ def login(self, username, password):
     if username in logins['users']:
         if password == logins['users'][username]['Password']:
             name = logins['users'][username]['Name']
-            #self.wfile.write(bytes("Name: " + name + "\n", "utf-8"))
             ret["res"] = 1
             if(logins['users'][username]['Admin']):
-                #self.wfile.write(bytes("You are an admin!\n", "utf-8"))
                 ret["res"] = 2
-    self.wfile.write(bytes(json.dumps(ret)))
     l.close()
-    return
+    return ret
 
 class HopefullyServer(BaseHTTPRequestHandler):
     
@@ -36,11 +33,10 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if(p[0]=="/login"):
             username = query_components["username"]
             password = query_components["password"]
-            login(self, username, password)
-            #self.wfile.write(bytes("Lol your login is " + username + ":" +  password + "\n", "utf-8"))
+            output = login(self, username, password)
+            self.wfile.write(bytes(json.dumps(output), "utf-8"))
         if(p[0]=="/supersecret"):
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
-        self.wfile.write(bytes("Error 469: Ben detected! Request rejected. We apologize for the inconvenience. =" + p[0] + "=!" + query + "!", "utf-8"))
 
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), HopefullyServer)
