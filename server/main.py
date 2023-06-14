@@ -7,13 +7,18 @@ from urllib.parse import urlparse
 hostName = "glitchtech.top"
 serverPort = 6
 
+def login(self, username, password):
+    l = open('creds.json')
+    logins = json.load(l)
+    if username in logins['admins']:
+        if password == logins['admins'][username]['Password']:
+            name = logins['admins'][username]['Name']
+            self.wfile.write(bytes("Name: " + name + "\n", "utf-8"))
+    l.close()
+    return
+
 class HopefullyServer(BaseHTTPRequestHandler):
-    def login(self, user, pass):
-        logins = json.load(open('creds.json'))
-        if username in logins['admins']:
-            if password == logins['admins'][username]['Password']:
-                name = logins['admins'][username]['Name']
-                self.wfile.write(bytes("Name: " + name + "\n", "utf-8"))
+    
     def do_GET(self):
         p = self.path.split("?")
         #Refer to p[0] for get path
