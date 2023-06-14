@@ -1,18 +1,19 @@
 {
-  "admins": {
-    "V": {
-      "Password": "B",
-      "Name": "Vincent Barilaro"
-    },
-    "S": {
-      "Password": "T",
-      "Name": "Samuel Tibbs"
-    }
-  },
  "users": {
     "L": {
       "Password": "C",
-      "Name": "Lev Carter"
+      "Name": "Lev Carter",
+      "Admin": false
+    },
+   "V": {
+      "Password": "B",
+      "Name": "Vincent Barilaro",
+      "Admin": true
+    },
+    "S": {
+      "Password": "T",
+      "Name": "Samuel Tibbs",
+      "Admin": true
     }
   } 
 }
