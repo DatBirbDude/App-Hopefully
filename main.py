@@ -590,8 +590,13 @@ class Posts(GridLayout):
         Thread(target=self.loadPosts, daemon=True).start()
     @mainthread
     def loadPosts(self, *_):
+        #Attempt to fetch latest posts from server
+        p = open("posts.json", "w")
+        json.dump(client.getPosts(), p, indent=2)
+        p.close()
         p = open("posts.json")
         posts = json.load(p)
+        #Async draw in all posts
         for item in posts["posts"]:
                 print(item["url"])
                 self.add_widget(AsyncImage(source=item["url"]))

@@ -9,3 +9,8 @@ def login(username, password):
     req = r.json()
     print("Login response: " + str(req["res"]))
     return req["res"]
+
+def getPosts():
+    r = requests.get("http://glitchtech.top:6/posts")
+    req = r.json()
+    return req
