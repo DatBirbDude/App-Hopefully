@@ -38,24 +38,6 @@ Config.set('graphics', 'resizable', 0)
 user_name = ''
 
 
-# Function to change properties when size is changed
-def on_size(instance, value):
-    # Updating DayNumsLabels in the .py file
-    DayNumsLabels.size = Window.size
-    DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 7.42 / 10]
-    DayNumsLabels.box_layout.size = [DayNumsLabels.size[0], DayNumsLabels.size[1] / 20]
-    for label in DayNumsLabels.day_labels:
-        label.width = DayNumsLabels.box_layout.width / 9
-
-    # Updating MonthAndYearLabel in the .py file
-    MonthAndYearLabel.size = Window.size
-    MonthAndYearLabel.label.pos = [MonthAndYearLabel.size[0] / 2, MonthAndYearLabel.size[1] * 7 / 8]
-    MonthAndYearLabel.label.size = [MonthAndYearLabel.size[0] / 100, MonthAndYearLabel.size[1] / 100]
-
-    # Updating EventWidget in the .py file
-    EventWidgets.size = Window.size
-
-
 # Parent screen - Allows settings, contact, and back buttons to work
 class BaseScreen(Screen):
     int_width = Window.width
@@ -74,6 +56,28 @@ class BaseScreen(Screen):
     # Changes to the "main" screen
     def back_button_press(self):
         self.manager.current = 'main'
+
+    # Function to change properties when size is changed <-- when on earth would a phone change size?
+    @staticmethod
+    def on_size(instance, value):
+        # Updating DayNumsLabels in the .py file
+        DayNumsLabels.size = Window.size
+        DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 7.42 / 10]
+        DayNumsLabels.box_layout.size = [DayNumsLabels.size[0], DayNumsLabels.size[1] / 20]
+        for label in DayNumsLabels.day_labels:
+            label.width = DayNumsLabels.box_layout.width / 9
+
+        # Updating MonthAndYearLabel in the .py file
+        MonthAndYearLabel.size = Window.size
+        MonthAndYearLabel.label.pos = [MonthAndYearLabel.size[0] / 2, MonthAndYearLabel.size[1] * 8.65 / 10]
+        MonthAndYearLabel.label.size = [MonthAndYearLabel.size[0] / 100, MonthAndYearLabel.size[1] / 100]
+
+        # Updating EventWidget in the .py file
+        EventWidgets.size = Window.size
+        ListLayout.event_widgets.create_event_labels()
+        ListLayout.event_widgets.update_canvas()
+
+        ListLayout.day_nums_layout.update_canvas()
 
 
 # Log In Screen (Screen appears directly after opening app
@@ -194,7 +198,7 @@ class CalendarScreen(CalendarInfo):
 
 # Self Explanatory
 class MonthAndYearLabel(Widget):
-    size = (280, 650)
+    size = (1, 1)
 
     # Label that displays month and year
     label = Label(text=str(CalendarInfo.months[CalendarInfo.month]) + ' ' + str(CalendarInfo.year),
@@ -218,7 +222,7 @@ class MonthLayout(CalendarInfo):
 
 # Creates widgets that display the events on the "calendar" screen
 class EventWidgets(Widget):
-    size = Window.size
+    size = (1, 1)
     num_events = 0
 
     summaries = []
@@ -260,6 +264,8 @@ class EventWidgets(Widget):
             # ^ Appends the event's summary and description (if they exist) ^
 
     def create_event_labels(self):
+        self.text_buffer_x = self.size[0] / 60
+        self.text_buffer_y = self.size[1] / 200
         self.event_cards = []
         print(len(self.event_cards))
         for i in range(0, self.num_events):
@@ -287,12 +293,14 @@ class EventWidgets(Widget):
                 self.add_widget(self.event_cards[i][o])
 
     def set_events(self):
+        self.size = Window.size
         self.do_the_json()
         self.update_canvas()
         self.create_event_labels()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.size = Window.size
         self.do_the_json()
         self.update_canvas()
         self.create_event_labels()
@@ -300,7 +308,6 @@ class EventWidgets(Widget):
     def update_canvas(self):
 
         self.canvas.clear()
-        self.size = (280, 650)
 
         with self.canvas:
             for i in range(0, self.num_events):
@@ -321,7 +328,7 @@ class EventWidgets(Widget):
 
 # Not proud of this, but I'm too tired to refactor old code rather than just copy it and change a bit
 class MiniEventWidgets(Widget):
-    size = Window.size
+    size = (1, 1)
     num_events = 0
 
     summaries = []
@@ -421,7 +428,6 @@ class MiniEventWidgets(Widget):
 
 
 class DayNumsLayout(Widget):
-    size = (280, 650)
 
     day_of_weekdays = [str(CalendarInfo.day - CalendarInfo.weekday_offset),
                        str(CalendarInfo.day - CalendarInfo.weekday_offset + 1),
@@ -449,9 +455,11 @@ class DayNumsLayout(Widget):
                 else:
                     Color(0, 0, 0, 0)
 
-                Line(circle=[self.size[0] * (3 / 18 + i / 9), self.size[1] * 76.8 / 100, self.size[0] / 20], width=1)
+                Line(circle=[Window.size[0] * (3 / 18 + i / 9), Window.size[1] * 76.8 / 100, Window.size[0] / 20], width=1)
 
     def update_canvas(self):
+
+        self.canvas.clear()
 
         with self.canvas:
 
@@ -459,9 +467,9 @@ class DayNumsLayout(Widget):
                 if self.is_selected[i]:
                     Color(239 / 255, 98 / 255, 108 / 255, 1)
                 else:
-                    Color(49 / 255, 47 / 255, 47 / 255, 1)
+                    Color(0,0,0,0)
 
-                Line(circle=[Window.width * (3 / 18 + i / 9), Window.height * 76.8 / 100, Window.width / 20], width=1)
+                Line(circle=[Window.size[0] * (3 / 18 + i / 9), Window.size[1] * 76.8 / 100, Window.size[0] / 20], width=1)
 
     def my_callback(self, instr):
         pass
@@ -502,22 +510,12 @@ class DayNumsLayout(Widget):
             self.update_canvas()
 
 
-class ListLayout(CalendarInfo):
-    event_widgets = EventWidgets()
-    day_nums_layout = DayNumsLayout()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.add_widget(self.event_widgets)
-        self.add_widget(self.day_nums_layout)
-
-
 class DayNumsLabels(Widget):
-    size = (280, 650)  # This is a temporary fix that doesn't shift with size
+    size = (1, 1)
 
     day_labels = []
 
-    box_layout = BoxLayout(pos=[size[0] / 9, size[1] * 7.42 / 10],
+    box_layout = BoxLayout(pos=[size[0] / 9, size[1] * 8 / 10],
                            size=[size[0], size[1] / 20])
     for i in range(0, 7):
         day_label = Label(text=DayNumsLayout.day_of_weekdays[i], size_hint=[None, 1], width=box_layout.width / 9,
@@ -527,8 +525,20 @@ class DayNumsLabels(Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.size = (Window.width, Window.height)
+        self.size = (100, 100)
         self.add_widget(self.box_layout)
+
+
+class ListLayout(CalendarInfo):
+    event_widgets = EventWidgets()
+    day_nums_layout = DayNumsLayout()
+    day_nums_labels = DayNumsLabels()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(self.event_widgets)
+        self.add_widget(self.day_nums_layout)
+        self.add_widget(self.day_nums_labels)
 
 
 # The next class is a sample from official kivy documentation, don't touch it or it will break everything
@@ -691,7 +701,7 @@ class ClubsList(BoxLayout):
                                   font_size=self.size[1] / 50,
                                   size_hint=[1, None],
                                   height=self.size[1] / 12,
-                                  text_size=[self.size[0] / 4, self.size[1] / 12],
+                                  text_size=[self.size[0] / 2, self.size[1] / 12],
                                   halign='center',
                                   valign='middle'
                                   ))
@@ -700,7 +710,7 @@ class ClubsList(BoxLayout):
             Color(246 / 255, 232 / 255, 234 / 255, 1)
 
             for i in range(0, len(self.clubs_list)):
-                Line(rectangle=[self.size[0] / 20, self.size[1] * i/12, self.size[0] / 4, self.size[1] / 12])
+                Line(rectangle=[self.size[0] / 20, self.size[1] * i/12, self.size[0] * 9 / 10, self.size[1] / 12])
 
 
 class ClubsScreen(BaseScreen):
@@ -930,12 +940,36 @@ class AttendanceWidgets(Widget):
                                        self.size[1] * (6.1/10 - i / 5) - self.text_buffer_y]))
 
 
+log_in_screen: LogInScreen
+main_screen: MainScreen
+calendar_screen: CalendarScreen
+photos_screen: PhotosScreen
+clubs_screen_v2: ClubsScreenV2
+clubs_screen: ClubsScreen
+contact_screen: ContactScreen
+settings_screen: SettingsScreen
+admin_settings: AdminSettings
+admin_contact: AdminContactScreen
+
+
 class AppMaybe(MDApp):
 
     def build(self):
-        Window.size = (280, 650)
+        Window.size = (350, 813)
 
         sm = ScreenManager()
+
+        global log_in_screen
+        global main_screen
+        global calendar_screen
+        global photos_screen
+        global photos_screen
+        global clubs_screen_v2
+        global clubs_screen
+        global settings_screen
+        global admin_contact
+        global admin_settings
+        global contact_screen
 
         log_in_screen = LogInScreen(name='log_in')
         main_screen = MainScreen(name='main')
