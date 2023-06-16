@@ -118,15 +118,19 @@ class LogInScreen(Screen):
             self.ids.UsernameInput.text = ''
             self.ids.PasswordInput.text = ''
         else:
-            priv = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)["res"]
-            if priv==2:
+            result = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
+            privilege = result["res"]
+            user_name = result["name"]
+            print("Welcome " + user_name)
+            if privilege == 2:
                 admin = True
                 self.manager.current = 'main'
-            elif priv==1:
+            elif privilege == 1:
                 self.manager.current = 'main'
             else:
                 #Vincent I need you to implement an in-app notif for this message
                 print("Login not found")
+                
 
 
 
