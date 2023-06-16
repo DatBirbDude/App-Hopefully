@@ -675,6 +675,7 @@ class ClubsList(BoxLayout):
           "Theatre Company",
           "Unified Sports",
           "Walking Club",
+          "Wii Club",
           "Wordsmithing Club",
           "Wounded Warrior Club",
           "Wreath Hawks",
