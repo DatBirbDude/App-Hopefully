@@ -1,6 +1,7 @@
 from instagrapi import Client
-cl = Client()
-cl.login("AACPS.star.light", "vincentsucks")
+
+#cl = Client()
+#cl.login("AACPS.star.light", "vincentsucks")
 
 print("Instagram bot standing by")
 
