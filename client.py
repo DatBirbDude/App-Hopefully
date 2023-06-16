@@ -2,8 +2,10 @@ import requests
 
 #If you don't see this, everything went wrong!
 print("The client helper is here!")
-
+#Makes a request to our server. Response will be 0, 1 or 2
+#0 = Failed to find credentials, 1 = Found user credentials, 2 = Found admin credentials
 def login(username, password):
-    res = requests.get("http://glitchtech.top:6/login", params = {"username": username, "password": password})
-    print(res.text)
-    return res.text
+    r = requests.get("http://glitchtech.top:6/login", params = {"username": username, "password": password})
+    req = r.json()
+    print("Login response: " + str(req["res"]))
+    return req["res"]
