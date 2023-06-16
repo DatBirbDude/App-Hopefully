@@ -1,0 +1,7 @@
+Instagram bot standing by
+Traceback (most recent call last):
+  File "main.py", line 7, in <module>
+    insta.refresh()
+  File "/root/sam/App-Hopefully/server/insta.py", line 6, in refresh
+    posts = user_medias(user_id=55178546179, amount=20)
+NameError: name 'user_medias' is not defined

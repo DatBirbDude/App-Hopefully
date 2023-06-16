@@ -1,4 +1,3 @@
-
 <LogInScreen>:
 
     BoxLayout:
@@ -204,7 +203,7 @@
                     md_bg_color: 239/255, 98/255, 108/255, 1
                     on_press:
                         root.manager.transition.direction = 'left'
-                        root.photos_button_press()
+                        root.posts_button_press()
                     size_hint: 1, 1
 
                 MDFlatButton:
@@ -444,61 +443,15 @@
             Button:
                 text: "Load"
                 on_release: root.load(filechooser.path, filechooser.selection)
-<Photo@Button>:
-    wid: self.wid
-    image: self.image
-    title: self.title
-    label: self.label
-    BoxLayout:
-        orientation: "horizontal"
-        size: self.parent.size      # match the button's size
-        pos: self.parent.pos        # match the button's position
-        padding: 5
-        spacing: 10
-
-        Image:
-            size_hint: None, 1
-            source: root.image
-            size: 64, 64
-            valign: "middle"
-
-
-        Label:
-            size_hint: None, 1
-            text: root.label
-            valign: "middle"
-            size: 400, 64
-            text_size: self.size
-<PhotoList@GridLayout>
-    id: output
-    cols: 1
-    size_hint_y: None
-    height: self.minimum_height
-    Photo:
-        wid: "0"
-        image: "ico/apple.png"
-        title: "xapple"
-        label: "Apple: Super Sweet\nPicked On: 12/26/2014, 2:01 PM"
-<PhotosScreen>:
+<PostsScreen>:
     BoxLayout:
         orientation: 'vertical'
-#        BoxLayout:
-#            size_hint_y: None
-#            height: 30
-#            Button:
-#                text: 'Load'
-#                on_release: root.show_load()
-#        Image:
-#            source: 'temp.png'
-#            size: self.texture_size
-        PhotoList:
-            height: 100
-        Button:
-            text: 'Go back'
-            on_press:
-                root.manager.transition.direction = 'right'
-                root.manager.current = 'main'
+        #Vincent I need you to add the header here I don't get it
+        Posts:
+        #Also add the go back button here
 #End Sam seperator
+
+
 <ClubsScreen>:
 
     BoxLayout:
