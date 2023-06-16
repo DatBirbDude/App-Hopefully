@@ -118,7 +118,7 @@ class LogInScreen(Screen):
             self.ids.UsernameInput.text = ''
             self.ids.PasswordInput.text = ''
         else:
-            priv = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
+            priv = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)["res"]
             if priv==2:
                 admin = True
                 self.manager.current = 'main'
