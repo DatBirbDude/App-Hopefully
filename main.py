@@ -138,7 +138,7 @@ class MainScreen(BaseScreen):
     def calendar_button_press(self):
         self.manager.current = 'calendar'
 
-    # Changes to "photos" screen
+    # Changes to "posts" screen
     def posts_button_press(self):
         self.manager.current = 'posts'
 
