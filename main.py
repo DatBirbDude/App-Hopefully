@@ -581,7 +581,7 @@ class Posts(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cols = 1
-        self.rows = 2
+        self.rows = 50
         self.ButtonCheckConnection = Button(text="Loading Button")
         self.ButtonCheckConnection.bind(on_press=self.start_load_thread)
         self.add_widget(self.ButtonCheckConnection)
