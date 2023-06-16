@@ -4,7 +4,7 @@ import json
 from urllib.parse import urlparse
 import insta
 
-insta.refresh()
+#insta.refresh()
 
 hostName = "glitchtech.top"
 serverPort = 6
