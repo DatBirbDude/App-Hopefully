@@ -1,3 +1,8 @@
+''' To do:
+- Return name with /login request
+- Add instagram
+'''
+
 import json
 import math
 from calendar import Calendar
