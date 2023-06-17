@@ -44,8 +44,8 @@ class HopefullyServer(BaseHTTPRequestHandler):
             outimage = open("upload.jpg", "wb")
             outimage.write(img_bytes)
             outimage.close()
-            output = {"success": 1}
-            self.wfile.write(bytes(json.dumps(output)))
+            trypost = {"success": 1}
+            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
         if(p[0]=="/posts"):
             postfile = open("posts.json")
