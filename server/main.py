@@ -37,6 +37,15 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
+        if(p[0]=="/addpost"):
+            im_b64 = query_components["img"]
+            img_bytes = base64.b64decode(im_b64.encode('utf-8'))
+            outimage = open("upload.jpg", "wb")
+            outimage.write(img_bytes)
+            outimage.close()
+            output = {"success": 1}
+            self.wfile.write(bytes(json.dumps(output)))
+
         if(p[0]=="/posts"):
             postfile = open("posts.json")
             postjson = json.load(postfile)
