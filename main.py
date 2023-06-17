@@ -84,14 +84,14 @@ class BaseScreen(Screen):
     def on_size(instance, value):
         # Updating DayNumsLabels in the .py file
         DayNumsLabels.size = Window.size
-        DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 7.42 / 10]
+        DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 6.9 / 10]
         DayNumsLabels.box_layout.size = [DayNumsLabels.size[0], DayNumsLabels.size[1] / 20]
         for label in DayNumsLabels.day_labels:
             label.width = DayNumsLabels.box_layout.width / 9
 
         # Updating MonthAndYearLabel in the .py file
         MonthAndYearLabel.size = Window.size
-        MonthAndYearLabel.label.pos = [MonthAndYearLabel.size[0] / 2, MonthAndYearLabel.size[1] * 8.65 / 10]
+        MonthAndYearLabel.label.pos = [MonthAndYearLabel.size[0] / 2, MonthAndYearLabel.size[1] * 8.1 / 10]
         MonthAndYearLabel.label.size = [MonthAndYearLabel.size[0] / 100, MonthAndYearLabel.size[1] / 100]
 
         # Updating EventWidget in the .py file
@@ -179,7 +179,7 @@ class SettingsScreen(BaseScreen):
 
 
 # Parent class with all necessary date information
-class CalendarInfo(BaseScreen):
+class CalendarInfo(Screen):
     months = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
               7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'}
 
@@ -239,10 +239,10 @@ class MonthAndYearLabel(Widget):
     # Label that displays month and year
     label = Label(text=str(CalendarInfo.months[CalendarInfo.month]) + ' ' + str(CalendarInfo.year),
                   font_name='Fonts/Vogue.ttf',
-                  pos=[size[0] / 10, size[1] * 10/12],
+                  pos=[1, 1],
                   # Any change to pos or size has to also be changed in on_size method
-                  size=[size[0] * 7/9, size[1] * 1 / 12],
-                  color=[246 / 255, 232 / 255, 234 / 255, 1])
+                  size=[1, 1],
+                  color=[0.1, 0.1, 0.1, 1])
 
     num_events = 0
 
@@ -310,18 +310,18 @@ class EventWidgets(Widget):
                                 halign='left',
                                 valign='top',
                                 font_size=Window.size[0] / 25,
-                                color=(246 / 255, 232 / 255, 234 / 255, 1),
+                                color=(0.1, 0.1, 0.1, 1),
                                 pos=[Window.size[0] / 20 + self.text_buffer_x,
-                                     Window.size[1] * (6.7 / 10 - i / 5) - self.text_buffer_y]),
+                                     Window.size[1] * (6.2 / 10 - i / 5) - self.text_buffer_y]),
                           Label(text=self.descriptions[i],
                                 size=[Window.size[0] * 9 / 10, Window.size[1] / 40],
                                 text_size=[Window.size[0] * 9 / 10 - 1.5 * self.text_buffer_x, Window.size[1] / 20],
                                 halign='left',
                                 valign='top',
                                 font_size=Window.size[0] / 30,
-                                color=(246 / 255, 232 / 255, 234 / 255, 1),
+                                color=(0.1, 0.1, 0.1, 1),
                                 pos=[Window.size[0] / 20,
-                                     Window.size[1] * (3 / 5 - i / 5) - self.text_buffer_y])]
+                                     Window.size[1] * (5.5 / 10 - i / 5) - self.text_buffer_y])]
             self.event_cards.append(event_card)
         for i in range(0, self.num_events):
             for o in range(0, 2):
@@ -346,15 +346,15 @@ class EventWidgets(Widget):
 
         with self.canvas:
             for i in range(0, self.num_events):
-                Color(34 / 255, 24 / 255, 28 / 255, 1)
+                Color(255/255, 185/255, 245/255, 0.7)
 
                 RoundedRectangle(size=[Window.size[0] * 9 / 10, Window.size[1] / 6],
-                                 pos=[Window.size[0] / 20, Window.size[1] * (5 / 9 - i / 5)],
+                                 pos=[Window.size[0] / 20, Window.size[1] * (5.06 / 10 - i / 5)],
                                  radius=(Window.height / 60, Window.height / 60))
 
-                Color(0, 0, 0, 1)  # 132/255, 220/255, 207/255, 1
+                Color(0.1, 0.1, 0.1, 1)
 
-                Line(rounded_rectangle=[Window.size[0] / 20, Window.size[1] * (5 / 9 - i / 5),
+                Line(rounded_rectangle=[Window.size[0] / 20, Window.size[1] * (5.06 / 10 - i / 5),
                                         Window.size[0] * 9 / 10, Window.size[1] / 6,
                                         Window.height / 60],
                      width=1,
@@ -499,14 +499,11 @@ class DayNumsLayout(Widget):
 
             for i in range(0, 7):
                 if self.is_selected[i]:
-                    Color(239 / 255, 98 / 255, 108 / 255, 1)
+                    Color(255/255, 185/255, 245/255, 1)
                 else:
                     Color(0,0,0,0)
 
-                Line(circle=[Window.size[0] * (3 / 18 + i / 9), Window.size[1] * 76.8 / 100, Window.size[0] / 20], width=1)
-
-    def my_callback(self, instr):
-        pass
+                Line(circle=[Window.size[0] * (3 / 18 + i / 9), Window.size[1] * 7.15 / 10, Window.size[0] / 20], width=1)
 
     def week_change(self, change):
         if 0 < (CalendarInfo.day - CalendarInfo.weekday_offset + 6 + 7 * change) or change > 0:
@@ -553,7 +550,7 @@ class DayNumsLabels(Widget):
                            size=[size[0], size[1] / 20])
     for i in range(0, 7):
         day_label = Label(text=DayNumsLayout.day_of_weekdays[i], size_hint=[None, 1], width=box_layout.width / 9,
-                          color=[246 / 255, 232 / 255, 234 / 255, 1], font_name='Fonts/Vogue.ttf')
+                          color=[0.1, 0.1, 0.1, 1], font_name='Fonts/Vogue.ttf')
         day_labels.append(day_label)
         box_layout.add_widget(day_label)
 

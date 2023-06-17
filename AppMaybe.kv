@@ -7,6 +7,72 @@
         keep_ratio: False
         allow_stretch: True
 
+    BoxLayout:
+
+        orientation: 'vertical'
+
+        Label:
+
+            size_hint: 0.7, None
+            height: root.height / 6
+            text: 'Star Light'
+            font_name: 'Fonts/Chekhard.ttf'
+            font_size: self.width/6
+            color: 0.1, 0.1, 0.1, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.25}
+
+        Label:
+
+        BoxLayout:
+
+            size_hint: 1, None
+            height: root.height / 10
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+            MDIconButton:
+
+                icon: 'SettingsIcon.png'
+                size_hint: 1, 1
+                size: self.size
+                allow_stretch: True
+                on_press:
+                    root.manager.transition.direction = 'left'
+                    root.settings_button_press()
+
+            MDIconButton:
+
+                icon: 'Pencil_Icon.png'
+                size_hint: 1, 1
+                on_press:
+                    root.manager.transition.direction = 'left'
+                    root.settings_button_press()
+
+            MDIconButton:
+
+                icon: 'Calendar_Icon.png'
+                size_hint: 1, 1
+                on_press:
+                    root.manager.transition.direction = 'left'
+                    root.settings_button_press()
+
+            MDIconButton:
+
+                icon: 'Camera_Icon.png'
+                size_hint: 1, 1
+                on_press:
+                    root.manager.transition.direction = 'left'
+                    root.settings_button_press()
+
+            MDIconButton:
+
+                icon: 'MailIcon.png'
+                size_hint: 1, 1
+                on_press:
+                    root.manager.transition.direction = 'left'
+                    root.settings_button_press()
+
+
+
 <LogInScreen>:
 
     Image:
@@ -217,45 +283,10 @@
 
         orientation: 'vertical'
 
-        BoxLayout:
+        Label:
 
-            orientation: 'horizontal'
             size_hint: 1, None
-            height: root.height / 12
-
-            canvas:
-
-                Color:
-                    rgba: 49/255, 47/255, 47/255, 1
-
-                Rectangle:
-                    size: root.size
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 1
-
-                RoundedRectangle:
-                    size: self.size
-                    pos: 0, root.height * 11/12
-                    radius: [0, 0, (self.height/5, self.height/5), (self.height/5, self.height/5)]
-
-            MDIconButton:
-                icon: 'SettingsIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.settings_button_press()
-
-            Label:
-                text: 'Star Light'
-                font_name: 'Fonts/TransformersMovie.ttf'
-                font_size: self.height / 1.8
-                color: 132/255, 220/255, 207/255, 1
-
-            MDIconButton:
-                icon: 'MailIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.contact_button_press()
+            height: root.height / 7
 
         BoxLayout:
 
@@ -304,37 +335,37 @@
 
             Label:
                 text: 'S'
-                text_color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 font_name: 'Fonts/Vogue.ttf'
 
             Label:
                 text: 'M'
-                text_color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 font_name: 'Fonts/Vogue.ttf'
 
             Label:
                 text: 'T'
-                text_color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 font_name: 'Fonts/Vogue.ttf'
 
             Label:
                 text: 'W'
-                text_color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 font_name: 'Fonts/Vogue.ttf'
 
             Label:
                 text: 'T'
-                text_color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 font_name: 'Fonts/Vogue.ttf'
 
             Label:
                 text: 'F'
-                text_color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 font_name: 'Fonts/Vogue.ttf'
 
             Label:
                 text: 'S'
-                text_color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 font_name: 'Fonts/Vogue.ttf'
 
         BoxLayout:
