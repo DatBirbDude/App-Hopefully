@@ -45,7 +45,7 @@
                 size_hint: 1, 1
                 on_press:
                     root.manager.transition.direction = 'left'
-                    root.settings_button_press()
+                    root.clubs_button_press()
 
             MDIconButton:
 
@@ -53,7 +53,7 @@
                 size_hint: 1, 1
                 on_press:
                     root.manager.transition.direction = 'left'
-                    root.settings_button_press()
+                    root.calendar_button_press()
 
             MDIconButton:
 
@@ -61,7 +61,7 @@
                 size_hint: 1, 1
                 on_press:
                     root.manager.transition.direction = 'left'
-                    root.settings_button_press()
+                    root.posts_button_press()
 
             MDIconButton:
 
@@ -69,7 +69,7 @@
                 size_hint: 1, 1
                 on_press:
                     root.manager.transition.direction = 'left'
-                    root.settings_button_press()
+                    root.contact_button_press()
 
 
 
@@ -311,15 +311,6 @@
 
         ListLayout:
 
-    MDIconButton:
-
-        icon: 'ReturnArrow.png'
-        pos: root.width / 35, root.height / 90
-        size: root.width / 6, root.height / 15
-        on_press:
-            root.manager.transition.direction = 'right'
-            root.manager.current = 'main'
-
 
 <ListLayout>:
 
@@ -481,77 +472,30 @@
 
     BoxLayout:
 
-        height: root.height
         orientation: 'vertical'
-
-        BoxLayout:
-
-            orientation: 'horizontal'
-            size_hint: 1, None
-            pos_hint: {'center_x': 0.5, 'top': 0}
-            height: root.height / 12 / (77/12 + 1/12)
-
-            canvas:
-
-                Color:
-                    rgba: 49/255, 47/255, 47/255, 1
-
-                Rectangle:
-                    size: root.size
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 1
-
-                RoundedRectangle:
-                    size: self.size
-                    pos: 0, root.height * 79/80
-                    radius: [0, 0, (self.height/5, self.height/5), (self.height/5, self.height/5)]
-
-            MDIconButton:
-                icon: 'SettingsIcon.png'
-                on_press:
-                    root.parent.parent.manager.transition.direction = 'left'
-                    root.parent.parent.manager.current = 'settings'
-
-            Label:
-                text: 'Star Light'
-                font_name: 'Fonts/TransformersMovie.ttf'
-                font_size: self.height / 1.8
-                color: 132/255, 220/255, 207/255, 1
-
-            MDIconButton:
-                icon: 'MailIcon.png'
-                on_press:
-                    root.parent.parent.manager.transition.direction = 'left'
-                    root.parent.parent.manager.current = 'contact'
 
         Label:
 
-    ClubsList:
-        size_hint: 1, None
-        height: root.height * (19/20)
-        text_size: self.size
-        pos: 0, 0
+            size_hint: 1, None
+            height: root.height / 7
 
-    MDIconButton:
+        ClubsScrollView:
 
-        icon: 'ReturnArrow.png'
-        pos: 0, 0
-        size: root.width / 6, root.height / 100
-        on_press:
-            root.parent.parent.manager.transition.direction = 'right'
-            root.parent.parent.manager.current = 'main'
+            size_hint: 1, 1
+
+        Label:
+
+            size_hint: 1, None
+            height: root.height / 7
 
 <ClubsScrollView>:
 
-    ClubsScreen:
+    do_scroll_x: False
 
-        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    ClubsList:
+
         size_hint: 1, None
-
-<ClubsScreenV2>:
-
-    ClubsScrollView:
+        height: self.minimum_height
 
 <ContactScreen>:
     BoxLayout:
@@ -567,21 +511,7 @@
             canvas:
 
                 Color:
-                    rgba: 49/255, 47/255, 47/255, 1
-
-                Rectangle:
-                    size: root.size
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 1
-
-                RoundedRectangle:
-                    size: self.size
-                    pos: 0, root.height * 11/12
-                    radius: [0, 0, (self.height/5, self.height/5), (self.height/5, self.height/5)]
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 0.8
+                    rgba: 255/255, 185/255, 245/255, 0.8
 
                 RoundedRectangle:
                     size: root.width*7/8, root.height * 6/12
@@ -589,7 +519,7 @@
                     radius: [root.height / 20,]
 
                 Color:
-                    rgba: 0, 0, 0, 1
+                    rgba: 0.1, 0.1, 0.1, 1
 
                 Line:
                     rectangle: [root.width / 10, root.height * 67/96 - root.height / 30 / 2, root.width * 8/10, root.height / 30]
@@ -612,24 +542,6 @@
                 Line:
                     rectangle: [root.width * 17/30, root.height * 59/96 - root.height / 36 / 2, root.width * 3/10, root.height / 36]
 
-            MDIconButton:
-                icon: 'SettingsIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.settings_button_press()
-
-            Label:
-                text: 'Star Light'
-                font_name: 'Fonts/TransformersMovie.ttf'
-                font_size: self.height / 1.8
-                color: 132/255, 220/255, 207/255, 1
-
-            MDIconButton:
-                icon: 'MailIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.contact_button_press()
-
         Label:  # Separator
             size_hint: [1, None]
             height: root.height / 12
@@ -641,7 +553,7 @@
             text: 'Contact Administration'
             font_size: self.height / 3
             font_name: 'Fonts/Vogue.ttf'
-            color: 246 / 255, 232 / 255, 234 / 255, 1
+            color: 0.1, 0.1, 0.1, 1
 
         Label:  # Seperator
 
@@ -651,6 +563,7 @@
         Button:
 
             text: root.reason_for_contact
+            color: 0.1, 0.1, 0.1, 1
             font_size: root.height / 50
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             size_hint: 0.8, None
@@ -673,6 +586,7 @@
             Button:
 
                 text: root.day_string
+                color: 0.1, 0.1, 0.1, 1
                 font_size: root.height / 50
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: None, None
@@ -684,6 +598,7 @@
             Button:
 
                 text: root.month_string
+                color: 0.1, 0.1, 0.1, 1
                 font_size: root.height / 50
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: None, None
@@ -695,6 +610,7 @@
             Button:
 
                 text: root.year_string
+                color: 0.1, 0.1, 0.1, 1
                 font_size: root.height / 50
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: None, None
@@ -730,6 +646,7 @@
             Button:
 
                 text: root.hour_string if root.need_time else ''
+                color: 0.1, 0.1, 0.1, 1
                 font_size: root.height / 50
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: 1, None
@@ -743,6 +660,7 @@
             Button:
 
                 text: root.minute_string if root.need_time else ''
+                color: 0.1, 0.1, 0.1, 1
                 font_size: root.height / 50
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: 1, None
@@ -758,6 +676,7 @@
         Label:
 
             text: 'notes:'
+            color: 0.1, 0.1, 0.1, 1
             size_hint: 0.6, None
             text_size: [root.width * 4/10, root.height / 45]
             halign: 'left'
@@ -771,15 +690,15 @@
         TextInput:
 
             id: Notes
-            background_color: [34/255, 24/255, 28/255, 0.8]
+            background_color: [255/255, 185/255, 245/255, 0.8]
             multiline: False
             size_hint: 0.8, None
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             height: root.height / 12
-            cursor_color: 246/255, 232/255, 234/255, 1
+            cursor_color: 0.1, 0.1, 0.1, 1
             text_size: self.size
             font_size: root.height / 48
-            foreground_color: 246/255, 232/255, 234/255
+            foreground_color: 0.1, 0.1, 0.1, 1
 
         Label:  # Seperator
 
@@ -790,8 +709,8 @@
 
             text: "Send"
             theme_text_color: "Custom"
-            text_color: "white"
-            line_color: 239/255, 98/255, 108/255, 1
+            text_color: "black"
+            line_color: 0.1, 0.1, 0.1, 1
             size_hint: 0.6, None
             height: root.height / 24
             pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
@@ -799,24 +718,15 @@
 
         Label:
 
-    MDIconButton:
-
-        icon: 'ReturnArrow.png'
-        pos: root.width / 35, root.height / 90
-        size: root.width / 6, root.height / 15
-        on_press:
-            root.manager.transition.direction = 'right'
-            root.manager.current = 'main'
-
     MDRectangleFlatButton:
 
         text: "Go To Admin\nScreen"
-        pos: root.width * 6/10, root.height / 90
-        size: root.width / 3, root.height /15
-        text_color: "white"
-        line_color: 239/255, 98/255, 108/255, 1
+        pos: root.width * 6/10, root.height / 9
+        size: root.width / 3, root.height / 15
+        text_color: "black"
+        line_color: 0.1, 0.1, 0.1, 1
         theme_icon_color: "Custom"
-        icon_color: 'white'
+        icon_color: 'black'
         on_press:
             root.manager.transition.direction = 'left'
             root.manager.current = 'admin_contact'
@@ -836,44 +746,12 @@
             canvas:
 
                 Color:
-                    rgba: 49/255, 47/255, 47/255, 1
-
-                Rectangle:
-                    size: root.size
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 1
-
-                RoundedRectangle:
-                    size: self.size
-                    pos: 0, root.height * 11/12
-                    radius: [0, 0, (self.height/5, self.height/5), (self.height/5, self.height/5)]
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 0.8
+                    rgba: 255/255, 185/255, 245/255, 0.8
 
                 RoundedRectangle:
                     size: root.width*7/8, root.height * 6/12
                     pos: root.width / 16, root.height * 4/12
                     radius: [root.height / 20,]
-
-            MDIconButton:
-                icon: 'SettingsIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.settings_button_press()
-
-            Label:
-                text: 'Star Light'
-                font_name: 'Fonts/TransformersMovie.ttf'
-                font_size: self.height / 1.8
-                color: 132/255, 220/255, 207/255, 1
-
-            MDIconButton:
-                icon: 'MailIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.contact_button_press()
 
         Label:  # Separator
             size_hint: [1, None]
@@ -886,7 +764,7 @@
             text: 'Settings'
             font_size: self.height / 3
             font_name: 'Fonts/Vogue.ttf'
-            color: 246 / 255, 232 / 255, 234 / 255, 1
+            color: .1, .1, .1, 1
 
         Label:
 
@@ -895,7 +773,7 @@
             font_size: root.height / 48
             text: 'Bug Report'
             font_name: 'Fonts/Vogue.ttf'
-            color: 246 / 255, 232 / 255, 234 / 255, 1
+            color: .1, .1, .1, 1
 
         TextInput:
 
@@ -904,9 +782,9 @@
             size_hint: 0.8, None
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             height: root.height / 12
-            background_color: 34/255, 24/255, 28/255, 1
-            foreground_color: 246/255, 232/255, 234/255
-            cursor_color: 246/255, 232/255, 234/255
+            background_color: 255/255, 185/255, 245/255, .8
+            foreground_color: 0.1, 0.1, 0.1
+            cursor_color: 0.1, 0.1, 0.1
             font_size: root.height / 48
 
         Label:  # Separator
@@ -918,8 +796,8 @@
 
             text: "Report"
             theme_text_color: "Custom"
-            text_color: "white"
-            line_color: 239/255, 98/255, 108/255, 1
+            text_color: "black"
+            line_color: 0.1, 0.1, 0.1, 1
             size_hint: 0.6, None
             height: root.height / 24
             pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
@@ -937,34 +815,25 @@
             size_hint: 0.5, None
             height: root.height / 12
             # theme_text_color: "Custom"
-            text_color: "white"
-            line_color: 239/255, 98/255, 108/255, 1
+            text_color: "black"
+            line_color: 0.1, 0.1, 0.1, 1
             theme_icon_color: "Custom"
-            icon_color: 'white'
+            icon_color: 'black'
             on_press:
                 root.manager.transition.direction = 'right'
                 root.manager.current = 'log_in'
 
         Label:
 
-    MDIconButton:
-
-        icon: 'ReturnArrow.png'
-        pos: root.width / 35, root.height / 90
-        size: root.width / 6, root.height / 15
-        on_press:
-            root.manager.transition.direction = 'right'
-            root.manager.current = 'main'
-
     MDRectangleFlatButton:
 
         text: "Go To Admin\nScreen"
-        pos: root.width * 6/10, root.height / 90
-        size: root.width / 3, root.height /15
-        text_color: "white"
-        line_color: 239/255, 98/255, 108/255, 1
+        pos: root.width * 6/10, root.height / 9
+        size: root.width / 3, root.height / 15
+        text_color: "black"
+        line_color: .1, .1, .1, 1
         theme_icon_color: "Custom"
-        icon_color: 'white'
+        icon_color: 'black'
         on_press:
             root.manager.transition.direction = 'left'
             root.manager.current = 'admin_settings'
@@ -983,64 +852,33 @@
             size_hint: 1, None
             height: root.height / 12
 
-            canvas:
-
-                Color:
-                    rgba: 49/255, 47/255, 47/255, 1
-
-                Rectangle:
-                    size: root.size
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 1
-
-                RoundedRectangle:
-                    size: self.size
-                    pos: 0, root.height * 11/12
-                    radius: [0, 0, (self.height/5, self.height/5), (self.height/5, self.height/5)]
-
-            MDIconButton:
-                icon: 'SettingsIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.settings_button_press()
-
-            Label:
-                text: 'Star Light'
-                font_name: 'Fonts/TransformersMovie.ttf'
-                font_size: self.height / 1.8
-                color: 132/255, 220/255, 207/255, 1
-
-            MDIconButton:
-                icon: 'MailIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.contact_button_press()
-
         Label: # Separator
 
             size_hint: 1, None
-            height: root.height / 24
+            height: root.height / 12
 
         Label:
 
             text: 'Bug Reports'
+            color: .1, .1, .1, 1
             font_name: 'Fonts/Vogue.ttf'
             size_hint: 1, None
             height: root.height / 12
 
-        BugWidgets:
-
         Label:
 
-    MDIconButton:
+    MDRectangleFlatButton:
 
-        icon: 'ReturnArrow.png'
-        pos: root.width / 35, root.height / 90
-        size: root.width / 6, root.height / 15
+        text: "Go To User\nScreen"
+        pos: root.width * 6/10, root.height / 9
+        size: root.width / 3, root.height / 15
+        text_color: "black"
+        line_color: .1, .1, .1, 1
+        theme_icon_color: "Custom"
+        icon_color: 'black'
         on_press:
             root.manager.transition.direction = 'right'
-            root.manager.current = 'main'
+            root.manager.current = 'settings'
 
 <AdminContactScreen>:
 
@@ -1056,52 +894,17 @@
             size_hint: 1, None
             height: root.height / 12
 
-            canvas:
-
-                Color:
-                    rgba: 49/255, 47/255, 47/255, 1
-
-                Rectangle:
-                    size: root.size
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 1
-
-                RoundedRectangle:
-                    size: self.size
-                    pos: 0, root.height * 11/12
-                    radius: [0, 0, (self.height/5, self.height/5), (self.height/5, self.height/5)]
-
-            MDIconButton:
-                icon: 'SettingsIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.settings_button_press()
-
-            Label:
-                text: 'Star Light'
-                font_name: 'Fonts/TransformersMovie.ttf'
-                font_size: self.height / 1.8
-                color: 132/255, 220/255, 207/255, 1
-
-            MDIconButton:
-                icon: 'MailIcon.png'
-                on_press:
-                    root.manager.transition.direction = 'left'
-                    root.contact_button_press()
-
         Label: # Separator
 
             size_hint: 1, None
-            height: root.height / 24
+            height: root.height / 12
 
         Label:
 
             text: 'Attendance Reports'
+            color: 0.1, 0.1, 0.1, 1
             font_name: 'Fonts/Vogue.ttf'
             size_hint: 1, None
             height: root.height / 12
-
-        AttendanceWidgets:
 
         Label:
