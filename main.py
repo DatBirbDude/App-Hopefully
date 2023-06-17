@@ -127,9 +127,9 @@ class LogInScreen(Screen):
             print("Welcome " + user_name)
             if privilege == 2:
                 admin = True
-                self.manager.current = 'main'
+                self.manager.current = 'calendar'
             elif privilege == 1:
-                self.manager.current = 'main'
+                self.manager.current = 'calendar'
             else:
                 #Vincent I need you to implement an in-app notif for this message
                 print("Login not found")
@@ -192,7 +192,7 @@ class CalendarInfo(BaseScreen):
 
 
 # Screen that shows the events on a given day
-class CalendarScreen(CalendarInfo):
+class CalendarScreen(CalendarInfo, BaseScreen):
 
     # Increments or decrements the month
     def month_change(self, change):
@@ -963,7 +963,7 @@ admin_contact: AdminContactScreen
 class AppMaybe(MDApp):
 
     def build(self):
-        Window.size = (350, 813)
+        Window.size = (280, 650)
 
         sm = ScreenManager()
 

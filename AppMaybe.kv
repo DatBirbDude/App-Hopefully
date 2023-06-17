@@ -1,15 +1,27 @@
+<BaseScreen>:
+
+    Image:
+
+        source: "Starlight/BaseScreen.png"
+        size: root.size
+        keep_ratio: False
+        allow_stretch: True
+
 <LogInScreen>:
+
+    Image:
+
+        source: "Starlight/LoginScreen.png"
+        size: root.size
+        keep_ratio: False
+        allow_stretch: True
 
     BoxLayout:
         orientation: 'vertical'
         canvas:
-            Color:
-                rgba: 49/255, 47/255, 47/255, 1
-            Rectangle:
-                size: self.size
 
             Color:
-                rgba: 34/255, 24/255, 28/255, 0.8
+                rgba: 255/255, 185/255, 245/255, 0.8
 
             RoundedRectangle:
                 pos: self.width/2 - root.width*7/16, self.height*2/3 - root.height/4
@@ -17,12 +29,13 @@
                 radius: [(self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20)]
         Label:
             id: app_name
-            size_hint: 1, None
-            height: root.height/4 - root.height / 12
+            size_hint: 0.7, None
+            height: root.height / 6
             text: 'Star Light'
-            font_name: 'Fonts/TransformersMovie.ttf'
+            font_name: 'Fonts/Chekhard.ttf'
             font_size: self.width/6
-            color: 132/255, 220/255, 207/255, 1
+            color: 0.1, 0.1, 0.1, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.25}
 
         BoxLayout:
             id: LogInLayout
@@ -31,10 +44,10 @@
             pos_hint: {"center_x": 0.5, "top": 0}
             Label:
                 id: LoginLabel
-                text: 'Login'
+                text: ''
                 font_size: self.height / 2
-                font_name: 'Fonts/BodoniXT.ttf'
-                color: 246/255, 232/255, 234/255, 1
+                font_name: 'Fonts/Chekhard.ttf'
+                color: 0.1, 0.1, 0.1, 1
                 size_hint: 1, None
                 height: root.height / 12
                 halign: 'center'
@@ -46,7 +59,7 @@
                 height: root.height / 20
                 text_size: self.size
                 font_size: root.height / 45
-                color: 246/255, 232/255, 234/255, 1
+                color: 0.1, 0.1, 0.1, 1
                 padding_x: self.width / 20
                 padding_y: self.width / 100
                 size_hint: 1, None
@@ -54,13 +67,13 @@
             TextInput:
                 id: UsernameInput
                 multiline: False
-                background_color: [34/255, 24/255, 28/255, 0.8]
+                background_color: [255/255, 185/255, 245/255, 0.5]
                 size_hint: 1, None
                 height: root.height / 25
-                cursor_color: 246/255, 232/255, 234/255, 1
+                cursor_color: 0.1, 0.1, 0.1, 1
                 text_size: self.size
                 font_size: self.height * 0.9 / 2
-                foreground_color: 246/255, 232/255, 234/255
+                foreground_color: 0.1, 0.1, 0.1
 
             Label:
                 id: password
@@ -68,7 +81,7 @@
                 height: root.height / 12
                 text_size: self.size
                 font_size: root.height / 45
-                color: 246/255, 232/255, 234/255, 1
+                color: .1, .1, .1, 1
                 halign: 'left'
                 padding_x: self.width / 20
                 padding_y: self.width / 100
@@ -77,13 +90,13 @@
             TextInput:
                 id: PasswordInput
                 multiline: False
-                background_color: [34/255, 24/255, 28/255, 0.8]
+                background_color: [255/255, 185/255, 245/255, 0.8]
                 size_hint: 1, None
                 text_size: self.size
                 font_size: self.height * 0.9 / 2
-                foreground_color: 246/255, 232/255, 234/255
+                foreground_color: .1, .1, .1
                 height: root.height / 25
-                cursor_color: 246/255, 232/255, 234/255, 1
+                cursor_color: .1, .1, .1, 1
 
             Label:
                 size_hint: 1, 0
@@ -92,8 +105,8 @@
             MDRectangleFlatButton:
                 text: "Log in"
                 theme_text_color: "Custom"
-                text_color: "white"
-                line_color: 239/255, 98/255, 108/255, 1
+                text_color: "black"
+                line_color: .1, .1, .1, 1
                 size_hint: 0.6, None
                 height: root.height / 20
                 pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
@@ -101,7 +114,7 @@
                     root.manager.transition.direction = 'left'
                     root.check_login()
         Label:
-            text: 'INSERT COOL DESIGN HERE'
+            text: ''
             size_hint: 1, None
             height: root.height * 9/20
 
@@ -115,25 +128,6 @@
             orientation: 'horizontal'
             size_hint: 1, None
             height: root.height / 12
-
-            canvas:
-
-                Color:
-                    rgba: 49/255, 47/255, 47/255, 1
-
-                Rectangle:
-                    size: root.size
-
-                Color:
-                    rgba: 34/255, 24/255, 28/255, 1
-
-                RoundedRectangle:
-                    size: self.size
-                    pos: 0, root.height * 11/12
-                    radius: [0, 0, (self.height/5, self.height/5), (self.height/5, self.height/5)]
-
-                Line:
-                    rectangle: (root.buffer, (root.width - root.buffer * 1.75) / 2 + root.buffer * 2, root.width - root.buffer * 2, root.height * 66/100)
 
             MDIconButton:
                 icon: 'SettingsIcon.png'
