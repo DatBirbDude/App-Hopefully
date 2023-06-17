@@ -1,3 +1,8 @@
+''' To do:
+- Return name with /login request
+- Add instagram
+'''
+
 import json
 import math
 from calendar import Calendar
@@ -117,15 +122,19 @@ class LogInScreen(Screen):
             self.ids.UsernameInput.text = ''
             self.ids.PasswordInput.text = ''
         else:
-            priv = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
-            if priv==2:
+            result = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
+            privilege = result["res"]
+            user_name = result["name"]
+            print("Welcome " + user_name)
+            if privilege == 2:
                 admin = True
                 self.manager.current = 'main'
-            elif priv==1:
+            elif privilege == 1:
                 self.manager.current = 'main'
             else:
                 #Vincent I need you to implement an in-app notif for this message
                 print("Login not found")
+                
 
 
 
@@ -142,7 +151,7 @@ class MainScreen(BaseScreen):
     def calendar_button_press(self):
         self.manager.current = 'calendar'
 
-    # Changes to "photos" screen
+    # Changes to "posts" screen
     def posts_button_press(self):
         self.manager.current = 'posts'
 
@@ -585,7 +594,7 @@ class Posts(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cols = 1
-        self.rows = 2
+        self.rows = 50
         self.ButtonCheckConnection = Button(text="Loading Button")
         self.ButtonCheckConnection.bind(on_press=self.start_load_thread)
         self.add_widget(self.ButtonCheckConnection)
@@ -594,8 +603,14 @@ class Posts(GridLayout):
         Thread(target=self.loadPosts, daemon=True).start()
     @mainthread
     def loadPosts(self, *_):
+        # Attempt to fetch latest posts from server if allowed
+        if not LOCAL:
+            p = open("posts.json", "w")
+            json.dump(client.getPosts(), p, indent=2)
+            p.close()
         p = open("posts.json")
         posts = json.load(p)
+        # Async draw in all posts
         for item in posts["posts"]:
                 print(item["url"])
                 self.add_widget(AsyncImage(source=item["url"]))
@@ -679,6 +694,7 @@ class ClubsList(BoxLayout):
           "Theatre Company",
           "Unified Sports",
           "Walking Club",
+          "Wii Club",
           "Wordsmithing Club",
           "Wounded Warrior Club",
           "Wreath Hawks",

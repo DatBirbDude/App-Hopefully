@@ -2,9 +2,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from urllib.parse import urlparse
-import insta
 
-insta.refresh()
+import insta
 
 hostName = "glitchtech.top"
 serverPort = 6
@@ -38,6 +37,10 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
+        if(p[0]=="/posts"):
+            postfile = open("posts.json")
+            postjson = json.load(postfile)
+            self.wfile.write(bytes(json.dumps(postjson), "utf-8"))
         if(p[0]=="/supersecret"):
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
 
