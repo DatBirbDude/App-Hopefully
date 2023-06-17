@@ -1,8 +1,8 @@
-# Python 3 server example
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import base62
 from urllib.parse import urlparse
+import os
 
 import insta
 
@@ -26,6 +26,7 @@ def handleImage(im_b62):
     outimage = open("upload.jpg", "wb")
     outimage.write(img_bytes)
     outimage.close()
+    os.system('cp upload.jpg /var/www/isvincent.gay/public_html/upload.jpg')
 
 class HopefullyServer(BaseHTTPRequestHandler):
 
@@ -52,9 +53,13 @@ class HopefullyServer(BaseHTTPRequestHandler):
             handleImage(im_b62)
             postfile = open("posts.json")
             postjson = json.load(postfile)
+            postfile.close()
             newpost = {"num": len(postjson["posts"]), "url": "none", "name": name, "author": author, "date": date, "desc": desc}
             postjson["posts"].append(newpost)
-            trypost = postjson
+            outjson = open("posts.json", "w")
+            json.dump(postjson, outjson, indent=2)
+            outjson.close()
+            trypost = {"success": 1}
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
         if(p[0]=="/posts"):
