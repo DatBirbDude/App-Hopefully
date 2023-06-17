@@ -3,7 +3,6 @@ import math
 from calendar import Calendar
 import calendar
 import datetime
-import requests
 
 import jicson
 import numpy
@@ -92,8 +91,8 @@ class BaseScreen(Screen):
 
         # Updating EventWidget in the .py file
         EventWidgets.size = Window.size
-        ListLayout.event_widgets.create_event_labels()
         ListLayout.event_widgets.update_canvas()
+        ListLayout.event_widgets.create_event_labels()
 
         ListLayout.day_nums_layout.update_canvas()
 
@@ -126,7 +125,6 @@ class LogInScreen(Screen):
             else:
                 #Vincent I need you to implement an in-app notif for this message
                 print("Login not found")
-
 
 
 # Screen with buttons to guide to every other screen
@@ -169,7 +167,6 @@ class SettingsScreen(BaseScreen):
             json.dump(bugs_file, result, indent=4)
 
         self.ids.BugInput.text = ''
-
 
 
 # Parent class with all necessary date information
@@ -294,36 +291,35 @@ class EventWidgets(Widget):
             # ^ Appends the event's summary and description (if they exist) ^
 
     def create_event_labels(self):
-        self.text_buffer_x = self.size[0] / 60
-        self.text_buffer_y = self.size[1] / 200
+        self.text_buffer_x = Window.size[0] / 60
+        self.text_buffer_y = Window.size[1] / 200
         self.event_cards = []
-        print(len(self.event_cards))
         for i in range(0, self.num_events):
             event_card = [Label(text=self.summaries[i],
-                                size=[self.size[0] * 9 / 10, self.size[1] / 20],
-                                text_size=[self.size[0] * 9 / 10, self.size[1] / 20],
+                                size=[Window.size[0] * 9 / 10, Window.size[1] / 20],
+                                text_size=[Window.size[0] * 9 / 10, Window.size[1] / 20],
                                 halign='left',
                                 valign='top',
-                                font_size=self.size[0] / 25,
+                                font_size=Window.size[0] / 25,
                                 color=(246 / 255, 232 / 255, 234 / 255, 1),
-                                pos=[self.size[0] / 20 + self.text_buffer_x,
-                                     self.size[1] * (6.7 / 10 - i / 5) - self.text_buffer_y]),
+                                pos=[Window.size[0] / 20 + self.text_buffer_x,
+                                     Window.size[1] * (6.7 / 10 - i / 5) - self.text_buffer_y]),
                           Label(text=self.descriptions[i],
-                                size=[self.size[0] * 9 / 10, self.size[1] / 40],
-                                text_size=[self.size[0] * 9 / 10 - 1.5 * self.text_buffer_x, self.size[1] / 20],
+                                size=[Window.size[0] * 9 / 10, Window.size[1] / 40],
+                                text_size=[Window.size[0] * 9 / 10 - 1.5 * self.text_buffer_x, Window.size[1] / 20],
                                 halign='left',
                                 valign='top',
-                                font_size=self.size[0] / 30,
+                                font_size=Window.size[0] / 30,
                                 color=(246 / 255, 232 / 255, 234 / 255, 1),
-                                pos=[self.size[0] / 20,
-                                     self.size[1] * (3 / 5 - i / 5) - self.text_buffer_y])]
+                                pos=[Window.size[0] / 20,
+                                     Window.size[1] * (3 / 5 - i / 5) - self.text_buffer_y])]
             self.event_cards.append(event_card)
         for i in range(0, self.num_events):
             for o in range(0, 2):
                 self.add_widget(self.event_cards[i][o])
 
+
     def set_events(self):
-        self.size = Window.size
         self.do_the_json()
         self.update_canvas()
         self.create_event_labels()
@@ -343,15 +339,15 @@ class EventWidgets(Widget):
             for i in range(0, self.num_events):
                 Color(34 / 255, 24 / 255, 28 / 255, 1)
 
-                RoundedRectangle(size=[self.size[0] * 9 / 10, self.size[1] / 6],
-                                 pos=[self.size[0] / 20, self.size[1] * (5 / 9 - i / 5)],
-                                 radius=(self.height / 20, self.height / 20))
+                RoundedRectangle(size=[Window.size[0] * 9 / 10, Window.size[1] / 6],
+                                 pos=[Window.size[0] / 20, Window.size[1] * (5 / 9 - i / 5)],
+                                 radius=(Window.height / 60, Window.height / 60))
 
                 Color(0, 0, 0, 1)  # 132/255, 220/255, 207/255, 1
 
-                Line(rounded_rectangle=[self.size[0] / 20, self.size[1] * (5 / 9 - i / 5),
-                                        self.size[0] * 9 / 10, self.size[1] / 6,
-                                        self.height / 20],
+                Line(rounded_rectangle=[Window.size[0] / 20, Window.size[1] * (5 / 9 - i / 5),
+                                        Window.size[0] * 9 / 10, Window.size[1] / 6,
+                                        Window.height / 60],
                      width=1,
                      close=True)
 
@@ -438,7 +434,6 @@ class MiniEventWidgets(Widget):
     def update_canvas(self):
 
         self.canvas.clear()
-        self.size = (280, 650)
 
         with self.canvas:
             for i in range(0, self.num_events):
@@ -555,9 +550,7 @@ class DayNumsLabels(Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.size = (100, 100)
         self.add_widget(self.box_layout)
-
 
 
 class ListLayout(CalendarInfo):
@@ -942,7 +935,7 @@ class AttendanceWidgets(Widget):
 log_in_screen: LogInScreen
 main_screen: MainScreen
 calendar_screen: CalendarScreen
-photos_screen: PhotosScreen
+photos_screen: PostsScreen
 clubs_screen_v2: ClubsScreenV2
 clubs_screen: ClubsScreen
 contact_screen: ContactScreen
@@ -995,6 +988,7 @@ class AppMaybe(MDApp):
 
 
 if __name__ == '__main__':
+
     '''
     in_file = jicson.fromFile('Calendar.ics')
     with open('Calendar.json', "w") as result:
