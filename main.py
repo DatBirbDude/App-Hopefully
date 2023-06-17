@@ -32,11 +32,10 @@ from kivymd.uix.card import MDCard
 # Sam's import lines below
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
-from kivy.logger import Logger
 from kivy.uix.scrollview import ScrollView
 import os
-import shutil
 from kivy.uix.image import Image, AsyncImage
+import base62
 from threading import Thread
 from kivy.clock import Clock
 from kivy.config import Config
@@ -52,8 +51,6 @@ admin = False
 
 # Everything that runs on the server is toggleable with this yay
 LOCAL=False
-
-#client.addPost("Welcome", "S", "Hi hello")
 
 # Thread decorator to be used to live update the app
 def mainthread(func):
@@ -598,15 +595,38 @@ class PostsScreen(BaseScreen):
         super().__init__(**kwargs)
         self.height = Window.height * 74 / 12
 
+class Filechooser(BoxLayout):
+    def select(self, *args):
+        try: self.label.text = args[1][0]
+        except: pass
 
 class Posts(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cols = 1
         self.rows = 50
-        self.ButtonCheckConnection = Button(text="Loading Button")
+        self.ButtonCheckConnection = Button(text="Get Posts")
         self.ButtonCheckConnection.bind(on_press=self.start_load_thread)
         self.add_widget(self.ButtonCheckConnection)
+        self.ButtonCheckConnection = Button(text="Add Post")
+        self.ButtonCheckConnection.bind(on_press=self.addPost)
+        self.add_widget(self.ButtonCheckConnection)
+    def addPost(self, *args):
+        def post(instance):
+            path = instance.content.label.text
+            if path != "":
+                client.addPost("Welcome", "S", "Hi hello", path)
+            return False
+
+
+
+        content = Filechooser()
+        popup = Popup(content=content, size_hint=(0.9, 0.9))
+        popup.bind(on_dismiss=post)
+        popup.open()
+
+
+        return
 
     def start_load_thread(self, *args):
         Thread(target=self.loadPosts, daemon=True).start()
