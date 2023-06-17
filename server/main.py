@@ -69,9 +69,13 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if(p[0]=="/supersecret"):
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
-        self.wfile.write(bytes("POST REQUEST HANDLED", "utf-8"))
+        #content_length = int(self.headers['Content-Length'])
+        #post_data = self.rfile.read(content_length)
+        self.send_response(200)
+        self.send_header("Content-type", "text/json")
+        self.end_headers()
+        status = {"status": "POST REQUEST HANDLED LIKE A PRO"}
+        self.wfile.write(bytes(json.dumps(status), "utf-8"))
 
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), HopefullyServer)
