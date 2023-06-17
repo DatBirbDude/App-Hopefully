@@ -23,7 +23,7 @@ def login(self, username, password):
     return ret
 
 class HopefullyServer(BaseHTTPRequestHandler):
-    
+
     def do_GET(self):
         p = self.path.split("?")
         #Refer to p[0] for get path
