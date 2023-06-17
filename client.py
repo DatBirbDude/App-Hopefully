@@ -1,4 +1,6 @@
 import requests
+import base62
+import datetime
 
 # If you don't see this, everything went wrong!
 print("The client helper is here!")
@@ -19,4 +21,30 @@ def signup(username, password, name):
     r = requests.get("http://glitchtech.top:6/signup", params={"username": username, "password": password, "name": name})
     req = r.json()
     print("Signup response: " + str(req))
+    return req
+
+def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
+    image_file = path
+    with open(image_file, "rb") as f:
+        im_bytes = f.read()
+    im_b62 = base62.encodebytes(im_bytes)
+
+    if date == "auto":
+        today = datetime.date.today()
+        year = today.year
+        month = today.month
+        day = today.day
+        if day < 10:
+            day = "0" + str(day)
+        if month < 10:
+            month = "0" + str(month)
+        date = str(month) + "-" + str(day) + "-" + str(year)
+        print(date)
+
+    print(im_b62)
+
+    r = requests.get("http://glitchtech.top:6/addpost", params={"img": im_b62, "title": title, "author": author, "desc": desc, "date": date})
+
+    req = r.json()
+    print(str(req))
     return req

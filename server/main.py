@@ -1,6 +1,7 @@
 # Python 3 server example
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import base62
 from urllib.parse import urlparse
 
 import insta
@@ -11,18 +12,23 @@ serverPort = 6
 def login(self, username, password):
     l = open('creds.json')
     logins = json.load(l)
-    ret = {"res": 0}
+    ret = {"res": 0, "name": "noname"}
     if username in logins['users']:
         if password == logins['users'][username]['Password']:
-            name = logins['users'][username]['Name']
+            ret["name"] = logins['users'][username]['Name']
             ret["res"] = 1
             if(logins['users'][username]['Admin']):
                 ret["res"] = 2
     l.close()
     return ret
+def handleImage(im_b62):
+    img_bytes = base62.decodebytes(im_b62)
+    outimage = open("upload.jpg", "wb")
+    outimage.write(img_bytes)
+    outimage.close()
 
 class HopefullyServer(BaseHTTPRequestHandler):
-    
+
     def do_GET(self):
         p = self.path.split("?")
         #Refer to p[0] for get path
@@ -37,6 +43,12 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
+        if(p[0]=="/addpost"):
+            im_b62 = query_components["img"]
+            handleImage(im_b62)
+            trypost = {"success": 1}
+            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
+
         if(p[0]=="/posts"):
             postfile = open("posts.json")
             postjson = json.load(postfile)
