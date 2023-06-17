@@ -12,10 +12,10 @@ serverPort = 6
 def login(self, username, password):
     l = open('creds.json')
     logins = json.load(l)
-    ret = {"res": 0}
+    ret = {"res": 0, "name": "noname"}
     if username in logins['users']:
         if password == logins['users'][username]['Password']:
-            name = logins['users'][username]['Name']
+            ret["name"] = logins['users'][username]['Name']
             ret["res"] = 1
             if(logins['users'][username]['Admin']):
                 ret["res"] = 2
