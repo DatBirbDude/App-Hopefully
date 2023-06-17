@@ -47,7 +47,7 @@ import client
 #Global variables that we use
 Config.set('graphics', 'resizable', 0)
 user_name = ''
-admin=False
+admin = False
 
 #Everything that runs on the server is toggleable with this yay
 LOCAL=False
