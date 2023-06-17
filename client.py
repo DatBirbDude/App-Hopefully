@@ -1,5 +1,5 @@
 import requests
-import base64
+import base62
 
 # If you don't see this, everything went wrong!
 print("The client helper is here!")
@@ -23,11 +23,13 @@ def signup(username, password, name):
     return req
 
 def addPost():
-    image_file = 'sample_image.png'
-
+    image_file = 'sample_image.jpg'
     with open(image_file, "rb") as f:
         im_bytes = f.read()
-    im_b64 = base64.b64encode(im_bytes).decode("utf8")
-    r = requests.get("http://glitchtech.top:6/addpost", params={"img": im_b64})
+    im_b62 = base62.encodebytes(im_bytes)
+    print(im_b62)
+
+    r = requests.get("http://glitchtech.top:6/addpost", params={"img": im_b62})
     req = r.json()
+    print(str(req))
     return req

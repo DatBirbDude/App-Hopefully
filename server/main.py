@@ -1,7 +1,11 @@
 # Python 3 server example
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+<<<<<<< HEAD
 import base64
+=======
+import base62
+>>>>>>> f4ef4bb3b3916a0b51ab4c85c18087dce157f850
 from urllib.parse import urlparse
 
 import insta
@@ -39,6 +43,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
         if(p[0]=="/addpost"):
+<<<<<<< HEAD
             im_b64 = query_components["img"]
             img_bytes = base64.b64decode(im_b64.encode('utf-8'))
             #outimage = open("upload.jpg", "wb")
@@ -46,6 +51,15 @@ class HopefullyServer(BaseHTTPRequestHandler):
             #outimage.close()
             trypost = {"success": 1}
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
+=======
+            im_b62 = query_components["img"]
+            img_bytes = base62.decodebytes(im_b62)
+            outimage = open("upload.jpg", "wb")
+            outimage.write(img_bytes)
+            outimage.close()
+            output = {"success": 1}
+            self.wfile.write(bytes(json.dumps(output)))
+>>>>>>> f4ef4bb3b3916a0b51ab4c85c18087dce157f850
 
         if(p[0]=="/posts"):
             postfile = open("posts.json")
