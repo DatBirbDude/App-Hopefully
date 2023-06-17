@@ -1,6 +1,7 @@
 # Python 3 server example
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import base62
 from urllib.parse import urlparse
 
 import insta
@@ -38,8 +39,8 @@ class HopefullyServer(BaseHTTPRequestHandler):
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
         if(p[0]=="/addpost"):
-            im_b64 = query_components["img"]
-            img_bytes = base64.b64decode(im_b64.encode('utf-8'))
+            im_b62 = query_components["img"]
+            img_bytes = base62.decodebytes(im_b62)
             outimage = open("upload.jpg", "wb")
             outimage.write(img_bytes)
             outimage.close()
