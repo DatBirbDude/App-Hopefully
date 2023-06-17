@@ -45,8 +45,16 @@ class HopefullyServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
         if(p[0]=="/addpost"):
             im_b62 = query_components["img"]
+            author = query_components["author"]
+            name = query_components["title"]
+            date = query_components["date"]
+            desc = query_components["desc"]
             handleImage(im_b62)
-            trypost = {"success": 1}
+            postfile = open("posts.json")
+            postjson = json.load(postfile)
+            newpost = {"num": len(postjson["posts"]), "url": "none", "name": name, "author": author, "date": date, "desc": desc}
+            postjson["posts"].append(newpost)
+            trypost = postjson
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
         if(p[0]=="/posts"):

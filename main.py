@@ -1,6 +1,6 @@
-''' To do:
-- Return name with /login request
-- Add instagram
+''' Sam's To do:
+- Add instagram ~ 50%
+- Add new posts
 '''
 
 import json
