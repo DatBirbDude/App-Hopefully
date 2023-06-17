@@ -49,12 +49,12 @@ Config.set('graphics', 'resizable', 0)
 user_name = ''
 admin = False
 
-#Everything that runs on the server is toggleable with this yay
+# Everything that runs on the server is toggleable with this yay
 LOCAL=False
 
-client.addPost()
+client.addPost("Welcome", "S", "Hi hello")
 
-#Thread decorator to be used to live update the app
+# Thread decorator to be used to live update the app
 def mainthread(func):
     def delayed_func(*args):
         def callback_func(dt):

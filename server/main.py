@@ -21,6 +21,11 @@ def login(self, username, password):
                 ret["res"] = 2
     l.close()
     return ret
+def handleImage(im_b62):
+    img_bytes = base62.decodebytes(im_b62)
+    outimage = open("upload.jpg", "wb")
+    outimage.write(img_bytes)
+    outimage.close()
 
 class HopefullyServer(BaseHTTPRequestHandler):
 
@@ -40,10 +45,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
         if(p[0]=="/addpost"):
             im_b62 = query_components["img"]
-            img_bytes = base62.decodebytes(im_b62)
-            outimage = open("upload.jpg", "wb")
-            outimage.write(img_bytes)
-            outimage.close()
+            handleImage(im_b62)
             trypost = {"success": 1}
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
