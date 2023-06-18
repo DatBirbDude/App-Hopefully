@@ -89,36 +89,24 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if (p[0] == "/addbug"):
             name = de(query_components["name"])
             bug = de(query_components["bug"])
-            bugfile = open("bugs.json")
-            bugjson = json.load(bugfile)
-            bugfile.close()
+            bugjson = jload("bugs.json")
             newbug = {"Name": name, "Bug": bug}
             bugjson.append(newbug)
-            outjson = open("bugs.json", "w")
-            json.dump(bugjson, outjson, indent=2)
-            outjson.close()
-            trybug = {"bug": newbug}
-            self.wfile.write(bytes(json.dumps(trybug), "utf-8"))
+            jwrite("bugs.json", bugjson)
+            self.wfile.write(bytes(json.dumps({"bug": newbug}), "utf-8"))
 
         if (p[0] == "/addnotice"):
             name = de(query_components["name"])
             noticetype = de(query_components["type"])
             date = de(query_components["date"])
             notes = de(query_components["notes"])
-            noticefile = open("notice.json")
-            noticejson = json.load(noticefile)
-            noticefile.close()
+            noticejson = jload("notice.json")
             newnotice = {"Name": name, "Type": noticetype, "Date": date, "Notes": notes}
             noticejson.append(newnotice)
-            outjson = open("notice.json", "w")
-            json.dump(noticejson, outjson, indent=2)
-            outjson.close()
-            trynotice = {"notice": newnotice}
-            self.wfile.write(bytes(json.dumps(trynotice), "utf-8"))
+            jwrite("notice.json", noticejson)
+            self.wfile.write(bytes(json.dumps({"notice": newnotice}), "utf-8"))
         if (p[0] == "/notices"):
-            noticefile = open("notice.json")
-            noticejson = json.load(noticefile)
-            self.wfile.write(bytes(json.dumps(noticejson), "utf-8"))
+            self.wfile.write(bytes(json.dumps(jload("notice.json")), "utf-8"))
 
         if(p[0]=="/addpost"):
             author = de(query_components["author"])
