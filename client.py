@@ -71,7 +71,7 @@ def addNotice(name, noticeType, notes, date="auto"):
     if date == "auto":
         date = getDate()
 
-    r = requests.get("http://glitchtech.top:6/addpost", params={
+    r = requests.get("http://glitchtech.top:6/addnotice", params={
         "name": en(name),
         "type": en(noticeType),
         "date": en(date),
