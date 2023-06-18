@@ -51,10 +51,10 @@ class HopefullyServer(BaseHTTPRequestHandler):
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
         if(p[0]=="/addpost"):
-            author = query_components["author"]
-            name = query_components["title"]
-            date = query_components["date"]
-            desc = query_components["desc"]
+            author = base62.decode(query_components["author"])
+            name = base62.decode(query_components["title"])
+            date = base62.decode(query_components["date"])
+            desc = base62.decode(query_components["desc"])
             postfile = open("posts.json")
             postjson = json.load(postfile)
             postfile.close()
