@@ -22,9 +22,9 @@ def login(self, username, password):
     l.close()
     return ret
 def handleImage(im_b62):
-    img_bytes = base62.decodebytes(im_b62)
+    #img_bytes = base62.decodebytes(im_b62)
     outimage = open("upload.jpg", "wb")
-    outimage.write(img_bytes)
+    outimage.write(im_b62)
     outimage.close()
     os.system('cp upload.jpg /var/www/isvincent.gay/public_html/upload.jpg')
 
@@ -44,6 +44,22 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
+        if(p[0]=="/addpost"):
+            author = query_components["author"]
+            name = query_components["title"]
+            date = query_components["date"]
+            desc = query_components["desc"]
+            postfile = open("posts.json")
+            postjson = json.load(postfile)
+            postfile.close()
+            newpost = {"num": len(postjson["posts"]), "url": "none", "name": name, "author": author, "date": date, "desc": desc}
+            postjson["posts"].append(newpost)
+            outjson = open("posts.json", "w")
+            json.dump(postjson, outjson, indent=2)
+            outjson.close()
+            trypost = {"success": 1}
+            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
+
         if(p[0]=="/posts"):
             postfile = open("posts.json")
             postjson = json.load(postfile)
@@ -60,22 +76,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/json")
         self.end_headers()
         if self.path == "/addpost":
-            im_b62 = query_components["img"]
-            author = query_components["author"]
-            name = query_components["title"]
-            date = query_components["date"]
-            desc = query_components["desc"]
-            handleImage(im_b62)
-            postfile = open("posts.json")
-            postjson = json.load(postfile)
-            postfile.close()
-            newpost = {"num": len(postjson["posts"]), "url": "none", "name": name, "author": author, "date": date, "desc": desc}
-            postjson["posts"].append(newpost)
-            outjson = open("posts.json", "w")
-            json.dump(postjson, outjson, indent=2)
-            outjson.close()
-            trypost = {"success": 1}
-            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
+            handleImage(post_data)
 
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), HopefullyServer)
