@@ -111,6 +111,7 @@ def refresh(num =True, url =True, name =True, author =True, date =True, desc =Tr
 
 def add(desc):
     media = cl.photo_upload("upload.jpg", desc)
+    refresh()
     return str(media)
 
 
