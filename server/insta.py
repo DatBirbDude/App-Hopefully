@@ -66,14 +66,16 @@ def refresh(num =True, url =True, name =True, author =True, date =True, desc =Tr
     postfile = open("posts.json")
     postjson = json.load(postfile)
     oldposts = postjson["posts"]
-    newposts = [{}]
+    newposts = []
     postfile.close()
     c = 0
     for item in posts:
         m = item.dict()
         l = len(oldposts) > c
-        n = newposts[c]
-        o = oldposts[c]
+        if l:
+            o = oldposts[c]
+        n = {}
+
         if l and num:
             n["num"] = o["num"]
         else:
@@ -100,6 +102,7 @@ def refresh(num =True, url =True, name =True, author =True, date =True, desc =Tr
         else:
             n["desc"] = m["caption_text"]
         c = c + 1
+        newposts.append(n)
     outjson = open("posts.json", "w")
     postsdict = {"posts": newposts}
     json.dump(postsdict, outjson, indent=2)
