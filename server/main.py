@@ -36,6 +36,17 @@ def inIndex(list, target):
 def de(input):
     return base62.decodebytes(input).decode("utf-8")
 
+def jwrite(file, outjson):
+    outfile = open(file, "w")
+    json.dump(outjson, outfile, indent=2)
+    outfile.close()
+
+def jload(file):
+    jfile = open(file)
+    jdict = json.load(jfile)
+    jfile.close()
+    return jdict
+
 class HopefullyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -47,34 +58,30 @@ class HopefullyServer(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/json")
         self.end_headers()
+
         if(p[0]=="/login"):
             username = query_components["username"]
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
+
         if (p[0] == "/signup"):
             username = de(query_components["username"])
             password = de(query_components["password"])
             name = de(query_components["name"])
-            credfile = open("creds.json")
-            logins = json.load(credfile)
-            credfile.close()
+            logins = jload("creds.json")
             newuser = {"Password": password, "Name": name, "Admin": False}
             logins["users"][username] = newuser
-            outjson = open("creds.json", "w")
-            json.dump(logins, outjson, indent=2)
-            outjson.close()
-            trysignup = {"new user": newuser}
-            self.wfile.write(bytes(json.dumps(trysignup), "utf-8"))
+            jwrite("creds.json", logins)
+            self.wfile.write(bytes(json.dumps({"new user": newuser}), "utf-8"))
 
         if(p[0]=="/refresh"):
             insta.refresh()
             self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
 
         if (p[0] == "/bugs"):
-            bugfile = open("bugs.json")
-            bugjson = json.load(bugfile)
-            self.wfile.write(bytes(json.dumps(bugjson), "utf-8"))
+            self.wfile.write(bytes(json.dumps(jload("bugs.json")), "utf-8"))
+
         if (p[0] == "/addbug"):
             name = de(query_components["name"])
             bug = de(query_components["bug"])
