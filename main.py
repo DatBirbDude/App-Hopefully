@@ -50,7 +50,7 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL=False
+LOCAL = False
 
 # Thread decorator to be used to live update the app
 def mainthread(func):
