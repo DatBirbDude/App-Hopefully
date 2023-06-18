@@ -62,7 +62,7 @@ print("Instagram bot standing by")
 # These flags correspond to preference for checking Instagram over local, True=Local | False=Instagram,
 # only use for emergency data correction please
 def refresh(num =True, url =True, name =True, author =True, date =True, desc =True):
-    posts = cl.user_medias(user_id=60300809689, amount=20)
+    posts = cl.user_medias(user_id=60300809689, amount=50)
     postfile = open("posts.json")
     postjson = json.load(postfile)
     oldposts = postjson["posts"]
