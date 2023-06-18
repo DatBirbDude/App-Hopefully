@@ -41,7 +41,7 @@ def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
         date = str(month) + "-" + str(day) + "-" + str(year)
         print(date)
 
-    print(im_b62)
+    #print(im_b62)
     postkey = {"img": im_b62, "title": title, "author": author, "desc": desc, "date": date}
     r = requests.post("http://glitchtech.top:6/addpost", postkey)
 
