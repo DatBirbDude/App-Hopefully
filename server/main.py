@@ -55,6 +55,26 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if(p[0]=="/refresh"):
             insta.refresh()
             self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
+        if(p[0]=="/addnotice"):
+            name = de(query_components["name"])
+            noticetype = de(query_components["type"])
+            date = de(query_components["date"])
+            notes = de(query_components["notes"])
+            noticefile = open("notice.json")
+            noticejson = json.load(noticefile)
+            noticefile.close()
+            newnotice = {"Name": name, "Type": noticetype, "Date": date, "Notes": notes}
+            noticejson.append(newnotice)
+            outjson = open("notice.json", "w")
+            json.dump(noticejson, outjson, indent=2)
+            outjson.close()
+            trypost = {"notice": newnotice}
+            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
+        if (p[0] == "/notices"):
+            noticefile = open("notice.json")
+            noticejson = json.load(noticefile)
+            self.wfile.write(bytes(json.dumps(noticejson), "utf-8"))
+
         if(p[0]=="/addpost"):
             author = de(query_components["author"])
             name = de(query_components["title"])
@@ -68,7 +88,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             outjson = open("posts.json", "w")
             json.dump(postjson, outjson, indent=2)
             outjson.close()
-            trypost = {"media": insta.add(desc), "new": newpost}
+            trypost = {"media": insta.add(desc), "post": newpost}
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
         if(p[0]=="/posts"):

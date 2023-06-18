@@ -839,13 +839,14 @@ class ContactScreen(BaseScreen):
                     ':' + str(self.minute),
             'Notes': self.ids.Notes.text
         }
-
-        temp = open('Notices.json')
-        notices = json.load(temp)
-        notices.append(temp_dict)
-        with open('Notices.json', "w") as result:
-            json.dump(notices, result, indent=4)
-
+        if LOCAL:
+            temp = open('Notices.json')
+            notices = json.load(temp)
+            notices.append(temp_dict)
+            with open('Notices.json', "w") as result:
+                json.dump(notices, result, indent=4)
+        else:
+            client.addNotice(temp_dict["Name"], temp_dict["Type"], temp_dict["Date"], temp_dict["Notes"])
         self.ids.Notes.text = ''
 
 
@@ -931,6 +932,10 @@ class AttendanceWidgets(Widget):
         self.generate_reports()
 
     def generate_reports(self):
+        if not LOCAL:
+            p = open("Notices.json", "w")
+            json.dump(client.getNotices(), p, indent=2)
+            p.close()
 
         temp = open('Notices.json')
         notices_list = json.load(temp)

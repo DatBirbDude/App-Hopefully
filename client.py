@@ -17,15 +17,27 @@ def login(username, password):
     print("Login response: " + str(req))
     return req
 
-def getPosts():
-    r = requests.get("http://glitchtech.top:6/posts")
-    req = r.json()
-    return req
-
 def signup(username, password, name):
     r = requests.get("http://glitchtech.top:6/signup", params={"username": username, "password": password, "name": name})
     req = r.json()
     print("Signup response: " + str(req))
+    return req
+
+def getDate():
+    today = datetime.date.today()
+    year = today.year
+    month = today.month
+    day = today.day
+    if day < 10:
+        day = "0" + str(day)
+    if month < 10:
+        month = "0" + str(month)
+    date = str(month) + "-" + str(day) + "-" + str(year)
+    return date
+
+def getPosts():
+    r = requests.get("http://glitchtech.top:6/posts")
+    req = r.json()
     return req
 
 def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
@@ -36,22 +48,34 @@ def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
     print(str(req))
 
     if date == "auto":
-        today = datetime.date.today()
-        year = today.year
-        month = today.month
-        day = today.day
-        if day < 10:
-            day = "0" + str(day)
-        if month < 10:
-            month = "0" + str(month)
-        date = str(month) + "-" + str(day) + "-" + str(year)
-        print(date)
+        date = getDate()
 
     r = requests.get("http://glitchtech.top:6/addpost", params={
         "title": en(title),
         "author": en(author),
         "desc": en(desc),
         "date": en(date)})
+
+    req = r.json()
+    print(str(req))
+    return req
+
+
+def getNotices():
+    r = requests.get("http://glitchtech.top:6/notices")
+    req = r.json()
+    return req
+
+
+def addNotice(name, noticeType, notes, date="auto"):
+    if date == "auto":
+        date = getDate()
+
+    r = requests.get("http://glitchtech.top:6/addpost", params={
+        "name": en(name),
+        "type": en(noticeType),
+        "date": en(date),
+        "notes": en(notes)})
 
     req = r.json()
     print(str(req))
