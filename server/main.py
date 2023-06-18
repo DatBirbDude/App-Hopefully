@@ -71,12 +71,13 @@ class HopefullyServer(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
+        datajson = post_data.decode('utf-8')
         self.send_response(200)
         self.send_header("Content-type", "text/json")
         self.end_headers()
         status = {"status": self.path}
         if self.path == "/addpost":
-            self.wfile.write(bytes(json.dumps(post_data), "utf-8"))
+            self.wfile.write(bytes(json.dumps(datajson), "utf-8"))
 
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), HopefullyServer)
