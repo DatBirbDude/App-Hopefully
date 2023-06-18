@@ -69,14 +69,14 @@ class HopefullyServer(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        query = post_data.decode("utf-8")
-        if (len(query) > 0):
-            query_components = dict(qc.split("=") for qc in query.split("&"))
+        #query = post_data.decode("utf-8")
+        #if (len(query) > 0):
+        #    query_components = dict(qc.split("=") for qc in query.split("&"))
         self.send_response(200)
         self.send_header("Content-type", "text/json")
         self.end_headers()
         if self.path == "/addpost":
-            #handleImage(post_data)
+            handleImage(post_data)
             trypost = {"success": 1}
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
