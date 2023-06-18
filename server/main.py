@@ -71,7 +71,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = de(query_components["password"])
             newuser = {"Password": "NOT FOUND", "Name": "NOT FOUND", "Admin": False}
 
-            if login(username, password) < 1:
+            if login(username, password)["res"] < 1:
                 name = de(query_components["name"])
                 logins = jload("creds.json")
                 newuser = {"Password": password, "Name": name, "Admin": False}

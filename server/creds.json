@@ -1,11 +1,11 @@
 {
- "users": {
+  "users": {
     "L": {
       "Password": "C",
       "Name": "Lev Carter",
       "Admin": false
     },
-   "V": {
+    "V": {
       "Password": "B",
       "Name": "Vincent Barilaro",
       "Admin": true
@@ -14,6 +14,11 @@
       "Password": "T",
       "Name": "Samuel Tibbs",
       "Admin": true
+    },
+    "B": {
+      "Password": "S",
+      "Name": "Ben Shamah",
+      "Admin": false
     }
-  } 
+  }
 }
