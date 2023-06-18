@@ -124,8 +124,6 @@ def add(desc):
     return str(media)
 
 
-refresh()
-
 ''' Instagram user_medias() format breakdown
 [
     Media(
