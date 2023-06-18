@@ -55,7 +55,26 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if(p[0]=="/refresh"):
             insta.refresh()
             self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
-        if(p[0]=="/addnotice"):
+
+        if (p[0] == "/bugs"):
+            bugfile = open("bugs.json")
+            bugjson = json.load(bugfile)
+            self.wfile.write(bytes(json.dumps(bugjson), "utf-8"))
+        if (p[0] == "/addbug"):
+            name = de(query_components["name"])
+            bug = de(query_components["bug"])
+            bugfile = open("bugs.json")
+            bugjson = json.load(bugfile)
+            bugfile.close()
+            newbug = {"Name": name, "Bug": bug}
+            bugjson.append(newbug)
+            outjson = open("bugs.json", "w")
+            json.dump(bugjson, outjson, indent=2)
+            outjson.close()
+            trybug = {"bug": newbug}
+            self.wfile.write(bytes(json.dumps(trybug), "utf-8"))
+
+        if (p[0] == "/addnotice"):
             name = de(query_components["name"])
             noticetype = de(query_components["type"])
             date = de(query_components["date"])
@@ -68,9 +87,8 @@ class HopefullyServer(BaseHTTPRequestHandler):
             outjson = open("notice.json", "w")
             json.dump(noticejson, outjson, indent=2)
             outjson.close()
-            trypost = {"notice": newnotice}
-            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
-
+            trynotice = {"notice": newnotice}
+            self.wfile.write(bytes(json.dumps(trynotice), "utf-8"))
         if (p[0] == "/notices"):
             noticefile = open("notice.json")
             noticejson = json.load(noticefile)

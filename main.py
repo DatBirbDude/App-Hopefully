@@ -180,11 +180,14 @@ class SettingsScreen(BaseScreen):
             'Bug': self.ids.BugInput.text
         }
 
-        temp = open('Bugs.json')
-        bugs_file = json.load(temp)
-        bugs_file.append(new_bug_report)
-        with open('Bugs.json', "w") as result:
-            json.dump(bugs_file, result, indent=4)
+        if LOCAL:
+            temp = open('Bugs.json')
+            bugs_file = json.load(temp)
+            bugs_file.append(new_bug_report)
+            with open('Bugs.json', "w") as result:
+                json.dump(bugs_file, result, indent=4)
+        else:
+            client.addBug(new_bug_report["Name"], new_bug_report["Bug"])
 
         self.ids.BugInput.text = ''
 
@@ -862,6 +865,11 @@ class BugWidgets(Widget):
         self.generate_reports()
 
     def generate_reports(self):
+        if not LOCAL:
+            p = open("Bugs.json", "w")
+            json.dump(client.getBugs(), p, indent=2)
+            p.close()
+
 
         temp = open('Bugs.json')
         bugs_list = json.load(temp)

@@ -80,3 +80,18 @@ def addNotice(name, noticeType, notes, date="auto"):
     req = r.json()
     print(str(req))
     return req
+
+def getBugs():
+    r = requests.get("http://glitchtech.top:6/bugs")
+    req = r.json()
+    return req
+
+
+def addBug(name, bug):
+    r = requests.get("http://glitchtech.top:6/addbug", params={
+        "name": en(name),
+        "bug": en(bug)})
+
+    req = r.json()
+    print(str(req))
+    return req
