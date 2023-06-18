@@ -77,7 +77,6 @@ class HopefullyServer(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/json")
         self.end_headers()
-        status = {"status": self.path}
         if self.path == "/addpost":
             im_b62 = query_components["img"]
             author = query_components["author"]
@@ -95,7 +94,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             json.dump(postjson, outjson, indent=2)
             outjson.close()
             trypost = {"success": 1}
-            self.wfile.write(bytes(json.dumps(postjson), "utf-8"))
+            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), HopefullyServer)
