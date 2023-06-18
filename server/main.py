@@ -64,7 +64,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             json.dump(postjson, outjson, indent=2)
             outjson.close()
             trypost = {"success": 1}
-            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
+            self.wfile.write(bytes(json.dumps(newpost), "utf-8"))
 
         if(p[0]=="/posts"):
             postfile = open("posts.json")
