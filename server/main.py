@@ -52,6 +52,21 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
+        if (p[0] == "/signup"):
+            username = de(query_components["username"])
+            password = de(query_components["password"])
+            name = de(query_components["name"])
+            credfile = open("creds.json")
+            logins = json.load(credfile)
+            credfile.close()
+            newuser = {"Password": password, "Name": name, "Admin": False}
+            logins["users"][username] = newuser
+            outjson = open("creds.json", "w")
+            json.dump(logins, outjson, indent=2)
+            outjson.close()
+            trybug = {"new user": newuser}
+            self.wfile.write(bytes(json.dumps(trybug), "utf-8"))
+
         if(p[0]=="/refresh"):
             insta.refresh()
             self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))

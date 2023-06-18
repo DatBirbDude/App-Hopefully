@@ -1,6 +1,14 @@
 [
-    {
-        "Name": "Vincent Barilaro",
-        "Bug": "There are no bugs, this app is perfect"
-    }
+  {
+    "Name": "Vincent Barilaro",
+    "Bug": "There are no bugs, this app is perfect"
+  },
+  {
+    "Name": "Samuel Tibbs",
+    "Bug": "Help the bugs API might have bugs"
+  },
+  {
+    "Name": "Samuel Tibbs",
+    "Bug": "Where did this report go?"
+  }
 ]
