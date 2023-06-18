@@ -28,6 +28,12 @@ def handleImage(im_b62):
     outimage.close()
     os.system('cp upload.jpg /var/www/isvincent.gay/public_html/upload.jpg')
 
+def inIndex(list, target):
+    for i in list:
+        if i == target:
+            return True
+    return False
+
 class HopefullyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -71,7 +77,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length)
         #POST requests requiring decode should be put here
         decode = []
-        if decode.index(self.path):
+        if inIndex(decode, self.path):
             query = post_data.decode("utf-8")
             if (len(query) > 0):
                 query_components = dict(qc.split("=") for qc in query.split("&"))
