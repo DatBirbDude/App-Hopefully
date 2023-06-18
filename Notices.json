@@ -1,14 +1,20 @@
 [
-    {
-        "Name": "Sam Tibbs",
-        "Type": "Absence",
-        "Date": "4/18/2023",
-        "Notes": "Busy making a stellar app for FBLA"
-    },
-    {
-        "Name": "Samuel Tibbs",
-        "Type": "Late Arrival",
-        "Date": "2023/6/12-10:30",
-        "Notes": "Sam slept in on the last day, he is sorry."
-    }
+  {
+    "Name": "Sam Tibbs",
+    "Type": "Absence",
+    "Date": "4/18/2023",
+    "Notes": "Busy making a stellar app for FBLA"
+  },
+  {
+    "Name": "Samuel Tibbs",
+    "Type": "Late Arrival",
+    "Date": "2023/6/12-10:30",
+    "Notes": "Sam slept in on the last day, he is sorry."
+  },
+  {
+    "Name": "Samuel Tibbs",
+    "Type": "Late Arrival",
+    "Date": "2023/6/20-10:30",
+    "Notes": "Forgot to sleep after writing the backend for this app"
+  }
 ]

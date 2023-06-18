@@ -70,6 +70,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             outjson.close()
             trypost = {"notice": newnotice}
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
+
         if (p[0] == "/notices"):
             noticefile = open("notice.json")
             noticejson = json.load(noticefile)
