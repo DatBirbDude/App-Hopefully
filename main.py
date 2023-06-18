@@ -52,8 +52,6 @@ admin = False
 # Everything that runs on the server is toggleable with this yay
 LOCAL=False
 
-client.signup("B", "S", "Ben Shamah")
-
 # Thread decorator to be used to live update the app
 def mainthread(func):
     def delayed_func(*args):
@@ -152,13 +150,14 @@ class LogInScreen(Screen):
             privilege = result["res"]
             user_name = result["name"]
             print("Welcome " + user_name)
-            if privilege == 2:
+            if privilege == 3:
                 admin = True
                 self.manager.current = 'calendar'
-            elif privilege == 1:
+            elif privilege == 2:
                 self.manager.current = 'calendar'
             else:
                 # Vincent I need you to implement an in-app notif for this message
+                # privilege 1: Password incorrect, privilege 0: username not found
                 print("Login not found")
 
 

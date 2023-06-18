@@ -9,18 +9,7 @@ import insta
 hostName = "glitchtech.top"
 serverPort = 6
 
-def login(self, username, password):
-    l = open('creds.json')
-    logins = json.load(l)
-    ret = {"res": 0, "name": "noname"}
-    if username in logins['users']:
-        if password == logins['users'][username]['Password']:
-            ret["name"] = logins['users'][username]['Name']
-            ret["res"] = 1
-            if(logins['users'][username]['Admin']):
-                ret["res"] = 2
-    l.close()
-    return ret
+
 def handleImage(img):
     outimage = open("upload.jpg", "wb")
     outimage.write(img)
@@ -47,6 +36,18 @@ def jload(file):
     jfile.close()
     return jdict
 
+def login(username, password):
+    logins = jload("creds.json")
+    ret = {"res": 0, "name": "noname"}
+    if username in logins['users']:
+        ret["res"] = 1
+        if password == logins['users'][username]['Password']:
+            ret["name"] = logins['users'][username]['Name']
+            ret["res"] = 2
+            if(logins['users'][username]['Admin']):
+                ret["res"] = 3
+    return ret
+
 class HopefullyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -62,17 +63,20 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if(p[0]=="/login"):
             username = query_components["username"]
             password = query_components["password"]
-            output = login(self, username, password)
+            output = login(username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
 
         if (p[0] == "/signup"):
             username = de(query_components["username"])
             password = de(query_components["password"])
-            name = de(query_components["name"])
-            logins = jload("creds.json")
-            newuser = {"Password": password, "Name": name, "Admin": False}
-            logins["users"][username] = newuser
-            jwrite("creds.json", logins)
+            newuser = {"Password": "NOT FOUND", "Name": "NOT FOUND", "Admin": False}
+
+            if login(username, password) < 1:
+                name = de(query_components["name"])
+                logins = jload("creds.json")
+                newuser = {"Password": password, "Name": name, "Admin": False}
+                logins["users"][username] = newuser
+                jwrite("creds.json", logins)
             self.wfile.write(bytes(json.dumps({"new user": newuser}), "utf-8"))
 
         if(p[0]=="/refresh"):
