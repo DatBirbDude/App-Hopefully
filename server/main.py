@@ -52,6 +52,9 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
+        if(p[0]=="/refresh"):
+            insta.refresh()
+            self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
         if(p[0]=="/addpost"):
             author = de(query_components["author"])
             name = de(query_components["title"])
