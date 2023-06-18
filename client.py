@@ -29,9 +29,6 @@ def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
          r = requests.post('http://glitchtech.top:6/addpost', data=f)
     req = r.json()
     print(str(req))
-    #with open(image_file, "rb") as f:
-    #    im_bytes = f.read()
-    #im_b62 = base62.encodebytes(im_bytes)
 
     if date == "auto":
         today = datetime.date.today()
@@ -45,7 +42,6 @@ def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
         date = str(month) + "-" + str(day) + "-" + str(year)
         print(date)
 
-    #print(im_b62)
     #r = requests.get("http://glitchtech.top:6/addpost", params={"title": title, "author": author, "desc": desc, "date": date})
 
     #req = r.json()
