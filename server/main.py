@@ -44,24 +44,6 @@ class HopefullyServer(BaseHTTPRequestHandler):
             password = query_components["password"]
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
-        if(p[0]=="/addpost"):
-            im_b62 = query_components["img"]
-            author = query_components["author"]
-            name = query_components["title"]
-            date = query_components["date"]
-            desc = query_components["desc"]
-            handleImage(im_b62)
-            postfile = open("posts.json")
-            postjson = json.load(postfile)
-            postfile.close()
-            newpost = {"num": len(postjson["posts"]), "url": "none", "name": name, "author": author, "date": date, "desc": desc}
-            postjson["posts"].append(newpost)
-            outjson = open("posts.json", "w")
-            json.dump(postjson, outjson, indent=2)
-            outjson.close()
-            trypost = {"success": 1}
-            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
-
         if(p[0]=="/posts"):
             postfile = open("posts.json")
             postjson = json.load(postfile)
@@ -87,8 +69,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             postfile = open("posts.json")
             postjson = json.load(postfile)
             postfile.close()
-            newpost = {"num": len(postjson["posts"]), "url": "none", "name": name, "author": author, "date": date,
-                       "desc": desc}
+            newpost = {"num": len(postjson["posts"]), "url": "none", "name": name, "author": author, "date": date, "desc": desc}
             postjson["posts"].append(newpost)
             outjson = open("posts.json", "w")
             json.dump(postjson, outjson, indent=2)
