@@ -52,6 +52,8 @@ admin = False
 # Everything that runs on the server is toggleable with this yay
 LOCAL=False
 
+client.signup("B", "S", "Ben Shamah")
+
 # Thread decorator to be used to live update the app
 def mainthread(func):
     def delayed_func(*args):

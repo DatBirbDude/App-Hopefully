@@ -64,8 +64,8 @@ class HopefullyServer(BaseHTTPRequestHandler):
             outjson = open("creds.json", "w")
             json.dump(logins, outjson, indent=2)
             outjson.close()
-            trybug = {"new user": newuser}
-            self.wfile.write(bytes(json.dumps(trybug), "utf-8"))
+            trysignup = {"new user": newuser}
+            self.wfile.write(bytes(json.dumps(trysignup), "utf-8"))
 
         if(p[0]=="/refresh"):
             insta.refresh()

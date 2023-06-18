@@ -18,7 +18,9 @@ def login(username, password):
     return req
 
 def signup(username, password, name):
-    r = requests.get("http://glitchtech.top:6/signup", params={"username": username, "password": password, "name": name})
+    r = requests.get("http://glitchtech.top:6/signup", params={"username": en(username),
+                                                               "password": en(password),
+                                                               "name": en(name)})
     req = r.json()
     print("Signup response: " + str(req))
     return req
