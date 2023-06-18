@@ -74,7 +74,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/json")
         self.end_headers()
-        status = {"status": "POST REQUEST HANDLED LIKE A PRO"}
+        status = {"status": self.path}
         self.wfile.write(bytes(json.dumps(status), "utf-8"))
 
 if __name__ == "__main__":        
