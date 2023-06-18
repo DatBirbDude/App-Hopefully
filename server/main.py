@@ -76,7 +76,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/json")
         self.end_headers()
         if self.path == "/addpost":
-            handleImage(post_data)
+            #handleImage(post_data)
             trypost = {"success": 1}
             self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 

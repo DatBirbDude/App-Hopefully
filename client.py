@@ -26,7 +26,9 @@ def signup(username, password, name):
 def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
     image_file = path
     with open(image_file, 'rb') as f:
-        requests.post('http://glitchtech.top:6/addpost', data=f)
+         r = requests.post('http://glitchtech.top:6/addpost', data=f)
+    req = r.json()
+    print(str(req))
     #with open(image_file, "rb") as f:
     #    im_bytes = f.read()
     #im_b62 = base62.encodebytes(im_bytes)
@@ -44,8 +46,8 @@ def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
         print(date)
 
     #print(im_b62)
-    r = requests.get("http://glitchtech.top:6/addpost", params={"title": title, "author": author, "desc": desc, "date": date})
+    #r = requests.get("http://glitchtech.top:6/addpost", params={"title": title, "author": author, "desc": desc, "date": date})
 
-    req = r.json()
-    print(str(req))
+    #req = r.json()
+    #print(str(req))
     return req
