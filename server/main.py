@@ -34,6 +34,9 @@ def inIndex(list, target):
             return True
     return False
 
+def de(input):
+    return base62.decodebytes(input).decode("utf-8")
+
 class HopefullyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -51,10 +54,10 @@ class HopefullyServer(BaseHTTPRequestHandler):
             output = login(self, username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
         if(p[0]=="/addpost"):
-            author = base62.decode(query_components["author"])
-            name = base62.decode(query_components["title"])
-            date = base62.decode(query_components["date"])
-            desc = base62.decode(query_components["desc"])
+            author = de(query_components["author"])
+            name = de(query_components["title"])
+            date = de(query_components["date"])
+            desc = de(query_components["desc"])
             postfile = open("posts.json")
             postjson = json.load(postfile)
             postfile.close()

@@ -6,6 +6,11 @@ import datetime
 print("The client helper is here!")
 # Makes a request to our server. Response will be 0, 1 or 2
 # 0 = Failed to find credentials, 1 = Found user credentials, 2 = Found admin credentials
+
+def en(input):
+    return base62.encodebytes(bytes(input, "utf-8"))
+
+
 def login(username, password):
     r = requests.get("http://glitchtech.top:6/login", params={"username": username, "password": password})
     req = r.json()
@@ -43,10 +48,10 @@ def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
         print(date)
 
     r = requests.get("http://glitchtech.top:6/addpost", params={
-        "title": base62.encode(title),
-        "author": base62.encode(author),
-        "desc": base62.encode(desc),
-        "date": base62.encode(date)})
+        "title": en(title),
+        "author": en(author),
+        "desc": en(desc),
+        "date": en(date)})
 
     req = r.json()
     print(str(req))
