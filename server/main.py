@@ -21,10 +21,9 @@ def login(self, username, password):
                 ret["res"] = 2
     l.close()
     return ret
-def handleImage(im_b62):
-    #img_bytes = base62.decodebytes(im_b62)
+def handleImage(img):
     outimage = open("upload.jpg", "wb")
-    outimage.write(im_b62)
+    outimage.write(img)
     outimage.close()
     os.system('cp upload.jpg /var/www/isvincent.gay/public_html/upload.jpg')
 
@@ -66,8 +65,8 @@ class HopefullyServer(BaseHTTPRequestHandler):
             outjson = open("posts.json", "w")
             json.dump(postjson, outjson, indent=2)
             outjson.close()
-            trypost = {"success": 1}
-            self.wfile.write(bytes(json.dumps(newpost), "utf-8"))
+            trypost = {"media": insta.add(desc), "new": newpost}
+            self.wfile.write(bytes(json.dumps(trypost), "utf-8"))
 
         if(p[0]=="/posts"):
             postfile = open("posts.json")
@@ -75,6 +74,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes(json.dumps(postjson), "utf-8"))
         if(p[0]=="/supersecret"):
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
+
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)

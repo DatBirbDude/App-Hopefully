@@ -5,8 +5,11 @@ import logging
 
 logger = logging.getLogger()
 cl = Client()
-USERNAME="aacps.star.light"
-PASSWORD="vincentsucks"
+
+cl.delay_range = [1, 3]
+
+USERNAME = "aacps.star.light"
+PASSWORD = "vincentsucks"
 
 def login_user():
     """
@@ -103,8 +106,9 @@ def refresh(num =True, url =True, name =True, author =True, date =True, desc =Tr
     outjson.close()
 
 
-def add(author, name, desc):
-    return
+def add(desc):
+    media = cl.photo_upload("upload.jpg", desc)
+    return str(media)
 
 
 refresh()
