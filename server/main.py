@@ -75,7 +75,7 @@ class HopefullyServer(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/json")
         self.end_headers()
         status = {"status": self.path}
-        if self.path = "/addpost":
+        if self.path == "/addpost":
             self.wfile.write(bytes(json.dumps(post_data), "utf-8"))
 
 if __name__ == "__main__":        
