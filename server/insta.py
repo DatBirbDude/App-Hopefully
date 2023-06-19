@@ -5,8 +5,11 @@ import logging
 
 logger = logging.getLogger()
 cl = Client()
-USERNAME="aacps.star.light"
-PASSWORD="vincentsucks"
+
+cl.delay_range = [1, 3]
+
+USERNAME = "aacps.star.light"
+PASSWORD = "vincentsucks"
 
 def login_user():
     """
@@ -58,19 +61,30 @@ print("Instagram bot standing by")
 
 # These flags correspond to preference for checking Instagram over local, True=Local | False=Instagram,
 # only use for emergency data correction please
+
+def flop(list):
+    newList = []
+    for item in list:
+        newList.insert(0, item)
+    return newList
+
 def refresh(num =True, url =True, name =True, author =True, date =True, desc =True):
-    posts = cl.user_medias(user_id=60300809689, amount=20)
+    posts = cl.user_medias(user_id=60300809689, amount=50)
+    # Instagram sends posts from newest to oldest, we want the opposite, so we flop the list
+    posts = flop(posts)
     postfile = open("posts.json")
     postjson = json.load(postfile)
     oldposts = postjson["posts"]
-    newposts = [{}]
+    newposts = []
     postfile.close()
     c = 0
     for item in posts:
         m = item.dict()
         l = len(oldposts) > c
-        n = newposts[c]
-        o = oldposts[c]
+        if l:
+            o = oldposts[c]
+        n = {}
+
         if l and num:
             n["num"] = o["num"]
         else:
@@ -97,17 +111,18 @@ def refresh(num =True, url =True, name =True, author =True, date =True, desc =Tr
         else:
             n["desc"] = m["caption_text"]
         c = c + 1
+        newposts.append(n)
     outjson = open("posts.json", "w")
     postsdict = {"posts": newposts}
     json.dump(postsdict, outjson, indent=2)
     outjson.close()
 
 
-def add(author, name, desc):
-    return
+def add(desc):
+    media = cl.photo_upload("upload.jpg", desc)
+    refresh()
+    return str(media)
 
-
-refresh()
 
 ''' Instagram user_medias() format breakdown
 [

@@ -1,6 +1,6 @@
-''' To do:
-- Return name with /login request
-- Add instagram
+''' Sam's To do:
+- Add instagram ~ 50%
+- Add new posts
 '''
 
 '''
@@ -41,11 +41,10 @@ from kivymd.uix.card import MDCard
 # Sam's import lines below
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
-from kivy.logger import Logger
 from kivy.uix.scrollview import ScrollView
 import os
-import shutil
 from kivy.uix.image import Image, AsyncImage
+import base62
 from threading import Thread
 from kivy.clock import Clock
 from kivy.config import Config
@@ -60,10 +59,7 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL = True
-
-if not LOCAL:
-    client.addPost("Welcome", "S", "Hi hello")
+LOCAL = False
 
 
 # Thread decorator to be used to live update the app
@@ -159,13 +155,14 @@ class LogInScreen(Screen):
             privilege = result["res"]
             user_name = result["name"]
             print("Welcome " + user_name)
-            if privilege == 2:
+            if privilege == 3:
                 admin = True
                 self.manager.current = 'calendar'
-            elif privilege == 1:
+            elif privilege == 2:
                 self.manager.current = 'calendar'
             else:
                 # Vincent I need you to implement an in-app notif for this message
+                # privilege 1: Password incorrect, privilege 0: username not found
                 print("Login not found")
 
 
@@ -180,11 +177,14 @@ class SettingsScreen(BaseScreen):
             'Bug': self.ids.BugInput.text
         }
 
-        temp = open('Bugs.json')
-        bugs_file = json.load(temp)
-        bugs_file.append(new_bug_report)
-        with open('Bugs.json', "w") as result:
-            json.dump(bugs_file, result, indent=4)
+        if LOCAL:
+            temp = open('Bugs.json')
+            bugs_file = json.load(temp)
+            bugs_file.append(new_bug_report)
+            with open('Bugs.json', "w") as result:
+                json.dump(bugs_file, result, indent=4)
+        else:
+            client.addBug(new_bug_report["Name"], new_bug_report["Bug"])
 
         self.ids.BugInput.text = ''
 
@@ -597,15 +597,38 @@ class PostsScreen(BaseScreen):
         super().__init__(**kwargs)
         self.height = Window.height * 74 / 12
 
+class Filechooser(BoxLayout):
+    def select(self, *args):
+        try: self.label.text = args[1][0]
+        except: pass
 
 class Posts(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cols = 1
         self.rows = 50
-        self.ButtonCheckConnection = Button(text="Loading Button")
+        self.ButtonCheckConnection = Button(text="Get Posts")
         self.ButtonCheckConnection.bind(on_press=self.start_load_thread)
         self.add_widget(self.ButtonCheckConnection)
+        self.ButtonCheckConnection = Button(text="Add Post")
+        self.ButtonCheckConnection.bind(on_press=self.addPost)
+        self.add_widget(self.ButtonCheckConnection)
+    def addPost(self, *args):
+        def post(instance):
+            path = instance.content.label.text
+            if path != "":
+                client.addPost("Welcome", "S", "Hi hello", path)
+            return False
+
+
+
+        content = Filechooser()
+        popup = Popup(content=content, size_hint=(0.9, 0.9))
+        popup.bind(on_dismiss=post)
+        popup.open()
+
+
+        return
 
     def start_load_thread(self, *args):
         Thread(target=self.loadPosts, daemon=True).start()
@@ -827,13 +850,14 @@ class ContactScreen(BaseScreen):
                     ':' + str(self.minute),
             'Notes': self.ids.Notes.text
         }
-
-        temp = open('Notices.json')
-        notices = json.load(temp)
-        notices.append(temp_dict)
-        with open('Notices.json', "w") as result:
-            json.dump(notices, result, indent=4)
-
+        if LOCAL:
+            temp = open('Notices.json')
+            notices = json.load(temp)
+            notices.append(temp_dict)
+            with open('Notices.json', "w") as result:
+                json.dump(notices, result, indent=4)
+        else:
+            client.addNotice(temp_dict["Name"], temp_dict["Type"], temp_dict["Date"], temp_dict["Notes"])
         self.ids.Notes.text = ''
 
 
@@ -853,6 +877,11 @@ class BugWidgets(GridLayout):
         self.generate_reports()
 
     def generate_reports(self):
+        if not LOCAL:
+            p = open("Bugs.json", "w")
+            json.dump(client.getBugs(), p, indent=2)
+            p.close()
+
 
         temp = open('Bugs.json')
         bugs_list = json.load(temp)
@@ -938,6 +967,10 @@ class AttendanceWidgets(GridLayout):
         self.generate_reports()
 
     def generate_reports(self):
+        if not LOCAL:
+            p = open("Notices.json", "w")
+            json.dump(client.getNotices(), p, indent=2)
+            p.close()
 
         temp = open('Notices.json')
         notices_list = json.load(temp)
