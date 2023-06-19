@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Lib/site-packages/win32" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Lib/site-packages/win32/lib" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (App-Hopefully)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

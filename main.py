@@ -3,6 +3,15 @@
 - Add new posts
 '''
 
+'''
+Vincent To do:
+- Sign up screen
+- Post Screen
+- Other post screen
+- Incorrect Login Notif
+- Fix Sizing Issues
+'''
+
 import json
 import math
 from calendar import Calendar
@@ -52,6 +61,7 @@ admin = False
 # Everything that runs on the server is toggleable with this yay
 LOCAL = False
 
+
 # Thread decorator to be used to live update the app
 def mainthread(func):
     def delayed_func(*args):
@@ -77,10 +87,6 @@ class BaseScreen(Screen):
     def settings_button_press(self):
         self.manager.transition.direction = 'left'
         self.manager.current = 'settings'
-
-    # Changes to the "main" screen
-    def back_button_press(self):
-        self.manager.current = 'main'
 
     # Changes to "calendar" screen
     def calendar_button_press(self):
@@ -116,10 +122,9 @@ class BaseScreen(Screen):
 
         ListLayout.day_nums_layout.update_canvas()
 
-        BugWidgets.size = Window.size
-        AdminSettings.bug_widgets.text_buffer_x = Window.size[0] / 40
-        AdminSettings.bug_widgets.text_buffer_y = Window.size[1] / 200
-        AdminSettings.bug_widgets.generate_reports()
+        BugWidgetsScroll.bug_widgets.text_buffer_x = Window.size[0] / 40
+        BugWidgetsScroll.bug_widgets.text_buffer_y = Window.size[1] / 200
+        BugWidgetsScroll.bug_widgets.generate_reports()
 
         AttendanceWidgets.size = Window.size
         AdminContactScreen.attendance_widgets.text_buffer_x = Window.size[0] / 40
@@ -133,7 +138,7 @@ class LogInScreen(Screen):
     global user_name
     global admin
 
-    # Changes to "main" screen if the user logs in with valid credentials (in Credentials.json)
+    # Changes to "calendar" screen if the user logs in with valid credentials (in Credentials.json)
     def check_login(self):
         global user_name
         global admin
@@ -161,15 +166,6 @@ class LogInScreen(Screen):
                 print("Login not found")
 
 
-# Screen with buttons to guide to every other screen
-class MainScreen(BaseScreen):
-    # Creates buffer variable, which is changed based on the size of the screen
-    buffer = (Window.height + Window.width) / 80
-
-    def on_size(self, instance, value):
-        self.buffer = int(value[0] + value[1]) / 80
-
-
 # Screen that allows for bug reports and logging out
 class SettingsScreen(BaseScreen):
 
@@ -191,6 +187,8 @@ class SettingsScreen(BaseScreen):
             client.addBug(new_bug_report["Name"], new_bug_report["Bug"])
 
         self.ids.BugInput.text = ''
+
+        BugWidgetsScroll.bug_widgets.generate_reports()
 
 
 # Parent class with all necessary date information
@@ -653,7 +651,10 @@ class Posts(GridLayout):
 # End Sam breaking things
 
 
-class ClubsList(BoxLayout):
+class ClubsList(GridLayout):
+    cols = 1
+    size_hint_y = None
+    pos_hint = {'center_x': 0.5, 'center_y': 0.5}
 
     clubs_list = [
         "Adventure Club",
@@ -740,9 +741,10 @@ class ClubsList(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.minimum_height = self.size[1]
-        self.add_widget(Label(text='Clubs:',
+        self.add_widget(Label(text='Clubs at SRHS:',
                               font_size=Window.size[1] / 35,
                               size_hint=(1, None),
+                              pos_hint={'center_x': 0.5, 'center_y': 0.5},
                               height=Window.size[1] / 6,
                               font_name='Fonts/Vogue.ttf',
                               color=(0.1, 0.1, 0.1, 1)
@@ -751,6 +753,9 @@ class ClubsList(BoxLayout):
             self.add_widget(Label(text=self.clubs_list[i],
                                   font_size=Window.size[1] / 50,
                                   size_hint=(1, None),
+                                  pos_hint={'center_x': 0.5, 'center_y': 0.5},
+                                  halign='center',
+                                  valign='center',
                                   height=Window.size[1] / 12,
                                   text_size=[Window.size[0] / 2, Window.size[1] / 12],
                                   color=(0.1, 0.1, 0.1, 1)
@@ -760,7 +765,8 @@ class ClubsList(BoxLayout):
             Color(0.1, 0.1, 0.1, 1)
 
             for i in range(0, len(self.clubs_list)):
-                Line(rectangle=[Window.size[0] / 20, Window.size[1] * i / 12, Window.size[0] * 9 / 10, Window.size[1] / 12])
+                Line(rectangle=[Window.size[0] / 20, Window.size[1] * i / 12, Window.size[0] * 9 / 10,
+                                Window.size[1] / 12])
 
 
 class ClubsScreen(BaseScreen):
@@ -768,12 +774,13 @@ class ClubsScreen(BaseScreen):
 
 
 class ClubsScrollView(MDScrollView):
-
     clubs_list = ClubsList()
+    clubs_list.bind(minimum_height=clubs_list.setter('height'))
     size_hint_y = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.add_widget(self.clubs_list)
 
 
 class ContactScreen(BaseScreen):
@@ -854,14 +861,18 @@ class ContactScreen(BaseScreen):
         self.ids.Notes.text = ''
 
 
-class BugWidgets(Widget):
+class BugWidgets(GridLayout):
+    cols = 1
+    size_hint_y = None
+    pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+    spacing = (0, Window.height / 30)
+    padding = [0, Window.height / 50, 0, 0]
     text_buffer_x = 0
     text_buffer_y = 0
 
     def __init__(self, **kwargs):
-        self.size = Window.size
-        self.text_buffer_x = self.width / 40
-        self.text_buffer_y = self.height / 200
+        self.text_buffer_x = Window.width / 40
+        self.text_buffer_y = Window.height / 200
         super().__init__(**kwargs)
         self.generate_reports()
 
@@ -875,6 +886,9 @@ class BugWidgets(Widget):
         temp = open('Bugs.json')
         bugs_list = json.load(temp)
 
+        self.size = (Window.width, Window.height * len(bugs_list) / 5)
+
+        self.clear_widgets()
         self.create_bug_cards(bugs_list)
         self.create_bug_labels(bugs_list)
 
@@ -884,52 +898,64 @@ class BugWidgets(Widget):
 
         with self.canvas:
             for i in range(len(file)):
-                Color(255/255, 185/255, 245/255, 1)
+                Color(255 / 255, 185 / 255, 245 / 255, 1)
 
                 RoundedRectangle(size=[Window.width * 9 / 10, Window.height / 6],
-                                 pos=[Window.width / 20, Window.height * (5 / 9 - i / 5)],
-                                 radius=(Window.height / 20, Window.height / 20))
+                                 pos=[Window.width / 20, self.height - Window.height * (1/6 + i / 5)],
+                                 radius=(Window.height / 60, Window.height / 60))
 
                 Color(0.1, 0.1, 0.1, 1)
 
-                Line(rounded_rectangle=[Window.size[0] / 20, Window.size[1] * (5 / 9 - i / 5),
+                Line(rounded_rectangle=[Window.size[0] / 20, self.height - Window.height * (1/6 + i / 5),
                                         Window.size[0] * 9 / 10, Window.size[1] / 6,
-                                        Window.height / 20],
+                                        Window.height / 60],
                      width=1,
                      close=True)
 
     def create_bug_labels(self, file):
         for i in range(len(file)):
-            self.add_widget(Label(text='Sent by: ' + file[i]['Name'],
-                                  size=[Window.size[0] * 8 / 10, Window.size[1] / 20],
-                                  text_size=[Window.size[0] * 8 / 10 - 2 * self.text_buffer_x, Window.size[1] / 20],
-                                  halign='left',
-                                  valign='top',
-                                  font_size=Window.size[0] / 22.5,
-                                  color=(246 / 255, 232 / 255, 234 / 255, 1),
-                                  pos=[Window.size[0] / 10,
-                                       Window.size[1] * (6.6 / 10 - i / 5) - self.text_buffer_y]))
-            self.add_widget(Label(text=file[i]['Bug'],
-                                  size=[Window.size[0] * 8 / 10, Window.size[1] / 40],
-                                  text_size=[Window.size[0] * 8 / 10 - 1.5 * self.text_buffer_x, Window.size[1] / 20],
-                                  halign='left',
-                                  valign='top',
-                                  font_size=Window.size[0] / 25,
-                                  color=(246 / 255, 232 / 255, 234 / 255, 1),
-                                  pos=[Window.size[0] / 10,
-                                       Window.size[1] * (6.4 / 10 - i / 5) - self.text_buffer_y]))
+            grid_layout = GridLayout(cols=1, spacing=(0, Window.height / 50), size_hint_y=None, height=Window.height / 6)
+            grid_layout.add_widget(Label(text='Sent by: ' + file[i]['Name'],
+                                         size_hint=(0.8, .2),
+                                         pos_hint={'left': 0, 'center_y': 0.5},
+                                         text_size=[Window.size[0] * 8 / 10 - 2 * self.text_buffer_x,
+                                                    Window.size[1] / 30],
+                                         halign='left',
+                                         valign='top',
+                                         font_size=Window.size[0] / 22.5,
+                                         color=(.1, .1, .1, 1)))
+            grid_layout.add_widget(Label(text=file[i]['Bug'],
+                                         size_hint=(0.8, .8),
+                                         pos_hint={'center_x': 0.5, 'top': 0},
+                                         text_size=[Window.size[0] * 8 / 10 - 1.5 * self.text_buffer_x,
+                                                    Window.size[1] * 2 / 15],
+                                         halign='left',
+                                         valign='top',
+                                         font_size=Window.size[0] / 25,
+                                         color=(.1, .1, .1, 1)))
+            self.add_widget(grid_layout)
 
 
 class AdminSettings(BaseScreen):
+    pass
 
+
+class BugWidgetsScroll(ScrollView):
     bug_widgets = BugWidgets()
+    bug_widgets.bind(minimum_height=bug_widgets.setter('height'))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.bug_widgets)
 
 
-class AttendanceWidgets(Widget):
+class AttendanceWidgets(GridLayout):
+
+    cols = 1
+    size_hint_y = None
+    pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+    spacing = (0, Window.height / 30)
+    padding = [0, Window.height / 50, 0, 0]
     text_buffer_x = 0
     text_buffer_y = 0
 
@@ -956,17 +982,17 @@ class AttendanceWidgets(Widget):
 
         with self.canvas:
             for i in range(len(file)):
-                Color(255/255, 185/255, 245/255, 1)
+                Color(255 / 255, 185 / 255, 245 / 255, 1)
 
                 RoundedRectangle(size=[Window.width * 9 / 10, Window.height / 6],
                                  pos=[Window.width / 20, Window.height * (5 / 9 - i / 5)],
-                                 radius=(Window.height / 20, Window.height / 20))
+                                 radius=(Window.height / 60, Window.height / 60))
 
                 Color(0.1, 0.1, 0.1, 1)
 
                 Line(rounded_rectangle=[Window.size[0] / 20, Window.size[1] * (5 / 9 - i / 5),
                                         Window.size[0] * 9 / 10, Window.size[1] / 6,
-                                        Window.height / 20],
+                                        Window.height / 60],
                      width=1,
                      close=True)
 
@@ -1002,7 +1028,6 @@ class AdminContactScreen(BaseScreen):
 
 
 log_in_screen: LogInScreen
-main_screen: MainScreen
 calendar_screen: CalendarScreen
 photos_screen: PostsScreen
 clubs_screen: ClubsScreen
@@ -1020,7 +1045,6 @@ class AppMaybe(MDApp):
         sm = ScreenManager()
 
         global log_in_screen
-        global main_screen
         global calendar_screen
         global photos_screen
         global photos_screen
@@ -1031,7 +1055,6 @@ class AppMaybe(MDApp):
         global contact_screen
 
         log_in_screen = LogInScreen(name='log_in')
-        main_screen = MainScreen(name='main')
         calendar_screen = CalendarScreen(name='calendar')
         posts_screen = PostsScreen(name='posts')
         clubs_screen = ClubsScreen(name='clubs')
@@ -1041,7 +1064,6 @@ class AppMaybe(MDApp):
         admin_contact = AdminContactScreen(name='admin_contact')
 
         sm.add_widget(log_in_screen)
-        sm.add_widget(main_screen)
         sm.add_widget(calendar_screen)
         sm.add_widget(posts_screen)
         sm.add_widget(clubs_screen)
