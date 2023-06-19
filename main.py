@@ -1,10 +1,10 @@
-''' Sam's To do:
+""" Sam's To do:
 - Finish readme
 - Test builds
 - Add instructions
 - Forge planning documents
 - Discord?
-'''
+"""
 
 '''
 Vincent To do:
@@ -45,9 +45,7 @@ from kivymd.uix.card import MDCard
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
-import os
 from kivy.uix.image import Image, AsyncImage
-import base62
 from threading import Thread
 from kivy.clock import Clock
 from kivy.config import Config
@@ -588,7 +586,7 @@ class ListLayout(CalendarInfo):
         self.add_widget(self.day_nums_labels)
 
 
-# The next class is a sample from official kivy documentation, don't touch it or it will break everything
+# The next class is a sample from official kivy documentation, don't touch it, or it will break everything
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
@@ -638,7 +636,7 @@ class Posts(GridLayout):
 
     @mainthread
     def loadPosts(self, *_):
-        # Attempt to fetch latest posts from server if allowed
+        # Attempt to fetch the latest posts from server if allowed
         if not LOCAL:
             p = open("posts.json", "w")
             json.dump(client.getPosts(), p, indent=2)
