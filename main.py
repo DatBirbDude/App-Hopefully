@@ -92,10 +92,6 @@ class BaseScreen(Screen):
         self.manager.transition.direction = 'left'
         self.manager.current = 'settings'
 
-    # Changes to the "main" screen
-    def back_button_press(self):
-        self.manager.current = 'main'
-
     # Changes to "calendar" screen
     def calendar_button_press(self):
         self.manager.current = 'calendar'
@@ -146,7 +142,7 @@ class LogInScreen(Screen):
     global user_name
     global admin
 
-    # Changes to "main" screen if the user logs in with valid credentials (in Credentials.json)
+    # Changes to "calendar" screen if the user logs in with valid credentials (in Credentials.json)
     def check_login(self):
         global user_name
         global admin
@@ -171,15 +167,6 @@ class LogInScreen(Screen):
             else:
                 # Vincent I need you to implement an in-app notif for this message
                 print("Login not found")
-
-
-# Screen with buttons to guide to every other screen
-class MainScreen(BaseScreen):
-    # Creates buffer variable, which is changed based on the size of the screen
-    buffer = (Window.height + Window.width) / 80
-
-    def on_size(self, instance, value):
-        self.buffer = int(value[0] + value[1]) / 80
 
 
 # Screen that allows for bug reports and logging out
@@ -933,7 +920,13 @@ class BugWidgetsScroll(ScrollView):
         self.add_widget(self.bug_widgets)
 
 
-class AttendanceWidgets(Widget):
+class AttendanceWidgets(GridLayout):
+
+    cols = 1
+    size_hint_y = None
+    pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+    spacing = (0, Window.height / 30)
+    padding = [0, Window.height / 50, 0, 0]
     text_buffer_x = 0
     text_buffer_y = 0
 
@@ -1002,7 +995,6 @@ class AdminContactScreen(BaseScreen):
 
 
 log_in_screen: LogInScreen
-main_screen: MainScreen
 calendar_screen: CalendarScreen
 photos_screen: PostsScreen
 clubs_screen: ClubsScreen
@@ -1020,7 +1012,6 @@ class AppMaybe(MDApp):
         sm = ScreenManager()
 
         global log_in_screen
-        global main_screen
         global calendar_screen
         global photos_screen
         global photos_screen
@@ -1031,7 +1022,6 @@ class AppMaybe(MDApp):
         global contact_screen
 
         log_in_screen = LogInScreen(name='log_in')
-        main_screen = MainScreen(name='main')
         calendar_screen = CalendarScreen(name='calendar')
         posts_screen = PostsScreen(name='posts')
         clubs_screen = ClubsScreen(name='clubs')
@@ -1041,7 +1031,6 @@ class AppMaybe(MDApp):
         admin_contact = AdminContactScreen(name='admin_contact')
 
         sm.add_widget(log_in_screen)
-        sm.add_widget(main_screen)
         sm.add_widget(calendar_screen)
         sm.add_widget(posts_screen)
         sm.add_widget(clubs_screen)
