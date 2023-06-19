@@ -1,6 +1,9 @@
 ''' Sam's To do:
-- Add instagram ~ 50%
-- Add new posts
+- Finish readme
+- Test builds
+- Add instructions
+- Forge planning documents
+- Discord?
 '''
 
 import json
