@@ -128,9 +128,9 @@ class BaseScreen(Screen):
         BugWidgetsScroll.bug_widgets.generate_reports()
 
         AttendanceWidgets.size = Window.size
-        AdminContactScreen.attendance_widgets.text_buffer_x = Window.size[0] / 40
-        AdminContactScreen.attendance_widgets.text_buffer_y = Window.size[1] / 200
-        AdminContactScreen.attendance_widgets.generate_reports()
+        AttendanceScroll.attendance_widgets.text_buffer_x = Window.size[0] / 40
+        AttendanceScroll.attendance_widgets.text_buffer_y = Window.size[1] / 200
+        AttendanceScroll.attendance_widgets.generate_reports()
 
 
 # Log In Screen (Screen appears directly after opening app
@@ -165,6 +165,10 @@ class LogInScreen(Screen):
                 # Vincent I need you to implement an in-app notif for this message
                 # privilege 1: Password incorrect, privilege 0: username not found
                 print("Login not found")
+
+
+class SignUpScreen(Screen):
+    pass
 
 
 # Screen that allows for bug reports and logging out
@@ -598,10 +602,14 @@ class PostsScreen(BaseScreen):
         super().__init__(**kwargs)
         self.height = Window.height * 74 / 12
 
+
 class Filechooser(BoxLayout):
     def select(self, *args):
-        try: self.label.text = args[1][0]
-        except: pass
+        try:
+            self.label.text = args[1][0]
+        except:
+            pass
+
 
 class Posts(GridLayout):
     def __init__(self, **kwargs):
@@ -614,6 +622,7 @@ class Posts(GridLayout):
         self.ButtonCheckConnection = Button(text="Add Post")
         self.ButtonCheckConnection.bind(on_press=self.addPost)
         self.add_widget(self.ButtonCheckConnection)
+
     def addPost(self, *args):
         def post(instance):
             path = instance.content.label.text
@@ -621,13 +630,10 @@ class Posts(GridLayout):
                 client.addPost("Welcome", "S", "Hi hello", path)
             return False
 
-
-
         content = Filechooser()
         popup = Popup(content=content, size_hint=(0.9, 0.9))
         popup.bind(on_dismiss=post)
         popup.open()
-
 
         return
 
@@ -883,7 +889,6 @@ class BugWidgets(GridLayout):
             json.dump(client.getBugs(), p, indent=2)
             p.close()
 
-
         temp = open('Bugs.json')
         bugs_list = json.load(temp)
 
@@ -902,12 +907,12 @@ class BugWidgets(GridLayout):
                 Color(255 / 255, 185 / 255, 245 / 255, 1)
 
                 RoundedRectangle(size=[Window.width * 9 / 10, Window.height / 6],
-                                 pos=[Window.width / 20, self.height - Window.height * (1/6 + i / 5)],
+                                 pos=[Window.width / 20, self.height - Window.height * (1 / 6 + i / 5)],
                                  radius=(Window.height / 60, Window.height / 60))
 
                 Color(0.1, 0.1, 0.1, 1)
 
-                Line(rounded_rectangle=[Window.size[0] / 20, self.height - Window.height * (1/6 + i / 5),
+                Line(rounded_rectangle=[Window.size[0] / 20, self.height - Window.height * (1 / 6 + i / 5),
                                         Window.size[0] * 9 / 10, Window.size[1] / 6,
                                         Window.height / 60],
                      width=1,
@@ -915,7 +920,8 @@ class BugWidgets(GridLayout):
 
     def create_bug_labels(self, file):
         for i in range(len(file)):
-            grid_layout = GridLayout(cols=1, spacing=(0, Window.height / 50), size_hint_y=None, height=Window.height / 6)
+            grid_layout = GridLayout(cols=1, spacing=(0, Window.height / 50), size_hint_y=None,
+                                     height=Window.height / 6)
             grid_layout.add_widget(Label(text='Sent by: ' + file[i]['Name'],
                                          size_hint=(0.8, .2),
                                          pos_hint={'left': 0, 'center_y': 0.5},
@@ -951,7 +957,6 @@ class BugWidgetsScroll(ScrollView):
 
 
 class AttendanceWidgets(GridLayout):
-
     cols = 1
     size_hint_y = None
     pos_hint = {'center_x': 0.5, 'center_y': 0.5}
@@ -981,54 +986,69 @@ class AttendanceWidgets(GridLayout):
 
     def create_attendance_cards(self, file):
 
+        self.canvas.clear()
+
         with self.canvas:
             for i in range(len(file)):
                 Color(255 / 255, 185 / 255, 245 / 255, 1)
 
                 RoundedRectangle(size=[Window.width * 9 / 10, Window.height / 6],
-                                 pos=[Window.width / 20, Window.height * (5 / 9 - i / 5)],
+                                 pos=[Window.width / 20, self.height - Window.height * (1 / 6 + i / 5)],
                                  radius=(Window.height / 60, Window.height / 60))
 
                 Color(0.1, 0.1, 0.1, 1)
 
-                Line(rounded_rectangle=[Window.size[0] / 20, Window.size[1] * (5 / 9 - i / 5),
+                Line(rounded_rectangle=[Window.size[0] / 20, self.height - Window.height * (1 / 6 + i / 5),
                                         Window.size[0] * 9 / 10, Window.size[1] / 6,
                                         Window.height / 60],
                      width=1,
                      close=True)
 
     def create_attendance_labels(self, file):
+
+        self.clear_widgets()
+
         for i in range(len(file)):
-            self.add_widget(
+            grid_layout = GridLayout(cols=1, spacing=(0, Window.height / 50), size_hint_y=None,
+                                     height=Window.height / 6)
+            grid_layout.add_widget(
                 Label(text='Sent by: ' + file[i]['Name'] + '   ' + file[i]['Date'] + '   ' + file[i]['Type'],
-                      size=[Window.size[0] * 8 / 10, Window.size[1] / 20],
-                      text_size=[Window.size[0] * 7.5 / 10 - 2 * self.text_buffer_x, Window.size[1] / 20],
+                      size_hint=(0.8, .2),
+                      pos_hint={'left': 0, 'center_y': 0.5},
+                      text_size=[Window.size[0] * 8 / 10 - 2 * self.text_buffer_x,
+                                 Window.size[1] / 30],
                       halign='left',
                       valign='top',
                       font_size=Window.size[0] / 22.5,
-                      color=(0.1, 0.1, 0.1, 1),
-                      pos=[Window.size[0] / 10,
-                           Window.size[1] * (6.6 / 10 - i / 5) - self.text_buffer_y]))
-            self.add_widget(Label(text=file[i]['Notes'],
-                                  size=[Window.size[0] * 8 / 10, Window.size[1] / 40],
-                                  text_size=[Window.size[0] * 8 / 10 - 1.5 * self.text_buffer_x, Window.size[1] / 20],
-                                  halign='left',
-                                  valign='top',
-                                  font_size=Window.size[0] / 25,
-                                  color=(0.1, 0.1, 0.1, 1),
-                                  pos=[Window.size[0] / 10,
-                                       Window.size[1] * (6.1 / 10 - i / 5) - self.text_buffer_y]))
+                      color=(.1, .1, .1, 1)))
+            grid_layout.add_widget(Label(text=file[i]['Notes'],
+                                         size_hint=(0.8, .8),
+                                         pos_hint={'center_x': 0.5, 'top': 0},
+                                         text_size=[Window.size[0] * 8 / 10 - 1.5 * self.text_buffer_x,
+                                                    Window.size[1] * 2 / 15],
+                                         halign='left',
+                                         valign='top',
+                                         font_size=Window.size[0] / 25,
+                                         color=(.1, .1, .1, 1)))
+
+            self.add_widget(grid_layout)
 
 
-class AdminContactScreen(BaseScreen):
+class AttendanceScroll(ScrollView):
     attendance_widgets = AttendanceWidgets()
+    attendance_widgets.bind(minimum_height=attendance_widgets.setter('height'))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.attendance_widgets)
 
 
+class AdminContactScreen(BaseScreen):
+    pass
+
+
 log_in_screen: LogInScreen
+sign_up_screen: SignUpScreen
 calendar_screen: CalendarScreen
 photos_screen: PostsScreen
 clubs_screen: ClubsScreen
@@ -1046,6 +1066,7 @@ class AppMaybe(MDApp):
         sm = ScreenManager()
 
         global log_in_screen
+        global sign_up_screen
         global calendar_screen
         global photos_screen
         global photos_screen
@@ -1056,6 +1077,7 @@ class AppMaybe(MDApp):
         global contact_screen
 
         log_in_screen = LogInScreen(name='log_in')
+        sign_up_screen = SignUpScreen(name='sign_up')
         calendar_screen = CalendarScreen(name='calendar')
         posts_screen = PostsScreen(name='posts')
         clubs_screen = ClubsScreen(name='clubs')
@@ -1065,6 +1087,7 @@ class AppMaybe(MDApp):
         admin_contact = AdminContactScreen(name='admin_contact')
 
         sm.add_widget(log_in_screen)
+        sm.add_widget(sign_up_screen)
         sm.add_widget(calendar_screen)
         sm.add_widget(posts_screen)
         sm.add_widget(clubs_screen)
