@@ -19,6 +19,11 @@
       "Password": "S",
       "Name": "Ben Shamah",
       "Admin": false
+    },
+    "I": {
+      "Password": "L",
+      "Name": "Ivan Lott",
+      "Admin": false
     }
   }
 }
