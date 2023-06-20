@@ -168,7 +168,23 @@ class LogInScreen(Screen):
 
 
 class SignUpScreen(Screen):
-    pass
+    def user_signup(self):
+        if LOCAL:
+            self.manager.current = 'login'
+            print("Signup only available with server enabled.")
+        else:
+            result = client.signup(self.ids.NewUsernameInput.text, self.ids.NewPasswordInput.text, self.ids.Name.text)
+            #Error mimics privilege, but we are looking for users with unique usernames and passwords this time
+            error = result["error"]
+            user_name = result["new_user"]["Name"]
+            print("Welcome " + user_name)
+            if privilege < 1:
+                self.manager.current = 'login'
+            else:
+                # Vincent I need you to implement an in-app notif for this message
+                # error 3: Admin creds, error 2: User creds, error 1: Username dupe, error 0: signup success
+                # Omit to all to one error to prevent brute-forcing attempts
+                print("Login not found")
 
 
 # Screen that allows for bug reports and logging out

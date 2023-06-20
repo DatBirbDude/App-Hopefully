@@ -343,6 +343,9 @@
                 size_hint: 0.6, None
                 height: root.height / 20
                 pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+                on_press:
+                    root.manager.transition.direction = 'right'
+                    root.signup_user()
 
             Label:
 

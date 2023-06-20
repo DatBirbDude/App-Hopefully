@@ -86,14 +86,14 @@ class HopefullyServer(BaseHTTPRequestHandler):
             username = de(query_components["username"])
             password = de(query_components["password"])
             new_user = {"Password": "NOT FOUND", "Name": "NOT FOUND", "Admin": False}
-
-            if login(username, password)["res"] < 1:
+            privilege = login(username, password)["res"]
+            if privilege < 1:
                 name = de(query_components["name"])
                 logins = jload("creds.json")
                 new_user = {"Password": password, "Name": name, "Admin": False}
                 logins["users"][username] = new_user
                 jwrite("creds.json", logins)
-            self.wfile.write(bytes(json.dumps({"new user": new_user}), "utf-8"))
+            self.wfile.write(bytes(json.dumps({"new user": new_user, "error": privilege}), "utf-8"))
 
         if p == "/refresh":
             insta.refresh()
