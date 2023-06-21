@@ -59,7 +59,7 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL = False
+LOCAL = True
 
 
 # Thread decorator to be used to live update the app
@@ -99,6 +99,9 @@ class BaseScreen(Screen):
     # Changes to "clubs" screen
     def clubs_button_press(self):
         self.manager.current = 'clubs'
+
+    def add_post_button_press(self):
+        self.manager.current = 'add_post'
 
     # Function to change properties when size is changed <-- when on earth would a phone change size?
     @staticmethod
@@ -599,7 +602,6 @@ class PostsScreen(BaseScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.height = Window.height * 74 / 12
 
 
 class Filechooser(BoxLayout):
@@ -611,30 +613,13 @@ class Filechooser(BoxLayout):
 
 
 class Posts(GridLayout):
+
+    cols = 1
+    size_hint_y = None
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.cols = 1
-        self.rows = 50
-        self.ButtonCheckConnection = Button(text="Get Posts")
-        self.ButtonCheckConnection.bind(on_press=self.start_load_thread)
-        self.add_widget(self.ButtonCheckConnection)
-        self.ButtonCheckConnection = Button(text="Add Post")
-        self.ButtonCheckConnection.bind(on_press=self.addPost)
-        self.add_widget(self.ButtonCheckConnection)
-
-    def addPost(self, *args):
-        def post(instance):
-            path = instance.content.label.text
-            if path != "":
-                client.addPost("Welcome", "S", "Hi hello", path)
-            return False
-
-        content = Filechooser()
-        popup = Popup(content=content, size_hint=(0.9, 0.9))
-        popup.bind(on_dismiss=post)
-        popup.open()
-
-        return
+        self.start_load_thread()
 
     def start_load_thread(self, *args):
         Thread(target=self.loadPosts, daemon=True).start()
@@ -651,8 +636,36 @@ class Posts(GridLayout):
         # Async draw in all posts
         for item in posts["posts"]:
             print(item["url"])
-            self.add_widget(AsyncImage(source=item["url"]))
+            self.add_widget(AsyncImage(source=item["url"], size_hint_y=None, height=Window.height / 2))
 
+
+class PostsScroll(ScrollView):
+
+    posts_list = Posts()
+    posts_list.bind(minimum_height=posts_list.setter('height'))
+    size_hint_y = None
+    always_overscroll = False
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(self.posts_list)
+
+
+class AddPostScreen(BaseScreen):
+
+    def addPost(self, *args):
+        def post(instance):
+            path = instance.content.label.text
+            if path != "":
+                client.addPost("Welcome", "S", "Hi hello", path)
+            return False
+
+        content = Filechooser()
+        popup = Popup(content=content, size_hint=(0.9, 0.9))
+        popup.bind(on_dismiss=post)
+        popup.open()
+
+        return
 
 # End Sam breaking things
 
@@ -1050,6 +1063,7 @@ log_in_screen: LogInScreen
 sign_up_screen: SignUpScreen
 calendar_screen: CalendarScreen
 photos_screen: PostsScreen
+add_post_screen: AddPostScreen
 clubs_screen: ClubsScreen
 contact_screen: ContactScreen
 settings_screen: SettingsScreen
@@ -1068,7 +1082,7 @@ class AppMaybe(MDApp):
         global sign_up_screen
         global calendar_screen
         global photos_screen
-        global photos_screen
+        global add_post_screen
         global clubs_screen
         global settings_screen
         global admin_contact
@@ -1079,6 +1093,7 @@ class AppMaybe(MDApp):
         sign_up_screen = SignUpScreen(name='sign_up')
         calendar_screen = CalendarScreen(name='calendar')
         posts_screen = PostsScreen(name='posts')
+        add_post_screen = AddPostScreen(name='add_post')
         clubs_screen = ClubsScreen(name='clubs')
         contact_screen = ContactScreen(name='contact')
         settings_screen = SettingsScreen(name='settings')
@@ -1089,6 +1104,7 @@ class AppMaybe(MDApp):
         sm.add_widget(sign_up_screen)
         sm.add_widget(calendar_screen)
         sm.add_widget(posts_screen)
+        sm.add_widget(add_post_screen)
         sm.add_widget(clubs_screen)
         sm.add_widget(contact_screen)
         sm.add_widget(settings_screen)
