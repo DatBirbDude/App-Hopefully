@@ -35,6 +35,7 @@
 
                 icon: "Camera_Icon.png"
                 size_hint: 0.5, 0.5
+                on_press: root.add_post_button_press()
 
         Label:
 
@@ -538,10 +539,114 @@
 
 <PostsScreen>:
     BoxLayout:
+
         orientation: 'vertical'
-        #Vincent I need you to add the header here I don't get it
-        Posts:
-        #Also add the go back button here
+
+        Label:
+
+            size_hint: 1, None
+            height: root.height / 7
+
+        PostsScroll:
+
+        Label:
+
+            size_hint: 1, None
+            height: root.height / 10
+
+<AddPostScreen>:
+
+    BoxLayout:
+
+        orientation: 'vertical'
+        canvas:
+
+            Color:
+                rgba: 255/255, 185/255, 245/255, 0.8
+
+            RoundedRectangle:
+                pos: self.width/2 - root.width*7/16, self.height*2/3 - root.height/4
+                size: self.width*7/8, self.height * 3.8/10
+                radius: [(self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20)]
+        Label:
+
+            size_hint: 1, None
+            height: root.height / 6
+
+        BoxLayout:
+            id: LogInLayout
+            orientation: 'vertical'
+            size_hint: 3/4, 1
+            pos_hint: {"center_x": 0.5, "top": 0}
+
+            Label:
+
+                size_hint: 1, None
+                height: root.height / 11
+
+            Label:
+
+                text: 'Name of Image:'
+                height: root.height / 25
+                text_size: self.size
+                font_size: root.height / 45
+                color: 0.1, 0.1, 0.1, 1
+                padding_x: self.width / 20
+                padding_y: self.width / 100
+                size_hint: 1, None
+
+            TextInput:
+
+                id: NameInput
+                multiline: False
+                background_color: [255/255, 185/255, 245/255, 0.5]
+                size_hint: 1, None
+                height: root.height / 25
+                cursor_color: 0.1, 0.1, 0.1, 1
+                text_size: self.size
+                font_size: self.height * 0.9 / 2
+                foreground_color: 0.1, 0.1, 0.1
+
+            Label:
+
+                text: 'Description:'
+                height: root.height / 25
+                text_size: self.size
+                font_size: root.height / 45
+                color: 0.1, 0.1, 0.1, 1
+                padding_x: self.width / 20
+                padding_y: self.width / 100
+                size_hint: 1, None
+
+            TextInput:
+                id: DescriptionInput
+                multiline: True
+                background_color: [255/255, 185/255, 245/255, 0.5]
+                size_hint: 1, None
+                height: root.height / 10
+                cursor_color: 0.1, 0.1, 0.1, 1
+                text_size: self.size
+                font_size: root.height / 50
+                foreground_color: 0.1, 0.1, 0.1
+
+            Label:
+                size_hint: 1, 0
+                height: root.height / 25
+
+            MDRectangleFlatButton:
+
+                text: "Add Image"
+                theme_text_color: "Custom"
+                text_color: "black"
+                line_color: .1, .1, .1, 1
+                size_hint: 0.6, None
+                height: root.height / 20
+                pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+                on_press: root.addPost()
+
+            Label:
+
+
 #End Sam seperator
 
 
