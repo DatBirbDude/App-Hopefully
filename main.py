@@ -60,7 +60,7 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL = True
+LOCAL = False
 
 
 # Thread decorator to be used to live update the app
