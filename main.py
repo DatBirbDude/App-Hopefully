@@ -170,7 +170,25 @@ class LogInScreen(Screen):
 
 
 class SignUpScreen(Screen):
-    pass
+
+    def sign_up(self):
+
+        new_name = self.ids.NameInput.text
+        new_username = self.ids.NewUsernameInput.text
+        new_password = self.ids.NewPasswordInput.text
+        logins = json.load(open('Credentials.json'))
+
+        if LOCAL:
+            if not (new_username in logins['admins'] or logins['users']):
+                logins['users'].update({new_username: {'Password': new_password, 'Name': new_name}})
+                with open('Credentials.json', "w") as result:
+                    json.dump(logins, result, indent=4)
+            else:
+                print('Username already in use')
+
+        self.ids.NameInput.text = ''
+        self.ids.NewUsernameInput.text = ''
+        self.ids.NewPasswordInput.text = ''
 
 
 # Screen that allows for bug reports and logging out

@@ -245,7 +245,7 @@
                 size: self.width*7/8, self.height * 3.8/10
                 radius: [(self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20), (self.height/20, self.height/20)]
         Label:
-            id: app_name
+
             size_hint: 0.7, None
             height: root.height / 6
             text: 'Star Light'
@@ -344,6 +344,7 @@
                 size_hint: 0.6, None
                 height: root.height / 20
                 pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+                on_press: root.sign_up()
 
             Label:
 
