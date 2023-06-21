@@ -140,10 +140,10 @@ class HopefullyServer(BaseHTTPRequestHandler):
             jwrite("posts.json", post_json)
             self.wfile.write(bytes(json.dumps({"media": insta.add(desc), "post": new_post}), "utf-8"))
 
-        if p[0] == "/posts":
+        if p == "/posts":
             self.wfile.write(bytes(json.dumps(jload("posts.json")), "utf-8"))
 
-        if p[0] == "/supersecret":
+        if p == "/supersecret":
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
 
     def do_POST(self):

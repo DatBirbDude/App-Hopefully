@@ -24,6 +24,11 @@
       "Password": "L",
       "Name": "Ivan Lott",
       "Admin": false
+    },
+    "D": {
+      "Password": "M",
+      "Name": "Name (First and Last):",
+      "Admin": false
     }
   }
 }
