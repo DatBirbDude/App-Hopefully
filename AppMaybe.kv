@@ -545,6 +545,16 @@
             size_hint: 1, None
             height: root.height / 7
 
+        Label:
+
+            text: 'Posts'
+            font_name: 'Fonts/BodoniXT.ttf'
+            font_size: self.height / 3
+            color: 0.1, 0.1, 0.1, 1
+
+            size_hint: 1, None
+            height: root.height / 12
+
         PostsScroll:
 
         Label:
@@ -572,7 +582,7 @@
             height: root.height / 6
 
         BoxLayout:
-            id: LogInLayout
+
             orientation: 'vertical'
             size_hint: 3/4, 1
             pos_hint: {"center_x": 0.5, "top": 0}
