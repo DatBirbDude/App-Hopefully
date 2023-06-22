@@ -123,16 +123,14 @@
             size_hint: 3/4, 1
             pos_hint: {"center_x": 0.5, "top": 0}
             Label:
-                id: LoginLabel
+                id: FailedLoginLabel
                 text: ''
-                font_size: self.height / 2
-                font_name: 'Fonts/Chekhard.ttf'
-                color: 0.1, 0.1, 0.1, 1
+                font_size: self.height / 5
+                color: 1, 0, 0, 1
                 size_hint: 1, None
                 height: root.height / 12
                 halign: 'center'
-                valign: 'top'
-                padding_y: self.height / 4
+                valign: 'bottom'
             Label:
                 id: username
                 text: 'username:'

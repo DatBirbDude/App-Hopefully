@@ -146,6 +146,7 @@ class LogInScreen(Screen):
         global user_name
         global admin
         logins = json.load(open('Credentials.json'))
+        self.ids.FailedLoginLabel.text = ''
         if LOCAL:
             if self.ids.UsernameInput.text in logins['admins']:
                 if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
@@ -163,10 +164,12 @@ class LogInScreen(Screen):
                 self.manager.current = 'calendar'
             elif privilege == 2:
                 self.manager.current = 'calendar'
+            elif privilege == 1:
+                self.ids.FailedLoginLabel.text = 'Your password is incorrect'
+            elif privilege == 0:
+                self.ids.FailedLoginLabel.text = 'Username not found'
             else:
-                # Vincent I need you to implement an in-app notif for this message
-                # privilege 1: Password incorrect, privilege 0: username not found
-                print("Login not found")
+                self.ids.FailedLoginLabel.text = 'How did you even get this message?'
 
 
 class SignUpScreen(Screen):
