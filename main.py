@@ -1,10 +1,7 @@
-""" Sam's To do:
-- Finish readme
-- Test builds
-- Add instructions
-- Forge planning documents
-- Discord?
-"""
+''' Sam's To do:
+- Add instagram ~ 50%
+- Add new posts
+'''
 
 '''
 Vincent To do:
@@ -45,7 +42,9 @@ from kivymd.uix.card import MDCard
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
+import os
 from kivy.uix.image import Image, AsyncImage
+import base62
 from threading import Thread
 from kivy.clock import Clock
 from kivy.config import Config
@@ -60,7 +59,7 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL = False
+LOCAL = True
 
 
 # Thread decorator to be used to live update the app
@@ -171,23 +170,25 @@ class LogInScreen(Screen):
 
 
 class SignUpScreen(Screen):
-    def signup_user(self):
+
+    def sign_up(self):
+
+        new_name = self.ids.NameInput.text
+        new_username = self.ids.NewUsernameInput.text
+        new_password = self.ids.NewPasswordInput.text
+        logins = json.load(open('Credentials.json'))
+
         if LOCAL:
-            self.manager.current = 'login'
-            print("Signup only available with server enabled.")
-        else:
-            result = client.signup(self.ids.NewUsernameInput.text, self.ids.NewPasswordInput.text, self.ids.Name.text)
-            #Error mimics privilege, but we are looking for users with unique usernames and passwords this time
-            error = result["error"]
-            user_name = result["new user"]["Name"]
-            print("Welcome " + user_name)
-            if error < 1:
-                self.manager.current = 'log_in'
+            if not (new_username in logins['admins'] or logins['users']):
+                logins['users'].update({new_username: {'Password': new_password, 'Name': new_name}})
+                with open('Credentials.json', "w") as result:
+                    json.dump(logins, result, indent=4)
             else:
-                # Vincent I need you to implement an in-app notif for this message
-                # error 3: Admin creds, error 2: User creds, error 1: Username dupe, error 0: signup success
-                # Omit to all to one error to prevent brute-forcing attempts
-                print("Login not found")
+                print('Username already in use')
+
+        self.ids.NameInput.text = ''
+        self.ids.NewUsernameInput.text = ''
+        self.ids.NewPasswordInput.text = ''
 
 
 # Screen that allows for bug reports and logging out
@@ -609,7 +610,7 @@ class ListLayout(CalendarInfo):
         self.add_widget(self.day_nums_labels)
 
 
-# The next class is a sample from official kivy documentation, don't touch it, or it will break everything
+# The next class is a sample from official kivy documentation, don't touch it or it will break everything
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
@@ -631,8 +632,14 @@ class Filechooser(BoxLayout):
 
 class Posts(GridLayout):
 
-    cols = 1
+    cols = 2
     size_hint_y = None
+    size_hint_x = 0.9
+    col_default_width = Window.width * 4.5 / 10
+    pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+    padding = [Window.width / 20, 0, Window.width / 20, 0]
+    text_buffer_x = 0
+    text_buffer_y = 0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -641,9 +648,40 @@ class Posts(GridLayout):
     def start_load_thread(self, *args):
         Thread(target=self.loadPosts, daemon=True).start()
 
+    def update_canvas_before(self, posts):
+
+        with self.canvas:
+
+            for item in posts["posts"]:
+
+                Color(255 / 255, 185 / 255, 245 / 255, 0.8)
+
+                Rectangle(size=(Window.width * 9/10, Window.height / 3),
+                          pos=(Window.width / 20, Window.height * (5 * item['num'] + 1) / 12))
+
+    def update_canvas_after(self, posts):
+
+        with self.canvas:
+
+            for item in posts["posts"]:
+
+                Color(0.1, 0.1, 0.1, 1)
+
+                Line(rectangle=[Window.width / 20, Window.height * (5 * item['num'] + 1) / 12,
+                     Window.width * 9/10, Window.height / 3])
+
+                Line(rectangle=[Window.width / 2, Window.height * (5 * item['num'] + 1) / 12,
+                                Window.width * 4.5 / 10, Window.height / 3])
+
+                Line(rectangle=[Window.width / 20, Window.height * (5 * item['num'] + 1) / 12,
+                                Window.width * 9 / 10, Window.height / 4])
+
+                Line(rectangle=[Window.width / 2, Window.height * (5 * item['num'] + 1) / 12,
+                                Window.width * 4.5 / 10, Window.height / 6])
+
     @mainthread
     def loadPosts(self, *_):
-        # Attempt to fetch the latest posts from server if allowed
+        # Attempt to fetch latest posts from server if allowed
         if not LOCAL:
             p = open("posts.json", "w")
             json.dump(client.getPosts(), p, indent=2)
@@ -651,16 +689,45 @@ class Posts(GridLayout):
         p = open("posts.json")
         posts = json.load(p)
         # Async draw in all posts
+        self.canvas.clear()
+        self.update_canvas_before(posts)
+        self.text_buffer_x = Window.width / 40
+        self.text_buffer_y = Window.height / 200
         for item in posts["posts"]:
-            print(item["url"])
-            self.add_widget(AsyncImage(source=item["url"], size_hint_y=None, height=Window.height / 2))
+            self.add_widget(Label(text='By: ' + item['author'], size_hint_y=None,
+                                  height=Window.height / 12, color=(0.1, 0.1, 0.1, 1),
+                                  text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x, Window.height / 12 - 2 * self.text_buffer_y),
+                                  valign='center', font_size=Window.height / 50,
+                                  halign='center', pos_hint={'center_x': 0.5}))
+            self.add_widget(Label(text='Date: ' + item['date'], color=(0.1, 0.1, 0.1, 1),
+                                  text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x, Window.height / 12 - 2 * self.text_buffer_y),
+                                  valign='center', halign='center',
+                                  font_size=Window.height / 50))
+            self.add_widget(AsyncImage(source=item["url"], size_hint=(None, None),
+                                       height=Window.height / 4, width=Window.width * 4.5/10,
+                                       pos_hint={'center_x': 0.5}))
+            box_layout = BoxLayout(orientation='vertical')
+            box_layout.add_widget(Label(text=item['name'], size_hint_y=None,
+                                        height=Window.height / 12, color=(0.1, 0.1, 0.1, 1),
+                                        text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x,
+                                                   Window.height / 12 - 2 * self.text_buffer_y), valign='center',
+                                        halign='left', font_size=Window.height / 50))
+            box_layout.add_widget(Label(text=item['desc'], size_hint_y=None,
+                                        height=Window.height / 6, color=(0.1, 0.1, 0.1, 1),
+                                        text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x, Window.height / 6 - 2 * self.text_buffer_y), valign='top',
+                                        halign='left', font_size=Window.height / 55,
+                                        pos_hint={'center_x': 0.5}))
+            self.add_widget(box_layout)
+            for i in range(0, 2):
+                self.add_widget(Label(size_hint_y=None, height=Window.height / 12))
+
+            self.update_canvas_after(posts)
 
 
 class PostsScroll(ScrollView):
 
     posts_list = Posts()
     posts_list.bind(minimum_height=posts_list.setter('height'))
-    size_hint_y = None
     always_overscroll = False
 
     def __init__(self, **kwargs):
@@ -671,10 +738,15 @@ class PostsScroll(ScrollView):
 class AddPostScreen(BaseScreen):
 
     def addPost(self, *args):
+
+        global user_name
+
         def post(instance):
             path = instance.content.label.text
             if path != "":
-                client.addPost("Welcome", "S", "Hi hello", path)
+                client.addPost(self.ids.NameInput.text, user_name, self.ids.DescriptionInput.text, path)
+                self.ids.NameInput.text = ''
+                self.ids.DescriptionInput.text = ''
             return False
 
         content = Filechooser()
