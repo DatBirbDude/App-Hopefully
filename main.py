@@ -744,7 +744,9 @@ class AddPostScreen(BaseScreen):
         def post(instance):
             path = instance.content.label.text
             if path != "":
-                client.addPost(self.ids.NameInput, user_name, self.ids.DescriptionInput, path)
+                client.addPost(self.ids.NameInput.text, user_name, self.ids.DescriptionInput.text, path)
+                self.ids.NameInput.text = ''
+                self.ids.DescriptionInput.text = ''
             return False
 
         content = Filechooser()
