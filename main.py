@@ -26,9 +26,7 @@ from kivymd.uix.card import MDCard
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
-import os
-from kivy.uix.image import Image, AsyncImage
-import base62
+from kivy.uix.image import AsyncImage
 from threading import Thread
 from kivy.clock import Clock
 from kivy.config import Config
