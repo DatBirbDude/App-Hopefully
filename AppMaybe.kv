@@ -80,7 +80,27 @@
                 on_press:
                     root.contact_button_press()
 
+    AdminButton:
 
+        id: AdminSettingsButton
+        on_press: root.admin_settings_button_press()
+
+    AdminButton:
+
+        id: AdminContactButton
+        on_press: root.admin_contact_button_press()
+
+    AdminButton:
+
+        id: ReturnSettingsButton
+        text: 'Go to User\nScreen'
+        on_press: root.settings_button_press()
+
+    AdminButton:
+
+        id: ReturnContactButton
+        text: 'Go to User\nScreen'
+        on_press: root.contact_button_press()
 
 <LogInScreen>:
 
@@ -892,19 +912,6 @@
 
         Label:
 
-    MDRectangleFlatButton:
-
-        text: "Go To Admin\nScreen"
-        pos: root.width * 6/10, root.height / 9
-        size: root.width / 3, root.height / 15
-        text_color: "black"
-        line_color: 0.1, 0.1, 0.1, 1
-        theme_icon_color: "Custom"
-        icon_color: 'black'
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'admin_contact'
-
 <SettingsScreen>:
 
     BoxLayout:
@@ -999,19 +1006,6 @@
 
         Label:
 
-    MDRectangleFlatButton:
-
-        text: "Go To Admin\nScreen"
-        pos: root.width * 6/10, root.height / 9
-        size: root.width / 3, root.height / 15
-        text_color: "black"
-        line_color: .1, .1, .1, 1
-        theme_icon_color: "Custom"
-        icon_color: 'black'
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'admin_settings'
-
 <AdminSettings>:
 
     size: self.size
@@ -1045,19 +1039,6 @@
 
             size_hint: 1, None
             height: root.height / 10
-
-    MDRectangleFlatButton:
-
-        text: "Go To User\nScreen"
-        pos: root.width * 6/10, root.height / 9
-        size: root.width / 3, root.height / 15
-        text_color: "black"
-        line_color: .1, .1, .1, 1
-        theme_icon_color: "Custom"
-        icon_color: 'black'
-        on_press:
-            root.manager.transition.direction = 'right'
-            root.manager.current = 'settings'
 
 <AdminContactScreen>:
 
