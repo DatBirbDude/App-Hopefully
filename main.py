@@ -61,6 +61,9 @@ admin = False
 # Everything that runs on the server is toggleable with this yay
 LOCAL = True
 
+# Screen Shifting variable
+screen_num = -1
+
 
 # Thread decorator to be used to live update the app
 def mainthread(func):
@@ -75,32 +78,58 @@ def mainthread(func):
 
 # Parent screen - Allows settings, contact, and back buttons to work
 class BaseScreen(Screen):
-    int_width = Window.width
-    int_height = Window.height
-
-    # Changes to the "contact administration" screen
-    def contact_button_press(self):
-        self.manager.transition.direction = 'left'
-        self.manager.current = 'contact'
 
     # Changes to the "settings" screen
     def settings_button_press(self):
-        self.manager.transition.direction = 'left'
+        global screen_num
+        self.manager.transition.direction = 'right'
+        screen_num = 0
         self.manager.current = 'settings'
+
+    # Changes to "clubs" screen
+    def clubs_button_press(self):
+        global screen_num
+        if screen_num < 1:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 1
+        self.manager.current = 'clubs'
 
     # Changes to "calendar" screen
     def calendar_button_press(self):
+        global screen_num
+        if screen_num < 2:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 2
         self.manager.current = 'calendar'
 
     # Changes to "posts" screen
     def posts_button_press(self):
+        global screen_num
+        if screen_num < 3:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 3
         self.manager.current = 'posts'
 
-    # Changes to "clubs" screen
-    def clubs_button_press(self):
-        self.manager.current = 'clubs'
+    # Changes to the "contact administration" screen
+    def contact_button_press(self):
+        global screen_num
+        if screen_num < 4:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 4
+        self.manager.current = 'contact'
 
     def add_post_button_press(self):
+        global screen_num
+        self.manager.transition.direction = 'left'
+        screen_num = 5
         self.manager.current = 'add_post'
 
     # Function to change properties when size is changed <-- when on earth would a phone change size?
