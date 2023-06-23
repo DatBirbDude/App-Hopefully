@@ -86,6 +86,7 @@ class AdminButton(MDRectangleFlatButton):
         self.text = 'Go To Admin\nScreen'
         self.pos = (Window.width * 6 / 10, Window.height / 9)
         self.size = (Window.width / 3, Window.height / 15)
+        self.font_size = Window.height / 50
         self.text_color = (0.1, 0.1, 0.1, 1)
         self.line_color = (0.1, 0.1, 0.1, 1)
         self.disabled = True
