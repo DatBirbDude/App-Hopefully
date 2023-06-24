@@ -16,8 +16,8 @@ import math
 import calendar
 import datetime
 
-
 from kivymd.icon_definitions import md_icons
+
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
@@ -56,6 +56,16 @@ admin = False
 
 # Everything that runs on the server is toggleable with this yay
 LOCAL = False
+
+# Screen Shifting variable
+screen_num = -1
+
+
+def make_admin():
+    settings_screen.make_admin()
+    admin_settings.make_admin()
+    contact_screen.make_admin()
+    admin_contact.make_admin()
 
 # Screen Shifting variable
 screen_num = -1
@@ -781,7 +791,9 @@ class Posts(GridLayout):
 
         self.clear_widgets()
 
+
         # Attempt to fetch the latest posts from server if allowed
+
         if not LOCAL:
             p = open("posts.json", "w")
             json.dump(client.getPosts(), p, indent=2)
