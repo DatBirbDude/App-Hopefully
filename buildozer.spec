@@ -7,7 +7,7 @@ title = Star Light
 package.name = starlight
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = top.glitchtech
+package.domain = org.test
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -37,7 +37,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd
+requirements = python3,kivy,kivymd,pygame,numpy,requests,base62
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -95,7 +95,47 @@ fullscreen = 0
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-#android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)
+#android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18), android.permission.READ_EXTERMAL_STORAGE
+
+[app:android.permissions]
+READ_EXTERNAL_STORAGE
+WRITE_EXTERNAL_STORAGE
+ACCESS_LOCATION_EXTRA_COMMANDS
+ACCESS_NETWORK_STATE
+ACCESS_NOTIFICATION_POLICY
+ACCESS_WIFI_STATE
+BLUETOOTH
+BLUETOOTH_ADMIN
+BROADCAST_STICKY
+CHANGE_NETWORK_STATE
+CHANGE_WIFI_MULTICAST_STATE
+CHANGE_WIFI_STATE
+DISABLE_KEYGUARD
+EXPAND_STATUS_BAR
+FOREGROUND_SERVICE
+GET_PACKAGE_SIZE
+INSTALL_SHORTCUT
+INTERNET
+KILL_BACKGROUND_PROCESSES
+MANAGE_OWN_CALLS
+MODIFY_AUDIO_SETTINGS
+NFC
+READ_SYNC_SETTINGS
+READ_SYNC_STATS
+RECEIVE_BOOT_COMPLETED
+REORDER_TASKS
+REQUEST_COMPANION_RUN_IN_BACKGROUND
+REQUEST_COMPANION_USE_DATA_IN_BACKGROUND
+REQUEST_DELETE_PACKAGES
+REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+SET_ALARM
+SET_WALLPAPER
+SET_WALLPAPER_HINTS
+TRANSMIT_IR
+USE_FINGERPRINT
+VIBRATE
+WAKE_LOCK
+WRITE_SYNC_SETTINGS
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
