@@ -14,10 +14,6 @@ from calendar import Calendar
 import calendar
 import datetime
 
-import jicson
-import numpy
-from kivy.clock import Clock
-
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
