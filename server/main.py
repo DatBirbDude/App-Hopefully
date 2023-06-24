@@ -98,6 +98,9 @@ class HopefullyServer(BaseHTTPRequestHandler):
         if p == "/refresh":
             insta.refresh()
             self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
+        if p == "/refreshurl":
+            insta.refresh(True, False)
+            self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
 
         if p == "/bugs":
             self.wfile.write(bytes(json.dumps(jload("bugs.json")), "utf-8"))
