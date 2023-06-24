@@ -34,8 +34,7 @@ You will need all dependencies that both python and buildozer run on, including 
 
 With pip, install certifi, Pillow, tqdm, typing-extensions, decorator, pycryptodomex, filelock, idna, requests, 
 Pygments, platformdirs, imageio, charset-normalizer, pydantic, PySocks, kivymd, kivy, instagrapi, pybase62, docutils, 
-requests-toolbelt, distlib, moviepy, Kivy-Garden, urllib3, numpy, kivy-deps.sdl2, distlib, kivy-deps.angle, 
-kivy-deps.glew
+requests-toolbelt, distlib, moviepy, Kivy-Garden, urllib3, numpy, distlib,
 
 Some packages may already be on your system.
 
@@ -61,6 +60,8 @@ Due to the scale of our operation, we may be unable to provide additional instru
 but we promise to try our best.
 
 # License
+
+Please refer to the LICENSE.md for all copyrighted libraries and code used in Star Light
 
 Star Light is licensed under the MIT license.
 
