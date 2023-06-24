@@ -87,6 +87,11 @@ class AdminButton(MDRectangleFlatButton):
         self.disabled = True
         self.opacity = 0
 
+    def update_wid(self):
+        self.pos = (Window.width * 6 / 10, Window.height / 9)
+        self.size = (Window.width / 3, Window.height / 15)
+        self.font_size = Window.height / 50
+
 
 # Parent screen - Allows settings, contact, and back buttons to work
 class BaseScreen(Screen):
@@ -153,8 +158,7 @@ class BaseScreen(Screen):
         self.manager.current = 'admin_contact'
 
     # Function to change properties when size is changed <-- when on earth would a phone change size?
-    @staticmethod
-    def on_size(instance, value):
+    def on_size(self, instance, value):
         # Updating DayNumsLabels in the .py file
         DayNumsLabels.size = Window.size
         DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 6.9 / 10]
@@ -188,6 +192,11 @@ class BaseScreen(Screen):
 
         PostsScroll.posts_list.padding = (Window.width / 20, 0, Window.width / 20, 0)
         PostsScroll.posts_list.loadPosts()
+
+        self.ids.AdminSettingsButton.update_wid()
+        self.ids.AdminContactButton.update_wid()
+        self.ids.ReturnSettingsButton.update_wid()
+        self.ids.ReturnContactButton.update_wid()
 
 
 # Log In Screen (Screen appears directly after opening app
