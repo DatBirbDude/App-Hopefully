@@ -28,9 +28,10 @@ Python instructions: https://wiki.python.org/moin/BeginnersGuide/Download
 
 You will need all dependencies that both python and buildozer run on, including the pip package manager.
 
-With pip, install certifi, setuptools, virtualenv, Pillow, decorator, pycryptodomex, filelock, idna, requests, Pygments, 
-platformdirs, imageio, charset-normalizer, pydantic, PySocks, kivymd, Kivy, InstagramAPI, pybase62, docutils, 
-requests-toolbelt, distlib, moviepy, Kivy-Garden
+With pip, install certifi, Pillow, tqdm, typing-extensions, decorator, pycryptodomex, filelock, idna, requests, 
+Pygments, platformdirs, imageio, charset-normalizer, pydantic, PySocks, kivymd, kivy, instagrapi, pybase62, docutils, 
+requests-toolbelt, distlib, moviepy, Kivy-Garden, urllib3, numpy, kivy-deps.sdl2, distlib, kivy-deps.angle, 
+kivy-deps.glew
 
 Some packages may already be on your system.
 
@@ -42,7 +43,7 @@ sufficient storage before starting the build process**
 If no errors arise, you can go the /bin directory of the project to retrieve your apk and send it to your device.
 Buildozer also provides extensional commands to send it to your device directly after building.
 
-# Getting Help
+# Support
 
 If you find an internal issue or oversight within the app, please use the provided bug report system so that 
 administrators can review it.
@@ -55,6 +56,25 @@ but we promise to try our best.
 
 # License
 
-Star Light © 2022 by Samuel Tibbs and Vincent Barilaro is licensed under CC BY-NC 4.0 
+Star Light is licensed under the MIT license.
 
-No warranty is provided with 
+Copyright © 2022-2023 Glitch Technologies (Vincent Barilaro and Samuel Tibbs).
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
