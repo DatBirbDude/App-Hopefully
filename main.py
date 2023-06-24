@@ -6,7 +6,6 @@
 '''
 Vincent To do:
 - Fix Sizing Issues
-- Make admin work using the flag
 '''
 
 import json

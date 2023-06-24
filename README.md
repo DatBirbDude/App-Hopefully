@@ -1,6 +1,7 @@
 # Star Light
 
-Star Light is a task management software designed to support students and family by tracking events and information for their school. 
+Star Light is a task management software designed to support students and family by tracking events and information for 
+their school. 
 
 This project was built for the 2023 FBLA Mobile Application Development.
 
@@ -16,6 +17,7 @@ android or IOS device and start the sideloading process accordingly.
 
 If you wish to build from source due to any unforeseen compatibility issues, please clone our repo to your local 
 computer. We have provided a configured 'buildozer.spec' file, which you should only alter if absolutely necessary.
+
 We only offer build instructions for Android devices, IOS may be buildable but remains undocumented.
 
 *Remember to clone shallowly if you only intend to build the app, not contribute to it*
@@ -23,7 +25,9 @@ We only offer build instructions for Android devices, IOS may be buildable but r
 Now create a virtual environment for the project: https://docs.python.org/3/library/venv.html
 
 You will need to install >=python3.8 as well as the latest version of buildozer. 
+
 Buildozer instructions: https://buildozer.readthedocs.io/en/latest/installation.html
+
 Python instructions: https://wiki.python.org/moin/BeginnersGuide/Download
 
 You will need all dependencies that both python and buildozer run on, including the pip package manager.
@@ -36,7 +40,9 @@ kivy-deps.glew
 Some packages may already be on your system.
 
 run 'buildozer android debug'
+
 **Warning: This may take a very long time depending on the speed of your system, do not halt the process**
+
 **Warning: This will require the download of the majority of the Android development software, please set aside
 sufficient storage before starting the build process**
 
@@ -77,4 +83,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
