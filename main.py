@@ -262,7 +262,7 @@ class SignUpScreen(Screen):
         new_username = self.ids.NewUsernameInput.text
         new_password = self.ids.NewPasswordInput.text
         logins = json.load(open('Credentials.json'))
-
+        # Try not to use local
         if LOCAL:
             if not (new_username in logins['admins'] or logins['users']):
                 logins['users'].update({new_username: {'Password': new_password, 'Name': new_name}})
