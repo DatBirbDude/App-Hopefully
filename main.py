@@ -5,10 +5,6 @@
 
 '''
 Vincent To do:
-- Sign up screen
-- Post Screen
-- Other post screen
-- Incorrect Login Notif
 - Fix Sizing Issues
 '''
 
@@ -35,7 +31,7 @@ from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivymd.uix.button import MDRoundFlatButton, MDIconButton
+from kivymd.uix.button import MDRoundFlatButton, MDIconButton, MDRectangleFlatButton
 from kivymd.uix.card import MDCard
 
 # Sam's import lines below
@@ -61,6 +57,16 @@ admin = False
 # Everything that runs on the server is toggleable with this yay
 LOCAL = True
 
+# Screen Shifting variable
+screen_num = -1
+
+
+def make_admin():
+    settings_screen.make_admin()
+    admin_settings.make_admin()
+    contact_screen.make_admin()
+    admin_contact.make_admin()
+
 
 # Thread decorator to be used to live update the app
 def mainthread(func):
@@ -73,35 +79,83 @@ def mainthread(func):
     return delayed_func
 
 
+class AdminButton(MDRectangleFlatButton):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.text = 'Go To Admin\nScreen'
+        self.pos = (Window.width * 6 / 10, Window.height / 9)
+        self.size = (Window.width / 3, Window.height / 15)
+        self.font_size = Window.height / 50
+        self.text_color = (0.1, 0.1, 0.1, 1)
+        self.line_color = (0.1, 0.1, 0.1, 1)
+        self.disabled = True
+        self.opacity = 0
+
+
 # Parent screen - Allows settings, contact, and back buttons to work
 class BaseScreen(Screen):
-    int_width = Window.width
-    int_height = Window.height
-
-    # Changes to the "contact administration" screen
-    def contact_button_press(self):
-        self.manager.transition.direction = 'left'
-        self.manager.current = 'contact'
 
     # Changes to the "settings" screen
     def settings_button_press(self):
-        self.manager.transition.direction = 'left'
+        global screen_num
+        self.manager.transition.direction = 'right'
+        screen_num = 0
         self.manager.current = 'settings'
+
+    # Changes to "clubs" screen
+    def clubs_button_press(self):
+        global screen_num
+        if screen_num < 1:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 1
+        self.manager.current = 'clubs'
 
     # Changes to "calendar" screen
     def calendar_button_press(self):
+        global screen_num
+        if screen_num < 2:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 2
         self.manager.current = 'calendar'
 
     # Changes to "posts" screen
     def posts_button_press(self):
+        global screen_num
+        if screen_num < 3:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 3
         self.manager.current = 'posts'
 
-    # Changes to "clubs" screen
-    def clubs_button_press(self):
-        self.manager.current = 'clubs'
+    # Changes to the "contact administration" screen
+    def contact_button_press(self):
+        global screen_num
+        if screen_num < 4:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 4
+        self.manager.current = 'contact'
 
     def add_post_button_press(self):
+        global screen_num
+        self.manager.transition.direction = 'left'
+        screen_num = 5
         self.manager.current = 'add_post'
+
+    def admin_settings_button_press(self):
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'admin_settings'
+
+    def admin_contact_button_press(self):
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'admin_contact'
 
     # Function to change properties when size is changed <-- when on earth would a phone change size?
     @staticmethod
@@ -146,13 +200,23 @@ class LogInScreen(Screen):
         global user_name
         global admin
         logins = json.load(open('Credentials.json'))
+        self.ids.FailedLoginLabel.text = ''
         if LOCAL:
             if self.ids.UsernameInput.text in logins['admins']:
                 if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
                     user_name = logins['admins'][self.ids.UsernameInput.text]['Name']
+                    admin = True
                     self.manager.current = 'calendar'
-            self.ids.UsernameInput.text = ''
-            self.ids.PasswordInput.text = ''
+                else:
+                    self.ids.FailedLoginLabel.text = 'Your password is incorrect'
+            elif self.ids.UsernameInput.text in logins['users']:
+                if self.ids.PasswordInput.text == logins['users'][self.ids.UsernameInput.text]['Password']:
+                    user_name = logins['users'][self.ids.UsernameInput.text]['Name']
+                    self.manager.current = 'calendar'
+                else:
+                    self.ids.FailedLoginLabel.text = 'Your password is incorrect'
+            else:
+                self.ids.FailedLoginLabel.text = 'Username not found'
         else:
             result = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
             privilege = result["res"]
@@ -163,10 +227,16 @@ class LogInScreen(Screen):
                 self.manager.current = 'calendar'
             elif privilege == 2:
                 self.manager.current = 'calendar'
+            elif privilege == 1:
+                self.ids.FailedLoginLabel.text = 'Your password is incorrect'
+            elif privilege == 0:
+                self.ids.FailedLoginLabel.text = 'Username not found'
             else:
-                # Vincent I need you to implement an in-app notif for this message
-                # privilege 1: Password incorrect, privilege 0: username not found
-                print("Login not found")
+                self.ids.FailedLoginLabel.text = 'How did you even get this message?'
+
+        make_admin()
+        self.ids.UsernameInput.text = ''
+        self.ids.PasswordInput.text = ''
 
 
 class SignUpScreen(Screen):
@@ -193,6 +263,15 @@ class SignUpScreen(Screen):
 
 # Screen that allows for bug reports and logging out
 class SettingsScreen(BaseScreen):
+
+    def make_admin(self):
+        if admin:
+            self.ids.AdminSettingsButton.disabled = False
+            self.ids.AdminSettingsButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
 
     # Takes user input from bug report and appends to Bugs.json
     def report_bug(self):
@@ -912,6 +991,16 @@ class ContactScreen(BaseScreen):
 
     need_time = BooleanProperty(False)
 
+    def make_admin(self):
+        if admin:
+            self.ids.AdminContactButton.disabled = False
+            self.ids.AdminContactButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
+
+
     def change_reason(self):
         self.reason_num += 1
         self.reason_num %= 3
@@ -1045,7 +1134,15 @@ class BugWidgets(GridLayout):
 
 
 class AdminSettings(BaseScreen):
-    pass
+
+    def make_admin(self):
+        if admin:
+            self.ids.ReturnSettingsButton.disabled = False
+            self.ids.ReturnSettingsButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
 
 
 class BugWidgetsScroll(ScrollView):
@@ -1145,7 +1242,15 @@ class AttendanceScroll(ScrollView):
 
 
 class AdminContactScreen(BaseScreen):
-    pass
+
+    def make_admin(self):
+        if admin:
+            self.ids.ReturnContactButton.disabled = False
+            self.ids.ReturnContactButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
 
 
 log_in_screen: LogInScreen
@@ -1156,8 +1261,8 @@ add_post_screen: AddPostScreen
 clubs_screen: ClubsScreen
 contact_screen: ContactScreen
 settings_screen: SettingsScreen
-admin_settings: AdminSettings
 admin_contact: AdminContactScreen
+admin_settings: AdminSettings
 
 
 class AppMaybe(MDApp):
@@ -1173,10 +1278,10 @@ class AppMaybe(MDApp):
         global photos_screen
         global add_post_screen
         global clubs_screen
+        global contact_screen
         global settings_screen
         global admin_contact
         global admin_settings
-        global contact_screen
 
         log_in_screen = LogInScreen(name='log_in')
         sign_up_screen = SignUpScreen(name='sign_up')

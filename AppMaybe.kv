@@ -50,7 +50,6 @@
                 icon: 'SettingsIcon.png'
                 size_hint: 1, 1
                 on_press:
-                    root.manager.transition.direction = 'left'
                     root.settings_button_press()
 
             MDIconButton:
@@ -58,7 +57,6 @@
                 icon: 'Pencil_Icon.png'
                 size_hint: 1, 1
                 on_press:
-                    root.manager.transition.direction = 'left'
                     root.clubs_button_press()
 
             MDIconButton:
@@ -66,7 +64,6 @@
                 icon: 'Calendar_Icon.png'
                 size_hint: 1, 1
                 on_press:
-                    root.manager.transition.direction = 'left'
                     root.calendar_button_press()
 
             MDIconButton:
@@ -74,7 +71,6 @@
                 icon: 'Posts_Icon.png'
                 size_hint: 1, 1
                 on_press:
-                    root.manager.transition.direction = 'left'
                     root.posts_button_press()
 
             MDIconButton:
@@ -82,10 +78,29 @@
                 icon: 'MailIcon.png'
                 size_hint: 1, 1
                 on_press:
-                    root.manager.transition.direction = 'left'
                     root.contact_button_press()
 
+    AdminButton:
 
+        id: AdminSettingsButton
+        on_press: root.admin_settings_button_press()
+
+    AdminButton:
+
+        id: AdminContactButton
+        on_press: root.admin_contact_button_press()
+
+    AdminButton:
+
+        id: ReturnSettingsButton
+        text: 'Go to User\nScreen'
+        on_press: root.settings_button_press()
+
+    AdminButton:
+
+        id: ReturnContactButton
+        text: 'Go to User\nScreen'
+        on_press: root.contact_button_press()
 
 <LogInScreen>:
 
@@ -123,16 +138,14 @@
             size_hint: 3/4, 1
             pos_hint: {"center_x": 0.5, "top": 0}
             Label:
-                id: LoginLabel
+                id: FailedLoginLabel
                 text: ''
-                font_size: self.height / 2
-                font_name: 'Fonts/Chekhard.ttf'
-                color: 0.1, 0.1, 0.1, 1
+                font_size: self.height / 5
+                color: 1, 0, 0, 1
                 size_hint: 1, None
                 height: root.height / 12
                 halign: 'center'
-                valign: 'top'
-                padding_y: self.height / 4
+                valign: 'bottom'
             Label:
                 id: username
                 text: 'username:'
@@ -548,7 +561,7 @@
         Label:
 
             text: 'Posts'
-            font_name: 'Fonts/BodoniXT.ttf'
+            font_name: 'Fonts/Vogue.ttf'
             font_size: self.height / 3
             color: 0.1, 0.1, 0.1, 1
 
@@ -899,19 +912,6 @@
 
         Label:
 
-    MDRectangleFlatButton:
-
-        text: "Go To Admin\nScreen"
-        pos: root.width * 6/10, root.height / 9
-        size: root.width / 3, root.height / 15
-        text_color: "black"
-        line_color: 0.1, 0.1, 0.1, 1
-        theme_icon_color: "Custom"
-        icon_color: 'black'
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'admin_contact'
-
 <SettingsScreen>:
 
     BoxLayout:
@@ -1006,19 +1006,6 @@
 
         Label:
 
-    MDRectangleFlatButton:
-
-        text: "Go To Admin\nScreen"
-        pos: root.width * 6/10, root.height / 9
-        size: root.width / 3, root.height / 15
-        text_color: "black"
-        line_color: .1, .1, .1, 1
-        theme_icon_color: "Custom"
-        icon_color: 'black'
-        on_press:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'admin_settings'
-
 <AdminSettings>:
 
     size: self.size
@@ -1051,20 +1038,7 @@
         Label:
 
             size_hint: 1, None
-            height: root.height / 10
-
-    MDRectangleFlatButton:
-
-        text: "Go To User\nScreen"
-        pos: root.width * 6/10, root.height / 9
-        size: root.width / 3, root.height / 15
-        text_color: "black"
-        line_color: .1, .1, .1, 1
-        theme_icon_color: "Custom"
-        icon_color: 'black'
-        on_press:
-            root.manager.transition.direction = 'right'
-            root.manager.current = 'settings'
+            height: root.height / 5
 
 <AdminContactScreen>:
 
@@ -1098,4 +1072,4 @@
         Label:
 
             size_hint: 1, None
-            height: root.height / 10
+            height: root.height / 5
