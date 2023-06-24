@@ -8,10 +8,15 @@ Vincent To do:
 - Fix Sizing Issues
 '''
 
+import os, sys
+from kivy.resources import resource_add_path, resource_find
+
 import json
 import math
 import calendar
 import datetime
+
+from kivymd.icon_definitions import md_icons
 
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
@@ -50,7 +55,17 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL = True
+LOCAL = False
+
+# Screen Shifting variable
+screen_num = -1
+
+
+def make_admin():
+    settings_screen.make_admin()
+    admin_settings.make_admin()
+    contact_screen.make_admin()
+    admin_contact.make_admin()
 
 # Screen Shifting variable
 screen_num = -1
@@ -257,12 +272,22 @@ class SignUpScreen(Screen):
         new_username = self.ids.NewUsernameInput.text
         new_password = self.ids.NewPasswordInput.text
         logins = json.load(open('Credentials.json'))
-
+        # Try not to use local
         if LOCAL:
             if not (new_username in logins['admins'] or logins['users']):
                 logins['users'].update({new_username: {'Password': new_password, 'Name': new_name}})
                 with open('Credentials.json', "w") as result:
                     json.dump(logins, result, indent=4)
+            else:
+                print('Username already in use')
+        else:
+            result = client.signup(self.ids.NewUsernameInput.text, self.ids.NewPasswordInput.text, self.ids.Name.text)
+            #Error mimics privilege, but we are looking for users with unique usernames and passwords this time
+            error = result["error"]
+            user_name = result["new user"]["Name"]
+            print("Welcome " + user_name)
+            if error < 1:
+                self.manager.current = 'log_in'
             else:
                 print('Username already in use')
 
@@ -766,7 +791,9 @@ class Posts(GridLayout):
 
         self.clear_widgets()
 
-        # Attempt to fetch latest posts from server if allowed
+
+        # Attempt to fetch the latest posts from server if allowed
+
         if not LOCAL:
             p = open("posts.json", "w")
             json.dump(client.getPosts(), p, indent=2)
@@ -1332,5 +1359,6 @@ if __name__ == '__main__':
     '''
     # Vincent if you want to comment control code, at least explain why
     # L nah
-
+    if hasattr(sys, '_MEIPASS'):
+        resource_add_path(os.path.join(sys._MEIPASS))
     AppMaybe().run()
