@@ -42,6 +42,7 @@ def getPosts():
     req = r.json()
     return req
 
+#Only send .jpg please or the server will not work.
 def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
     image_file = path
     with open(image_file, 'rb') as f:

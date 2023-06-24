@@ -86,17 +86,20 @@ class HopefullyServer(BaseHTTPRequestHandler):
             username = de(query_components["username"])
             password = de(query_components["password"])
             new_user = {"Password": "NOT FOUND", "Name": "NOT FOUND", "Admin": False}
-
-            if login(username, password)["res"] < 1:
+            privilege = login(username, password)["res"]
+            if privilege < 1:
                 name = de(query_components["name"])
                 logins = jload("creds.json")
                 new_user = {"Password": password, "Name": name, "Admin": False}
                 logins["users"][username] = new_user
                 jwrite("creds.json", logins)
-            self.wfile.write(bytes(json.dumps({"new user": new_user}), "utf-8"))
+            self.wfile.write(bytes(json.dumps({"new user": new_user, "error": privilege}), "utf-8"))
 
         if p == "/refresh":
             insta.refresh()
+            self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
+        if p == "/refreshurl":
+            insta.refresh(True, False)
             self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
 
         if p == "/bugs":
@@ -140,10 +143,10 @@ class HopefullyServer(BaseHTTPRequestHandler):
             jwrite("posts.json", post_json)
             self.wfile.write(bytes(json.dumps({"media": insta.add(desc), "post": new_post}), "utf-8"))
 
-        if p[0] == "/posts":
+        if p == "/posts":
             self.wfile.write(bytes(json.dumps(jload("posts.json")), "utf-8"))
 
-        if p[0] == "/supersecret":
+        if p == "/supersecret":
             self.wfile.write(bytes("Nice work Vincent\n", "utf-8"))
 
     def do_POST(self):

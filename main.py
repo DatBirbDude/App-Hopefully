@@ -1,27 +1,23 @@
 ''' Sam's To do:
-- Add instagram ~ 50%
-- Add new posts
+- Finish readme
+- Working build
 '''
 
 '''
 Vincent To do:
-- Sign up screen
-- Post Screen
-- Other post screen
-- Incorrect Login Notif
 - Fix Sizing Issues
 '''
 
+import os, sys
+from kivy.resources import resource_add_path, resource_find
+
 import json
 import math
-from calendar import Calendar
 import calendar
 import datetime
 
-import jicson
-import numpy
-from kivy.clock import Clock
 
+from kivymd.icon_definitions import md_icons
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
@@ -35,7 +31,7 @@ from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivymd.uix.button import MDRoundFlatButton, MDIconButton
+from kivymd.uix.button import MDRoundFlatButton, MDIconButton, MDRectangleFlatButton
 from kivymd.uix.card import MDCard
 
 # Sam's import lines below
@@ -59,7 +55,17 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL = True
+LOCAL = False
+
+# Screen Shifting variable
+screen_num = -1
+
+
+def make_admin():
+    settings_screen.make_admin()
+    admin_settings.make_admin()
+    contact_screen.make_admin()
+    admin_contact.make_admin()
 
 
 # Thread decorator to be used to live update the app
@@ -73,39 +79,91 @@ def mainthread(func):
     return delayed_func
 
 
+class AdminButton(MDRectangleFlatButton):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.text = 'Go To Admin\nScreen'
+        self.pos = (Window.width * 6 / 10, Window.height / 9)
+        self.size = (Window.width / 3, Window.height / 15)
+        self.font_size = Window.height / 50
+        self.text_color = (0.1, 0.1, 0.1, 1)
+        self.line_color = (0.1, 0.1, 0.1, 1)
+        self.disabled = True
+        self.opacity = 0
+
+    def update_wid(self):
+        self.pos = (Window.width * 6 / 10, Window.height / 9)
+        self.size = (Window.width / 3, Window.height / 15)
+        self.font_size = Window.height / 50
+
+
 # Parent screen - Allows settings, contact, and back buttons to work
 class BaseScreen(Screen):
-    int_width = Window.width
-    int_height = Window.height
-
-    # Changes to the "contact administration" screen
-    def contact_button_press(self):
-        self.manager.transition.direction = 'left'
-        self.manager.current = 'contact'
 
     # Changes to the "settings" screen
     def settings_button_press(self):
-        self.manager.transition.direction = 'left'
+        global screen_num
+        self.manager.transition.direction = 'right'
+        screen_num = 0
         self.manager.current = 'settings'
+
+    # Changes to "clubs" screen
+    def clubs_button_press(self):
+        global screen_num
+        if screen_num < 1:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 1
+        self.manager.current = 'clubs'
 
     # Changes to "calendar" screen
     def calendar_button_press(self):
+        global screen_num
+        if screen_num < 2:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 2
         self.manager.current = 'calendar'
 
     # Changes to "posts" screen
     def posts_button_press(self):
+        global screen_num
+        if screen_num < 3:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 3
         self.manager.current = 'posts'
 
-    # Changes to "clubs" screen
-    def clubs_button_press(self):
-        self.manager.current = 'clubs'
+    # Changes to the "contact administration" screen
+    def contact_button_press(self):
+        global screen_num
+        if screen_num < 4:
+            self.manager.transition.direction = 'left'
+        else:
+            self.manager.transition.direction = 'right'
+        screen_num = 4
+        self.manager.current = 'contact'
 
     def add_post_button_press(self):
+        global screen_num
+        self.manager.transition.direction = 'left'
+        screen_num = 5
         self.manager.current = 'add_post'
 
+    def admin_settings_button_press(self):
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'admin_settings'
+
+    def admin_contact_button_press(self):
+        self.manager.transition.direction = 'left'
+        self.manager.current = 'admin_contact'
+
     # Function to change properties when size is changed <-- when on earth would a phone change size?
-    @staticmethod
-    def on_size(instance, value):
+    def on_size(self, instance, value):
         # Updating DayNumsLabels in the .py file
         DayNumsLabels.size = Window.size
         DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 6.9 / 10]
@@ -134,6 +192,17 @@ class BaseScreen(Screen):
         AttendanceScroll.attendance_widgets.text_buffer_y = Window.size[1] / 200
         AttendanceScroll.attendance_widgets.generate_reports()
 
+        ClubsScrollView.clubs_list.update_canvas()
+        ClubsScrollView.clubs_list.create_list()
+
+        PostsScroll.posts_list.padding = (Window.width / 20, 0, Window.width / 20, 0)
+        PostsScroll.posts_list.loadPosts()
+
+        self.ids.AdminSettingsButton.update_wid()
+        self.ids.AdminContactButton.update_wid()
+        self.ids.ReturnSettingsButton.update_wid()
+        self.ids.ReturnContactButton.update_wid()
+
 
 # Log In Screen (Screen appears directly after opening app
 class LogInScreen(Screen):
@@ -146,13 +215,23 @@ class LogInScreen(Screen):
         global user_name
         global admin
         logins = json.load(open('Credentials.json'))
+        self.ids.FailedLoginLabel.text = ''
         if LOCAL:
             if self.ids.UsernameInput.text in logins['admins']:
                 if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
                     user_name = logins['admins'][self.ids.UsernameInput.text]['Name']
+                    admin = True
                     self.manager.current = 'calendar'
-            self.ids.UsernameInput.text = ''
-            self.ids.PasswordInput.text = ''
+                else:
+                    self.ids.FailedLoginLabel.text = 'Your password is incorrect'
+            elif self.ids.UsernameInput.text in logins['users']:
+                if self.ids.PasswordInput.text == logins['users'][self.ids.UsernameInput.text]['Password']:
+                    user_name = logins['users'][self.ids.UsernameInput.text]['Name']
+                    self.manager.current = 'calendar'
+                else:
+                    self.ids.FailedLoginLabel.text = 'Your password is incorrect'
+            else:
+                self.ids.FailedLoginLabel.text = 'Username not found'
         else:
             result = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
             privilege = result["res"]
@@ -163,10 +242,16 @@ class LogInScreen(Screen):
                 self.manager.current = 'calendar'
             elif privilege == 2:
                 self.manager.current = 'calendar'
+            elif privilege == 1:
+                self.ids.FailedLoginLabel.text = 'Your password is incorrect'
+            elif privilege == 0:
+                self.ids.FailedLoginLabel.text = 'Username not found'
             else:
-                # Vincent I need you to implement an in-app notif for this message
-                # privilege 1: Password incorrect, privilege 0: username not found
-                print("Login not found")
+                self.ids.FailedLoginLabel.text = 'How did you even get this message?'
+
+        make_admin()
+        self.ids.UsernameInput.text = ''
+        self.ids.PasswordInput.text = ''
 
 
 class SignUpScreen(Screen):
@@ -185,6 +270,16 @@ class SignUpScreen(Screen):
                     json.dump(logins, result, indent=4)
             else:
                 print('Username already in use')
+        else:
+            result = client.signup(self.ids.NewUsernameInput.text, self.ids.NewPasswordInput.text, self.ids.Name.text)
+            #Error mimics privilege, but we are looking for users with unique usernames and passwords this time
+            error = result["error"]
+            user_name = result["new user"]["Name"]
+            print("Welcome " + user_name)
+            if error < 1:
+                self.manager.current = 'log_in'
+            else:
+                print('Username already in use')
 
         self.ids.NameInput.text = ''
         self.ids.NewUsernameInput.text = ''
@@ -193,6 +288,15 @@ class SignUpScreen(Screen):
 
 # Screen that allows for bug reports and logging out
 class SettingsScreen(BaseScreen):
+
+    def make_admin(self):
+        if admin:
+            self.ids.AdminSettingsButton.disabled = False
+            self.ids.AdminSettingsButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
 
     # Takes user input from bug report and appends to Bugs.json
     def report_bug(self):
@@ -235,7 +339,7 @@ class CalendarScreen(CalendarInfo, BaseScreen):
     # Increments or decrements the month
     def month_change(self, change):
         if (CalendarInfo.month == 12 and change > 0) or (CalendarInfo.month == 1 and change < 0):
-            CalendarInfo.year += math.ceil(numpy.sign(change) * change / 12) * numpy.sign(change)
+            CalendarInfo.year += math.ceil(change / abs(change) * change / 12) * change / abs(change)
         # ^ changes year when necessary ^
 
         CalendarInfo.month = (CalendarInfo.month + change - 1) % 12 + 1
@@ -545,8 +649,8 @@ class DayNumsLayout(Widget):
 
     def week_change(self, change):
         if 0 < (CalendarInfo.day - CalendarInfo.weekday_offset + 6 + 7 * change) or change > 0:
-            if (CalendarInfo.day - CalendarInfo.weekday_offset + 7 * change) < CalendarInfo.month_range[
-                1] or change < 0:
+            if (CalendarInfo.day - CalendarInfo.weekday_offset + 7 * change) < \
+                    CalendarInfo.month_range[1] or change < 0:
                 CalendarInfo.day += 7 * change
                 for i in range(0, 7):
                     self.is_selected[i] = False
@@ -631,9 +735,12 @@ class Filechooser(BoxLayout):
 
 
 class Posts(GridLayout):
-
-    cols = 1
+    cols = 2
     size_hint_y = None
+    pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+    padding = [Window.width / 20, 0, Window.width / 20, 0]
+    text_buffer_x = 0
+    text_buffer_y = 0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -642,9 +749,39 @@ class Posts(GridLayout):
     def start_load_thread(self, *args):
         Thread(target=self.loadPosts, daemon=True).start()
 
+    def update_canvas_before(self, posts):
+
+        with self.canvas:
+            for item in posts["posts"]:
+                Color(255 / 255, 185 / 255, 245 / 255, 0.8)
+
+                Rectangle(size=(Window.width * 9 / 10, Window.height / 3),
+                          pos=(Window.width / 20, Window.height * (5 * item['num'] + 1) / 12))
+
+    def update_canvas_after(self, posts):
+
+        with self.canvas:
+            for item in posts["posts"]:
+                Color(0.1, 0.1, 0.1, 1)
+
+                Line(rectangle=[Window.width / 20, Window.height * (5 * item['num'] + 1) / 12,
+                                Window.width * 9 / 10, Window.height / 3])
+
+                Line(rectangle=[Window.width / 2, Window.height * (5 * item['num'] + 1) / 12,
+                                Window.width * 4.5 / 10, Window.height / 3])
+
+                Line(rectangle=[Window.width / 20, Window.height * (5 * item['num'] + 1) / 12,
+                                Window.width * 9 / 10, Window.height / 4])
+
+                Line(rectangle=[Window.width / 2, Window.height * (5 * item['num'] + 1) / 12,
+                                Window.width * 4.5 / 10, Window.height / 6])
+
     @mainthread
     def loadPosts(self, *_):
-        # Attempt to fetch latest posts from server if allowed
+
+        self.clear_widgets()
+
+        # Attempt to fetch the latest posts from server if allowed
         if not LOCAL:
             p = open("posts.json", "w")
             json.dump(client.getPosts(), p, indent=2)
@@ -652,16 +789,46 @@ class Posts(GridLayout):
         p = open("posts.json")
         posts = json.load(p)
         # Async draw in all posts
+        self.canvas.clear()
+        self.update_canvas_before(posts)
+        self.text_buffer_x = Window.width / 40
+        self.text_buffer_y = Window.height / 200
         for item in posts["posts"]:
-            print(item["url"])
-            self.add_widget(AsyncImage(source=item["url"], size_hint_y=None, height=Window.height / 2))
+            self.add_widget(Label(text='By: ' + item['author'], size_hint_y=None,
+                                  height=Window.height / 12, color=(0.1, 0.1, 0.1, 1),
+                                  text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
+                                             Window.height / 12 - 2 * self.text_buffer_y),
+                                  valign='center', font_size=Window.height / 50,
+                                  halign='center', pos_hint={'center_x': 0.5}))
+            self.add_widget(Label(text='Date: ' + item['date'], color=(0.1, 0.1, 0.1, 1),
+                                  text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
+                                             Window.height / 12 - 2 * self.text_buffer_y),
+                                  valign='center', halign='center',
+                                  font_size=Window.height / 50))
+            self.add_widget(AsyncImage(source=item["url"], size_hint=(1, None),
+                                       height=Window.height / 4, mipmap=False))
+            box_layout = BoxLayout(orientation='vertical')
+            box_layout.add_widget(Label(text=item['name'], size_hint_y=None,
+                                        height=Window.height / 12, color=(0.1, 0.1, 0.1, 1),
+                                        text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
+                                                   Window.height / 12 - 2 * self.text_buffer_y), valign='center',
+                                        halign='left', font_size=Window.height / 50))
+            box_layout.add_widget(Label(text=item['desc'], size_hint_y=None,
+                                        height=Window.height / 6, color=(0.1, 0.1, 0.1, 1),
+                                        text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
+                                                   Window.height / 6 - 2 * self.text_buffer_y), valign='center',
+                                        halign='left', font_size=Window.height / 55,
+                                        pos_hint={'center_x': 0.5}))
+            self.add_widget(box_layout)
+            for i in range(0, 2):
+                self.add_widget(Label(size_hint_y=None, height=Window.height / 12))
+
+            self.update_canvas_after(posts)
 
 
 class PostsScroll(ScrollView):
-
     posts_list = Posts()
     posts_list.bind(minimum_height=posts_list.setter('height'))
-    size_hint_y = None
     always_overscroll = False
 
     def __init__(self, **kwargs):
@@ -672,10 +839,14 @@ class PostsScroll(ScrollView):
 class AddPostScreen(BaseScreen):
 
     def addPost(self, *args):
+        global user_name
+
         def post(instance):
             path = instance.content.label.text
             if path != "":
-                client.addPost("Welcome", "S", "Hi hello", path)
+                client.addPost(self.ids.NameInput.text, user_name, self.ids.DescriptionInput.text, path)
+                self.ids.NameInput.text = ''
+                self.ids.DescriptionInput.text = ''
             return False
 
         content = Filechooser()
@@ -684,6 +855,7 @@ class AddPostScreen(BaseScreen):
         popup.open()
 
         return
+
 
 # End Sam breaking things
 
@@ -777,7 +949,13 @@ class ClubsList(GridLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.minimum_height = self.size[1]
+        self.update_canvas()
+        self.create_list()
+
+    def create_list(self):
+
+        self.clear_widgets()
+
         self.add_widget(Label(text='Clubs at SRHS:',
                               font_size=Window.size[1] / 35,
                               size_hint=(1, None),
@@ -797,6 +975,11 @@ class ClubsList(GridLayout):
                                   text_size=[Window.size[0] / 2, Window.size[1] / 12],
                                   color=(0.1, 0.1, 0.1, 1)
                                   ))
+
+    def update_canvas(self):
+
+        self.canvas.clear()
+
         with self.canvas:
 
             Color(0.1, 0.1, 0.1, 1)
@@ -835,11 +1018,20 @@ class ContactScreen(BaseScreen):
     day_string = StringProperty(str(day))
     hour = date.hour
     hour_string = StringProperty(str(hour))
-    minute = int((numpy.round(date.minute / 15) * 15))
+    minute = int((math.floor(date.minute / 15) * 15))
     minute_string = StringProperty(str(minute))
     month_range = calendar.monthrange(year, month)
 
     need_time = BooleanProperty(False)
+
+    def make_admin(self):
+        if admin:
+            self.ids.AdminContactButton.disabled = False
+            self.ids.AdminContactButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
 
     def change_reason(self):
         self.reason_num += 1
@@ -974,7 +1166,15 @@ class BugWidgets(GridLayout):
 
 
 class AdminSettings(BaseScreen):
-    pass
+
+    def make_admin(self):
+        if admin:
+            self.ids.ReturnSettingsButton.disabled = False
+            self.ids.ReturnSettingsButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
 
 
 class BugWidgetsScroll(ScrollView):
@@ -1074,7 +1274,15 @@ class AttendanceScroll(ScrollView):
 
 
 class AdminContactScreen(BaseScreen):
-    pass
+
+    def make_admin(self):
+        if admin:
+            self.ids.ReturnContactButton.disabled = False
+            self.ids.ReturnContactButton.opacity = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.make_admin()
 
 
 log_in_screen: LogInScreen
@@ -1085,8 +1293,8 @@ add_post_screen: AddPostScreen
 clubs_screen: ClubsScreen
 contact_screen: ContactScreen
 settings_screen: SettingsScreen
-admin_settings: AdminSettings
 admin_contact: AdminContactScreen
+admin_settings: AdminSettings
 
 
 class AppMaybe(MDApp):
@@ -1102,10 +1310,10 @@ class AppMaybe(MDApp):
         global photos_screen
         global add_post_screen
         global clubs_screen
+        global contact_screen
         global settings_screen
         global admin_contact
         global admin_settings
-        global contact_screen
 
         log_in_screen = LogInScreen(name='log_in')
         sign_up_screen = SignUpScreen(name='sign_up')
@@ -1139,5 +1347,6 @@ if __name__ == '__main__':
     '''
     # Vincent if you want to comment control code, at least explain why
     # L nah
-
+    if hasattr(sys, '_MEIPASS'):
+        resource_add_path(os.path.join(sys._MEIPASS))
     AppMaybe().run()
