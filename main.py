@@ -8,16 +8,11 @@ Vincent To do:
 - Fix Sizing Issues
 '''
 
-import os, sys
-from kivy.resources import resource_add_path, resource_find
-
 import json
 import math
 import calendar
 import datetime
 
-
-from kivymd.icon_definitions import md_icons
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
@@ -55,7 +50,7 @@ user_name = ''
 admin = False
 
 # Everything that runs on the server is toggleable with this yay
-LOCAL = False
+LOCAL = True
 
 # Screen Shifting variable
 screen_num = -1
@@ -771,7 +766,7 @@ class Posts(GridLayout):
 
         self.clear_widgets()
 
-        # Attempt to fetch the latest posts from server if allowed
+        # Attempt to fetch latest posts from server if allowed
         if not LOCAL:
             p = open("posts.json", "w")
             json.dump(client.getPosts(), p, indent=2)
@@ -1337,6 +1332,5 @@ if __name__ == '__main__':
     '''
     # Vincent if you want to comment control code, at least explain why
     # L nah
-    if hasattr(sys, '_MEIPASS'):
-        resource_add_path(os.path.join(sys._MEIPASS))
+
     AppMaybe().run()
