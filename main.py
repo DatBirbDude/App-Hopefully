@@ -87,6 +87,11 @@ class AdminButton(MDRectangleFlatButton):
         self.disabled = True
         self.opacity = 0
 
+    def update_wid(self):
+        self.pos = (Window.width * 6 / 10, Window.height / 9)
+        self.size = (Window.width / 3, Window.height / 15)
+        self.font_size = Window.height / 50
+
 
 # Parent screen - Allows settings, contact, and back buttons to work
 class BaseScreen(Screen):
@@ -153,8 +158,7 @@ class BaseScreen(Screen):
         self.manager.current = 'admin_contact'
 
     # Function to change properties when size is changed <-- when on earth would a phone change size?
-    @staticmethod
-    def on_size(instance, value):
+    def on_size(self, instance, value):
         # Updating DayNumsLabels in the .py file
         DayNumsLabels.size = Window.size
         DayNumsLabels.box_layout.pos = [DayNumsLabels.size[0] / 9, DayNumsLabels.size[1] * 6.9 / 10]
@@ -182,6 +186,17 @@ class BaseScreen(Screen):
         AttendanceScroll.attendance_widgets.text_buffer_x = Window.size[0] / 40
         AttendanceScroll.attendance_widgets.text_buffer_y = Window.size[1] / 200
         AttendanceScroll.attendance_widgets.generate_reports()
+
+        ClubsScrollView.clubs_list.update_canvas()
+        ClubsScrollView.clubs_list.create_list()
+
+        PostsScroll.posts_list.padding = (Window.width / 20, 0, Window.width / 20, 0)
+        PostsScroll.posts_list.loadPosts()
+
+        self.ids.AdminSettingsButton.update_wid()
+        self.ids.AdminContactButton.update_wid()
+        self.ids.ReturnSettingsButton.update_wid()
+        self.ids.ReturnContactButton.update_wid()
 
 
 # Log In Screen (Screen appears directly after opening app
@@ -619,8 +634,8 @@ class DayNumsLayout(Widget):
 
     def week_change(self, change):
         if 0 < (CalendarInfo.day - CalendarInfo.weekday_offset + 6 + 7 * change) or change > 0:
-            if (CalendarInfo.day - CalendarInfo.weekday_offset + 7 * change) < CalendarInfo.month_range[
-                1] or change < 0:
+            if (CalendarInfo.day - CalendarInfo.weekday_offset + 7 * change) < \
+                    CalendarInfo.month_range[1] or change < 0:
                 CalendarInfo.day += 7 * change
                 for i in range(0, 7):
                     self.is_selected[i] = False
@@ -705,11 +720,8 @@ class Filechooser(BoxLayout):
 
 
 class Posts(GridLayout):
-
     cols = 2
     size_hint_y = None
-    size_hint_x = 0.9
-    col_default_width = Window.width * 4.5 / 10
     pos_hint = {'center_x': 0.5, 'center_y': 0.5}
     padding = [Window.width / 20, 0, Window.width / 20, 0]
     text_buffer_x = 0
@@ -725,24 +737,20 @@ class Posts(GridLayout):
     def update_canvas_before(self, posts):
 
         with self.canvas:
-
             for item in posts["posts"]:
-
                 Color(255 / 255, 185 / 255, 245 / 255, 0.8)
 
-                Rectangle(size=(Window.width * 9/10, Window.height / 3),
+                Rectangle(size=(Window.width * 9 / 10, Window.height / 3),
                           pos=(Window.width / 20, Window.height * (5 * item['num'] + 1) / 12))
 
     def update_canvas_after(self, posts):
 
         with self.canvas:
-
             for item in posts["posts"]:
-
                 Color(0.1, 0.1, 0.1, 1)
 
                 Line(rectangle=[Window.width / 20, Window.height * (5 * item['num'] + 1) / 12,
-                     Window.width * 9/10, Window.height / 3])
+                                Window.width * 9 / 10, Window.height / 3])
 
                 Line(rectangle=[Window.width / 2, Window.height * (5 * item['num'] + 1) / 12,
                                 Window.width * 4.5 / 10, Window.height / 3])
@@ -755,6 +763,9 @@ class Posts(GridLayout):
 
     @mainthread
     def loadPosts(self, *_):
+
+        self.clear_widgets()
+
         # Attempt to fetch latest posts from server if allowed
         if not LOCAL:
             p = open("posts.json", "w")
@@ -770,25 +781,27 @@ class Posts(GridLayout):
         for item in posts["posts"]:
             self.add_widget(Label(text='By: ' + item['author'], size_hint_y=None,
                                   height=Window.height / 12, color=(0.1, 0.1, 0.1, 1),
-                                  text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x, Window.height / 12 - 2 * self.text_buffer_y),
+                                  text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
+                                             Window.height / 12 - 2 * self.text_buffer_y),
                                   valign='center', font_size=Window.height / 50,
                                   halign='center', pos_hint={'center_x': 0.5}))
             self.add_widget(Label(text='Date: ' + item['date'], color=(0.1, 0.1, 0.1, 1),
-                                  text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x, Window.height / 12 - 2 * self.text_buffer_y),
+                                  text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
+                                             Window.height / 12 - 2 * self.text_buffer_y),
                                   valign='center', halign='center',
                                   font_size=Window.height / 50))
-            self.add_widget(AsyncImage(source=item["url"], size_hint=(None, None),
-                                       height=Window.height / 4, width=Window.width * 4.5/10,
-                                       pos_hint={'center_x': 0.5}))
+            self.add_widget(AsyncImage(source=item["url"], size_hint=(1, None),
+                                       height=Window.height / 4, mipmap=False))
             box_layout = BoxLayout(orientation='vertical')
             box_layout.add_widget(Label(text=item['name'], size_hint_y=None,
                                         height=Window.height / 12, color=(0.1, 0.1, 0.1, 1),
-                                        text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x,
+                                        text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
                                                    Window.height / 12 - 2 * self.text_buffer_y), valign='center',
                                         halign='left', font_size=Window.height / 50))
             box_layout.add_widget(Label(text=item['desc'], size_hint_y=None,
                                         height=Window.height / 6, color=(0.1, 0.1, 0.1, 1),
-                                        text_size=(Window.width * 4.5/10 - 2 * self.text_buffer_x, Window.height / 6 - 2 * self.text_buffer_y), valign='top',
+                                        text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
+                                                   Window.height / 6 - 2 * self.text_buffer_y), valign='center',
                                         halign='left', font_size=Window.height / 55,
                                         pos_hint={'center_x': 0.5}))
             self.add_widget(box_layout)
@@ -799,7 +812,6 @@ class Posts(GridLayout):
 
 
 class PostsScroll(ScrollView):
-
     posts_list = Posts()
     posts_list.bind(minimum_height=posts_list.setter('height'))
     always_overscroll = False
@@ -812,7 +824,6 @@ class PostsScroll(ScrollView):
 class AddPostScreen(BaseScreen):
 
     def addPost(self, *args):
-
         global user_name
 
         def post(instance):
@@ -829,6 +840,7 @@ class AddPostScreen(BaseScreen):
         popup.open()
 
         return
+
 
 # End Sam breaking things
 
@@ -922,7 +934,13 @@ class ClubsList(GridLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.minimum_height = self.size[1]
+        self.update_canvas()
+        self.create_list()
+
+    def create_list(self):
+
+        self.clear_widgets()
+
         self.add_widget(Label(text='Clubs at SRHS:',
                               font_size=Window.size[1] / 35,
                               size_hint=(1, None),
@@ -942,6 +960,11 @@ class ClubsList(GridLayout):
                                   text_size=[Window.size[0] / 2, Window.size[1] / 12],
                                   color=(0.1, 0.1, 0.1, 1)
                                   ))
+
+    def update_canvas(self):
+
+        self.canvas.clear()
+
         with self.canvas:
 
             Color(0.1, 0.1, 0.1, 1)
@@ -994,7 +1017,6 @@ class ContactScreen(BaseScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.make_admin()
-
 
     def change_reason(self):
         self.reason_num += 1
