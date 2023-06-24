@@ -1,16 +1,16 @@
 ''' Sam's To do:
-- Add instagram ~ 50%
-- Add new posts
+- Finish readme
+- Working build
 '''
 
 '''
 Vincent To do:
 - Fix Sizing Issues
+- Make admin work using the flag
 '''
 
 import json
 import math
-from calendar import Calendar
 import calendar
 import datetime
 

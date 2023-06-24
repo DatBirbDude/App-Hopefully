@@ -1,0 +1,184 @@
+141.157.44.176 - - [21/Jun/2023 22:41:01] "GET /posts HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:01] "GET /favicon.ico HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:08] "GET /supersecret HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:08] "GET /supersecret HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:08] "GET /favicon.ico HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:31] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:31] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:32] "GET /posts HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:39] "GET /login?username=S&password=T HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:39] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:39] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:44] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:44] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:46] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:41:46] "GET /notices HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:42:25] "POST /addpost HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:42:25] "GET /addpost?title=1ofNxkmkE9&author=1L&desc=6DRI6kwfxMN&date=18ZFVjY4rOgE5r HTTP/1.1" 200 -
+Photo Upload failed with the following response: <Response [400]>
+----------------------------------------
+Exception happened during processing of request from ('100.16.105.133', 50204)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/socketserver.py", line 317, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 348, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/local/lib/python3.6/socketserver.py", line 696, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.6/http/server.py", line 418, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.6/http/server.py", line 406, in handle_one_request
+    method()
+  File "main.py", line 141, in do_GET
+    self.wfile.write(bytes(json.dumps({"media": insta.add(desc), "post": new_post}), "utf-8"))
+  File "/root/sam/App-Hopefully/server/insta.py", line 122, in add
+    media = cl.photo_upload("upload.jpg", desc)
+  File "/usr/local/lib/python3.6/site-packages/instagrapi/mixins/photo.py", line 230, in photo_upload
+    upload_id, width, height = self.photo_rupload(path, upload_id)
+  File "/usr/local/lib/python3.6/site-packages/instagrapi/mixins/photo.py", line 192, in photo_rupload
+    raise PhotoNotUpload(response.text, response=response, **last_json)
+instagrapi.exceptions.PhotoNotUpload: {"debug_info":{"retriable":false,"type":"ProcessingFailedError","message":"Request processing failed"}}
+----------------------------------------
+141.157.44.176 - - [21/Jun/2023 22:43:03] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:03] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:04] "GET /posts HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:21] "GET /login?username=S&password=T HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:21] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:21] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:24] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:24] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:37] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:43:38] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:44:16] "GET /refresh HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:44:25] "GET /refresh HTTP/1.1" 200 -
+----------------------------------------
+Exception happened during processing of request from ('141.157.44.176', 50498)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/socketserver.py", line 317, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 348, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/local/lib/python3.6/socketserver.py", line 696, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.6/http/server.py", line 418, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.6/http/server.py", line 406, in handle_one_request
+    method()
+  File "main.py", line 100, in do_GET
+    self.wfile.write(bytes(json.dumps({"refresh": 1}), "utf-8"))
+  File "/usr/local/lib/python3.6/socketserver.py", line 775, in write
+    self._sock.sendall(b)
+BrokenPipeError: [Errno 32] Broken pipe
+----------------------------------------
+141.157.44.176 - - [21/Jun/2023 22:44:33] "GET /refresh HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:44:42] "GET /favicon.ico HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:44:42] "GET /favicon.ico HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:44:58] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:44:58] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:06] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:06] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:06] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:06] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:29] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:29] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:50] "POST /addpost HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:45:50] "GET /addpost?title=1ofNxkmkE9&author=1L&desc=6DRI6kwfxMN&date=18ZFVjY4rOgE5r HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:27] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:27] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:28] "GET /posts HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:35] "GET /login?username=S&password=T HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:35] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:35] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:37] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:47:37] "GET /notices HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:48:13] "POST /addpost HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:48:13] "GET /addpost?title=1ofNxkmkE9&author=1L&desc=6DRI6kwfxMN&date=18ZFVjY4rOgE5r HTTP/1.1" 200 -
+Photo Upload failed with the following response: <Response [400]>
+----------------------------------------
+Exception happened during processing of request from ('100.16.105.133', 50269)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/socketserver.py", line 317, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 348, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/local/lib/python3.6/socketserver.py", line 696, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.6/http/server.py", line 418, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.6/http/server.py", line 406, in handle_one_request
+    method()
+  File "main.py", line 141, in do_GET
+    self.wfile.write(bytes(json.dumps({"media": insta.add(desc), "post": new_post}), "utf-8"))
+  File "/root/sam/App-Hopefully/server/insta.py", line 122, in add
+    media = cl.photo_upload("upload.jpg", desc)
+  File "/usr/local/lib/python3.6/site-packages/instagrapi/mixins/photo.py", line 230, in photo_upload
+    upload_id, width, height = self.photo_rupload(path, upload_id)
+  File "/usr/local/lib/python3.6/site-packages/instagrapi/mixins/photo.py", line 192, in photo_rupload
+    raise PhotoNotUpload(response.text, response=response, **last_json)
+instagrapi.exceptions.PhotoNotUpload: {"debug_info":{"retriable":false,"type":"ProcessingFailedError","message":"Request processing failed"}}
+----------------------------------------
+100.16.105.133 - - [21/Jun/2023 22:51:45] "POST /addpost HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:51:45] "GET /addpost?title=1ofNxkmkE9&author=1L&desc=6DRI6kwfxMN&date=18ZFVjY4rOgE5r HTTP/1.1" 200 -
+Photo Upload failed with the following response: <Response [400]>
+----------------------------------------
+Exception happened during processing of request from ('100.16.105.133', 50510)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/socketserver.py", line 317, in _handle_request_noblock
+    self.process_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 348, in process_request
+    self.finish_request(request, client_address)
+  File "/usr/local/lib/python3.6/socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/local/lib/python3.6/socketserver.py", line 696, in __init__
+    self.handle()
+  File "/usr/local/lib/python3.6/http/server.py", line 418, in handle
+    self.handle_one_request()
+  File "/usr/local/lib/python3.6/http/server.py", line 406, in handle_one_request
+    method()
+  File "main.py", line 141, in do_GET
+    self.wfile.write(bytes(json.dumps({"media": insta.add(desc), "post": new_post}), "utf-8"))
+  File "/root/sam/App-Hopefully/server/insta.py", line 122, in add
+    media = cl.photo_upload("upload.jpg", desc)
+  File "/usr/local/lib/python3.6/site-packages/instagrapi/mixins/photo.py", line 230, in photo_upload
+    upload_id, width, height = self.photo_rupload(path, upload_id)
+  File "/usr/local/lib/python3.6/site-packages/instagrapi/mixins/photo.py", line 192, in photo_rupload
+    raise PhotoNotUpload(response.text, response=response, **last_json)
+instagrapi.exceptions.PhotoNotUpload: {"debug_info":{"retriable":false,"type":"ProcessingFailedError","message":"Request processing failed"}}
+----------------------------------------
+141.157.44.176 - - [21/Jun/2023 22:52:01] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:01] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:02] "GET /posts HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:10] "GET /login?username=S&password=T HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:10] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:10] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:12] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:12] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:16] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:16] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:20] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:20] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:21] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:21] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:28] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:29] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:31] "GET /bugs HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:31] "GET /notices HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:45] "POST /addpost HTTP/1.1" 200 -
+141.157.44.176 - - [21/Jun/2023 22:52:45] "GET /addpost?title=1ofNxkmkE9&author=1L&desc=6DRI6kwfxMN&date=18ZFVjY4rOgE5r HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:53:53] "GET /bugs HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:53:54] "GET /notices HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:53:54] "GET /posts HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:53:59] "GET /login?username=V&password=B HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:53:59] "GET /bugs HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:54:00] "GET /notices HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:54:02] "GET /bugs HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:54:02] "GET /notices HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:54:37] "POST /addpost HTTP/1.1" 200 -
+100.16.105.133 - - [21/Jun/2023 22:54:37] "GET /addpost?title=1ofNxkmkE9&author=1L&desc=6DRI6kwfxMN&date=18ZFVjY4rOgE5r HTTP/1.1" 200 -
+Photo Upload failed with the following response: <Response [400]>
