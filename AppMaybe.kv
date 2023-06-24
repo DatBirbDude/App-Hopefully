@@ -136,11 +136,12 @@
             id: LogInLayout
             orientation: 'vertical'
             size_hint: 3/4, 1
-            pos_hint: {"center_x": 0.5, "top": 0}
+            pos_hint: {'center_x': 0.5}
             Label:
                 id: FailedLoginLabel
                 text: ''
                 font_size: self.height / 5
+                text_size: self.width, self.height * 2/3
                 color: 1, 0, 0, 1
                 size_hint: 1, None
                 height: root.height / 12
@@ -218,6 +219,7 @@
             color: 0.1, 0.1, 0.1, 1
             size_hint: 1, None
             height: root.height / 40
+            font_size: self.height * 8/9
 
         MDRectangleFlatButton:
 
@@ -228,6 +230,8 @@
             size_hint: 0.5, None
             height: root.height / 30
             pos_hint: {"center_x" : 0.5, "center_y" : 0.5}
+            font_size: self.height * 4/10
+            text_size: self.height
             on_press:
                 root.manager.transition.direction = 'left'
                 root.manager.current = 'sign_up'
@@ -235,7 +239,7 @@
         Label:
             text: ''
             size_hint: 1, None
-            height: root.height * 5.67/20
+            height: root.height * 5.25/20
 
 <SignUpScreen>:
 

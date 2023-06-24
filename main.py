@@ -186,6 +186,9 @@ class BaseScreen(Screen):
         ClubsScrollView.clubs_list.update_canvas()
         ClubsScrollView.clubs_list.create_list()
 
+        PostsScroll.posts_list.padding = (Window.width / 20, 0, Window.width / 20, 0)
+        PostsScroll.posts_list.loadPosts()
+
 
 # Log In Screen (Screen appears directly after opening app
 class LogInScreen(Screen):
@@ -710,8 +713,6 @@ class Filechooser(BoxLayout):
 class Posts(GridLayout):
     cols = 2
     size_hint_y = None
-    size_hint_x = 0.9
-    col_default_width = Window.width * 4.5 / 10
     pos_hint = {'center_x': 0.5, 'center_y': 0.5}
     padding = [Window.width / 20, 0, Window.width / 20, 0]
     text_buffer_x = 0
@@ -753,6 +754,9 @@ class Posts(GridLayout):
 
     @mainthread
     def loadPosts(self, *_):
+
+        self.clear_widgets()
+
         # Attempt to fetch latest posts from server if allowed
         if not LOCAL:
             p = open("posts.json", "w")
@@ -777,9 +781,8 @@ class Posts(GridLayout):
                                              Window.height / 12 - 2 * self.text_buffer_y),
                                   valign='center', halign='center',
                                   font_size=Window.height / 50))
-            self.add_widget(AsyncImage(source=item["url"], size_hint=(None, None),
-                                       height=Window.height / 4, width=Window.width * 4.5 / 10,
-                                       pos_hint={'center_x': 0.5}))
+            self.add_widget(AsyncImage(source=item["url"], size_hint=(1, None),
+                                       height=Window.height / 4, mipmap=False))
             box_layout = BoxLayout(orientation='vertical')
             box_layout.add_widget(Label(text=item['name'], size_hint_y=None,
                                         height=Window.height / 12, color=(0.1, 0.1, 0.1, 1),
@@ -789,7 +792,7 @@ class Posts(GridLayout):
             box_layout.add_widget(Label(text=item['desc'], size_hint_y=None,
                                         height=Window.height / 6, color=(0.1, 0.1, 0.1, 1),
                                         text_size=(Window.width * 4.5 / 10 - 2 * self.text_buffer_x,
-                                                   Window.height / 6 - 2 * self.text_buffer_y), valign='top',
+                                                   Window.height / 6 - 2 * self.text_buffer_y), valign='center',
                                         halign='left', font_size=Window.height / 55,
                                         pos_hint={'center_x': 0.5}))
             self.add_widget(box_layout)
