@@ -314,7 +314,7 @@ class CalendarScreen(CalendarInfo, BaseScreen):
     # Increments or decrements the month
     def month_change(self, change):
         if (CalendarInfo.month == 12 and change > 0) or (CalendarInfo.month == 1 and change < 0):
-            CalendarInfo.year += math.ceil(numpy.sign(change) * change / 12) * numpy.sign(change)
+            CalendarInfo.year += math.ceil(change / abs(change) * change / 12) * change / abs(change)
         # ^ changes year when necessary ^
 
         CalendarInfo.month = (CalendarInfo.month + change - 1) % 12 + 1
@@ -985,7 +985,7 @@ class ContactScreen(BaseScreen):
     day_string = StringProperty(str(day))
     hour = date.hour
     hour_string = StringProperty(str(hour))
-    minute = int((numpy.round(date.minute / 15) * 15))
+    minute = int((math.floor(date.minute / 15) * 15))
     minute_string = StringProperty(str(minute))
     month_range = calendar.monthrange(year, month)
 
