@@ -41,17 +41,10 @@ admin = False
 LOCAL = False
 screen_num = -1
 
-
-def make_admin():
-    settings_screen.make_admin()
-    admin_settings.make_admin()
-    contact_screen.make_admin()
-    admin_contact.make_admin()
-
 # Screen Shifting variable
 screen_num = -1
 
-
+# Gives user access to the admin screens if admin = True
 def make_admin():
     settings_screen.make_admin()
     admin_settings.make_admin()
@@ -70,6 +63,7 @@ def mainthread(func):
     return delayed_func
 
 
+# Button that switches to the admin version of a screen
 class AdminButton(MDRectangleFlatButton):
 
     def __init__(self, **kwargs):
@@ -83,6 +77,7 @@ class AdminButton(MDRectangleFlatButton):
         self.disabled = True
         self.opacity = 0
 
+    # Updates widget if size changes and BaseScreen.on_size() is called
     def update_wid(self):
         self.pos = (Window.width * 6 / 10, Window.height / 9)
         self.size = (Window.width / 3, Window.height / 15)
@@ -139,21 +134,24 @@ class BaseScreen(Screen):
         screen_num = 4
         self.manager.current = 'contact'
 
+    # Changes to the "add posts" screen
     def add_post_button_press(self):
         global screen_num
         self.manager.transition.direction = 'left'
         screen_num = 5
         self.manager.current = 'add_post'
 
+    # Changes to the "admin settings" screen
     def admin_settings_button_press(self):
         self.manager.transition.direction = 'left'
         self.manager.current = 'admin_settings'
 
+    # Changes to the "admin contact administration" screen
     def admin_contact_button_press(self):
         self.manager.transition.direction = 'left'
         self.manager.current = 'admin_contact'
 
-    # Function to change properties when size is changed <-- when on earth would a phone change size?
+    # Function to change properties when size is changed
     def on_size(self, instance, value):
         # Updating DayNumsLabels in the .py file
         DayNumsLabels.size = Window.size
@@ -171,24 +169,28 @@ class BaseScreen(Screen):
         EventWidgets.size = Window.size
         ListLayout.event_widgets.update_canvas()
         ListLayout.event_widgets.create_event_labels()
-
         ListLayout.day_nums_layout.update_canvas()
 
+        # Updating BugWidgets in the .py file
         BugWidgetsScroll.bug_widgets.text_buffer_x = Window.size[0] / 40
         BugWidgetsScroll.bug_widgets.text_buffer_y = Window.size[1] / 200
         BugWidgetsScroll.bug_widgets.generate_reports()
 
+        # Updating AttendanceWidgets in the .py file
         AttendanceWidgets.size = Window.size
         AttendanceScroll.attendance_widgets.text_buffer_x = Window.size[0] / 40
         AttendanceScroll.attendance_widgets.text_buffer_y = Window.size[1] / 200
         AttendanceScroll.attendance_widgets.generate_reports()
 
+        # Updating ClubsList in the .py file
         ClubsScrollView.clubs_list.update_canvas()
         ClubsScrollView.clubs_list.create_list()
 
+        # Updating PostsList in the .py file
         PostsScroll.posts_list.padding = (Window.width / 20, 0, Window.width / 20, 0)
         PostsScroll.posts_list.loadPosts()
 
+        # Updating AdminButtons in the .py file
         self.ids.AdminSettingsButton.update_wid()
         self.ids.AdminContactButton.update_wid()
         self.ids.ReturnSettingsButton.update_wid()
@@ -197,6 +199,7 @@ class BaseScreen(Screen):
 
 # Log In Screen (Screen appears directly after opening app
 class LogInScreen(Screen):
+
     # allows "log in" screen to edit the user's username
     global user_name
     global admin
@@ -207,7 +210,7 @@ class LogInScreen(Screen):
         global admin
         logins = json.load(open('Credentials.json'))
         self.ids.FailedLoginLabel.text = ''
-        if LOCAL:
+        if LOCAL: # Log in sequence when user is disconnected from server
             if self.ids.UsernameInput.text in logins['admins']:
                 if self.ids.PasswordInput.text == logins['admins'][self.ids.UsernameInput.text]['Password']:
                     user_name = logins['admins'][self.ids.UsernameInput.text]['Name']
@@ -223,7 +226,7 @@ class LogInScreen(Screen):
                     self.ids.FailedLoginLabel.text = 'Your password is incorrect'
             else:
                 self.ids.FailedLoginLabel.text = 'Username not found'
-        else:
+        else: # Log in sequence when user is connected to server
             print("Sending" + self.ids.UsernameInput.text + self.ids.PasswordInput.text)
             result = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
             privilege = result["res"]
@@ -233,28 +236,34 @@ class LogInScreen(Screen):
                 admin = True
                 self.manager.current = 'calendar'
             elif privilege == 2:
+                admin = False
                 self.manager.current = 'calendar'
             elif privilege == 1:
+                admin = False
                 self.ids.FailedLoginLabel.text = 'Your password is incorrect'
             elif privilege == 0:
+                admin = False
                 self.ids.FailedLoginLabel.text = 'Username not found'
             else:
                 self.ids.FailedLoginLabel.text = 'How did you even get this message?'
 
+        # Activates AdminButtons if admin == True
         make_admin()
+
         self.ids.UsernameInput.text = ''
         self.ids.PasswordInput.text = ''
 
 
+# Screen that allows users to add new accounts
 class SignUpScreen(Screen):
 
+    # Creates new user if the inputted username is unique
     def sign_up(self):
 
         new_name = self.ids.NameInput.text
         new_username = self.ids.NewUsernameInput.text
         new_password = self.ids.NewPasswordInput.text
         logins = json.load(open('Credentials.json'))
-        # Try not to use local
         if LOCAL:
             if not (new_username in logins['admins'] or new_username in logins['users']):
                 logins['users'].update({new_username: {'Password': new_password, 'Name': new_name}})
@@ -282,11 +291,16 @@ class SignUpScreen(Screen):
 # Screen that allows for bug reports and logging out
 class SettingsScreen(BaseScreen):
 
+    # Reveals the "settings" screen admin button if admin == True
     def make_admin(self):
         if admin:
             self.ids.AdminSettingsButton.disabled = False
             self.ids.AdminSettingsButton.opacity = 1
+        else:
+            self.ids.AdminSettingsButton.disabled = True
+            self.ids.AdminSettingsButton.opacity = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.make_admin()
@@ -315,14 +329,15 @@ class SettingsScreen(BaseScreen):
 
 # Parent class with all necessary date information
 class CalendarInfo(Screen):
+
     months = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
               7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'}
 
     date = datetime.date.today()  # Gets today's date
-    year = date.year
-    month = date.month
-    day = date.day
-    month_range = calendar.monthrange(year, month)
+    year = date.year # The current year
+    month = date.month # The current month
+    day = date.day # The current day
+    month_range = calendar.monthrange(year, month) # The number of days in the current month
     weekday_offset = (date.weekday() + 1) % 7  # Formats days to always go from sunday to saturday
 
 
@@ -368,6 +383,7 @@ class CalendarScreen(CalendarInfo, BaseScreen):
 
 # Self Explanatory
 class MonthAndYearLabel(Widget):
+
     size = (1, 1)
 
     # Label that displays month and year
@@ -380,14 +396,10 @@ class MonthAndYearLabel(Widget):
 
     num_events = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.label)  # adds month/year label
-
-
-# Unused possible calendar layout
-class MonthLayout(CalendarInfo):
-    pass
 
 
 # Creates widgets that display the events on the "calendar" screen
@@ -403,7 +415,6 @@ class EventWidgets(Widget):
     text_buffer_y = size[1] / 200
 
     # Goes through Calendar.json and finds the events on a given day
-    # I'm low-key proud of this even though it's probably wildly inefficient
     def do_the_json(self):
 
         self.summaries = []
@@ -433,6 +444,7 @@ class EventWidgets(Widget):
                     self.descriptions.append('')  # Edge case
             # ^ Appends the event's summary and description (if they exist) ^
 
+    # Uses information in the .json file to create the event labels
     def create_event_labels(self):
         self.text_buffer_x = Window.size[0] / 60
         self.text_buffer_y = Window.size[1] / 200
@@ -466,6 +478,7 @@ class EventWidgets(Widget):
         self.update_canvas()
         self.create_event_labels()
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.size = Window.size
@@ -473,6 +486,7 @@ class EventWidgets(Widget):
         self.update_canvas()
         self.create_event_labels()
 
+    # Creates a number of boxes based on the number of events on the given day
     def update_canvas(self):
 
         self.canvas.clear()
@@ -490,106 +504,6 @@ class EventWidgets(Widget):
                 Line(rounded_rectangle=[Window.size[0] / 20, Window.size[1] * (5.06 / 10 - i / 5),
                                         Window.size[0] * 9 / 10, Window.size[1] / 6,
                                         Window.height / 60],
-                     width=1,
-                     close=True)
-
-
-# Not proud of this, but I'm too tired to refactor old code rather than just copy it and change a bit
-class MiniEventWidgets(Widget):
-    size = (1, 1)
-    num_events = 0
-
-    summaries = []
-    descriptions = []
-
-    event_cards = []
-    text_buffer_x = size[0] / 180
-    text_buffer_y = size[1] / 300
-
-    # I'm low-key proud of this even though it's probably wildly inefficient
-    def do_the_json(self):
-
-        self.summaries = []
-        self.descriptions = []
-        self.num_events = 0
-
-        temp = open('Calendar.json')
-        cal = json.load(temp)
-        for i in range(0, len(cal['VCALENDAR'][0]['VEVENT'])):
-            event = cal['VCALENDAR'][0]['VEVENT'][i]
-            year = int(event['DTSTART'][0:4])
-            month = int(event['DTSTART'][4:6])
-            day = int(event['DTSTART'][6:8])
-            try:
-                duration = int(event['DURATION'][1])
-            except KeyError:
-                duration = 1
-            if year == CalendarInfo.year and month == CalendarInfo.month and day + duration > CalendarInfo.day >= day:
-                self.num_events += 1
-                try:
-                    self.summaries.append(event['SUMMARY;ENCODING=QUOTED-PRINTABLE'])
-                except KeyError:
-                    self.summaries.append('')
-                try:
-                    self.descriptions.append(event['DESCRIPTION;ENCODING=QUOTED-PRINTABLE'])
-                except KeyError:
-                    self.descriptions.append('')
-
-    def create_event_labels(self):
-        self.event_cards = []
-        print(len(self.event_cards))
-        for i in range(0, self.num_events):
-            event_card = [Label(text=self.summaries[i],
-                                size=[self.size[0] * 8 / 10, self.size[1] / 20],
-                                text_size=[self.size[0] * 8 / 10 - 2 * self.text_buffer_x, self.size[1] / 20],
-                                halign='left',
-                                valign='top',
-                                font_size=self.size[0] / 30,
-                                color=(246 / 255, 232 / 255, 234 / 255, 1),
-                                pos=[self.size[0] / 10 + self.text_buffer_x,
-                                     self.size[1] * (6.3 / 10 - i / 7) - self.text_buffer_y]),
-                          Label(text=self.descriptions[i],
-                                size=[self.size[0] * 8 / 10, self.size[1] / 40],
-                                text_size=[self.size[0] * 8 / 10 - 1.5 * self.text_buffer_x, self.size[1] / 20],
-                                halign='left',
-                                valign='top',
-                                font_size=self.size[0] / 35,
-                                color=(246 / 255, 232 / 255, 234 / 255, 1),
-                                pos=[self.size[0] / 20,
-                                     self.size[1] * (3 / 5 - i / 5) - self.text_buffer_y])]
-            self.event_cards.append(event_card)
-        for i in range(0, self.num_events):
-            for o in range(0, 2):
-                self.add_widget(self.event_cards[i][o])
-
-    def set_events(self):
-        self.do_the_json()
-        self.update_canvas()
-        self.create_event_labels()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.do_the_json()
-        self.update_canvas()
-        self.create_event_labels()
-
-    def update_canvas(self):
-
-        self.canvas.clear()
-
-        with self.canvas:
-            for i in range(0, self.num_events):
-                Color(34 / 255, 24 / 255, 28 / 255, 1)
-
-                RoundedRectangle(size=[self.size[0] * 8 / 10, self.size[1] / 8],
-                                 pos=[self.size[0] / 10, self.size[1] * (5 / 9 - i / 7)],
-                                 radius=(self.height / 20, self.height / 20))
-
-                Color(0, 0, 0, 1)
-
-                Line(rounded_rectangle=[self.size[0] / 10, self.size[1] * (5 / 9 - i / 7),
-                                        self.size[0] * 8 / 10, self.size[1] / 8,
-                                        self.height / 20],
                      width=1,
                      close=True)
 
@@ -1022,6 +936,9 @@ class ContactScreen(BaseScreen):
         if admin:
             self.ids.AdminContactButton.disabled = False
             self.ids.AdminContactButton.opacity = 1
+        else:
+            self.ids.AdminContactButton.disabled = True
+            self.ids.AdminContactButton.opacity = 0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1066,13 +983,21 @@ class ContactScreen(BaseScreen):
 
     def send_notice(self):
         global user_name
-        temp_dict = {
-            'Name': user_name,
-            'Type': self.reasons_for_contact[self.reason_num],
-            'Date': str(self.year) + '/' + str(self.month) + '/' + str(self.day) + '-' + str(self.hour) +
-                    ':' + str(self.minute),
-            'Notes': self.ids.Notes.text
-        }
+        if self.reason_num > 0:
+            temp_dict = {
+                'Name': user_name,
+                'Type': self.reasons_for_contact[self.reason_num],
+                'Date': str(self.year) + '/' + str(self.month) + '/' + str(self.day) + '-' + str(self.hour) +
+                        ':' + str(self.minute),
+                'Notes': self.ids.Notes.text
+            }
+        else:
+            temp_dict = {
+                'Name': user_name,
+                'Type': self.reasons_for_contact[self.reason_num],
+                'Date': str(self.year) + '/' + str(self.month) + '/' + str(self.day) + '-' + str(self.hour),
+                'Notes': self.ids.Notes.text
+            }
         if LOCAL:
             temp = open('Notices.json')
             notices = json.load(temp)
@@ -1165,6 +1090,9 @@ class AdminSettings(BaseScreen):
         if admin:
             self.ids.ReturnSettingsButton.disabled = False
             self.ids.ReturnSettingsButton.opacity = 1
+        else:
+            self.ids.ReturnSettingsButton.disabled = True
+            self.ids.ReturnSettingsButton.opacity = 0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1205,6 +1133,7 @@ class AttendanceWidgets(GridLayout):
         temp = open('Notices.json')
         notices_list = json.load(temp)
 
+        self.size[1] = Window.height * len(temp) / 5
         self.create_attendance_cards(notices_list)
         self.create_attendance_labels(notices_list)
 
@@ -1273,6 +1202,9 @@ class AdminContactScreen(BaseScreen):
         if admin:
             self.ids.ReturnContactButton.disabled = False
             self.ids.ReturnContactButton.opacity = 1
+        else:
+            self.ids.ReturnContactButton.disabled = True
+            self.ids.ReturnContactButton.opacity = 0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
