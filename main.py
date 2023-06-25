@@ -274,10 +274,11 @@ class SignUpScreen(Screen):
         logins = json.load(open('Credentials.json'))
         # Try not to use local
         if LOCAL:
-            if not (new_username in logins['admins'] or logins['users']):
+            if not (new_username in logins['admins'] or new_username in logins['users']):
                 logins['users'].update({new_username: {'Password': new_password, 'Name': new_name}})
                 with open('Credentials.json', "w") as result:
                     json.dump(logins, result, indent=4)
+                self.manager.current = 'log_in'
             else:
                 print('Username already in use')
         else:
@@ -349,9 +350,8 @@ class CalendarScreen(CalendarInfo, BaseScreen):
     # Increments or decrements the month
     def month_change(self, change):
         if (CalendarInfo.month == 12 and change > 0) or (CalendarInfo.month == 1 and change < 0):
-            CalendarInfo.year += math.ceil(change / abs(change) * change / 12) * change / abs(change)
+            CalendarInfo.year += int(math.ceil(change / int(abs(change)) * change / 12) * change / int(abs(change)))
         # ^ changes year when necessary ^
-
         CalendarInfo.month = (CalendarInfo.month + change - 1) % 12 + 1
         CalendarInfo.month_range = calendar.monthrange(CalendarInfo.year, CalendarInfo.month)
         # ^ Updates CalendarInfo.month and CalendarInfo.month_range ^
