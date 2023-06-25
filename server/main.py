@@ -77,8 +77,8 @@ class HopefullyServer(BaseHTTPRequestHandler):
         self.end_headers()
 
         if p == "/login":
-            username = query_components["username"]
-            password = query_components["password"]
+            username = de(query_components["username"])
+            password = de(query_components["password"])
             output = login(username, password)
             self.wfile.write(bytes(json.dumps(output), "utf-8"))
 
