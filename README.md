@@ -75,7 +75,7 @@ starlight.spec file
 # Support
 
 If you find an internal issue or oversight within the app, please use the provided bug report system so that 
-administrators can review it.
+administrators and developers can review it.
 
 If you find a major bug or for any reason find yourself unable to use the reporting system, you can email us directly at
 support@glitchtech.top
@@ -86,8 +86,7 @@ but we promise to try our best.
 # License
 
 Please refer to the LICENSE.md for all copyrighted libraries and code used in Star Light. Further licenses 
-generated will be under
-their own
+generated from our compiler will be under their individual LICENSE files.
 
 Star Light is licensed under the MIT license.
 
