@@ -1313,7 +1313,7 @@ admin_contact: AdminContactScreen
 admin_settings: AdminSettings
 
 
-class AppMaybe(MDApp):
+class StarLight(MDApp):
 
     def build(self):
         Window.size = (280, 650)
@@ -1365,4 +1365,5 @@ if __name__ == '__main__':
     # L nah
     if hasattr(sys, '_MEIPASS'):
         resource_add_path(os.path.join(sys._MEIPASS))
-    AppMaybe().run()
+
+    StarLight().run()
