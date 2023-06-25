@@ -1,26 +1,10 @@
-''' Sam's To do:
-- Finish readme
-- Working build
-'''
-
-'''
-Vincent To do:
-- Fix Sizing Issues
-'''
-
 import os, sys
-
-os.environ["KIVY_NO_CONSOLELOG"] = "1" # Suppress kivy output
-
 from kivy.resources import resource_add_path, resource_find
-
 import json
 import math
 import calendar
 import datetime
-
 from kivymd.icon_definitions import md_icons
-
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
 from kivy.core.window import Window
@@ -36,8 +20,6 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.uix.button import MDRoundFlatButton, MDIconButton, MDRectangleFlatButton
 from kivymd.uix.card import MDCard
-
-# Sam's import lines below
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
@@ -56,11 +38,7 @@ import client
 Config.set('graphics', 'resizable', 0)
 user_name = ''
 admin = False
-
-# Everything that runs on the server is toggleable with this yay
 LOCAL = False
-
-# Screen Shifting variable
 screen_num = -1
 
 
