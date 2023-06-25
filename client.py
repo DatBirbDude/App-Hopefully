@@ -12,7 +12,7 @@ def en(input):
 
 
 def login(username, password):
-    r = requests.get("http://glitchtech.top:6/login", params={"username": username, "password": password})
+    r = requests.get("http://glitchtech.top:6/login", params={"username": en(username), "password": en(password)})
     req = r.json()
     print("Login response: " + str(req))
     return req
