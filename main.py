@@ -843,7 +843,7 @@ class AddPostScreen(BaseScreen):
 
         def post(instance):
             path = instance.content.label.text
-            if path != "":
+            if path != "" and path[-4:] == ".jpg":
                 client.addPost(self.ids.NameInput.text, user_name, self.ids.DescriptionInput.text, path)
                 self.ids.NameInput.text = ''
                 self.ids.DescriptionInput.text = ''
