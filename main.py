@@ -271,7 +271,7 @@ class SignUpScreen(Screen):
             else:
                 print('Username already in use')
         else:
-            result = client.signup(self.ids.NewUsernameInput.text, self.ids.NewPasswordInput.text, self.ids.Name.text)
+            result = client.signup(self.ids.NewUsernameInput.text, self.ids.NewPasswordInput.text, self.ids.NameInput.text)
             #Error mimics privilege, but we are looking for users with unique usernames and passwords this time
             error = result["error"]
             user_name = result["new user"]["Name"]
