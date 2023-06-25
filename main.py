@@ -1133,7 +1133,7 @@ class AttendanceWidgets(GridLayout):
         temp = open('Notices.json')
         notices_list = json.load(temp)
 
-        self.size[1] = Window.height * len(temp) / 5
+        self.size[1] = Window.height * len(notices_list) / 5
         self.create_attendance_cards(notices_list)
         self.create_attendance_labels(notices_list)
 

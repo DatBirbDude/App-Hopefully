@@ -10,5 +10,11 @@
     "Type": "Late Arrival",
     "Date": "2023/6/20-10:30",
     "Notes": "Forgot to sleep after writing the backend for this app"
+  },
+  {
+    "Name": "Vincent Barilaro",
+    "Type": "Absence",
+    "Date": "This is a test",
+    "Notes": "2022/7/1-19:0"
   }
 ]
