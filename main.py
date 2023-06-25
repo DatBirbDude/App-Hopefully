@@ -1080,7 +1080,7 @@ class ContactScreen(BaseScreen):
             with open('Notices.json', "w") as result:
                 json.dump(notices, result, indent=4)
         else:
-            client.addNotice(temp_dict["Name"], temp_dict["Type"], temp_dict["Date"], temp_dict["Notes"])
+            client.addNotice(temp_dict["Name"], temp_dict["Type"], temp_dict["Notes"], temp_dict["Date"])
         self.ids.Notes.text = ''
 
 
