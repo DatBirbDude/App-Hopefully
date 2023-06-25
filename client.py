@@ -43,7 +43,7 @@ def getPosts():
     return req
 
 #Only send .jpg please or the server will not work.
-def addPost(title, author, desc, path ="sample_image.jpg", date ="auto"):
+def addPost(title, author, desc, path, date ="auto"):
     image_file = path
     with open(image_file, 'rb') as f:
          r = requests.post('http://glitchtech.top:6/addpost', data=f)

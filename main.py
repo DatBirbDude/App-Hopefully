@@ -9,6 +9,9 @@ Vincent To do:
 '''
 
 import os, sys
+
+os.environ["KIVY_NO_CONSOLELOG"] = "1" # Suppress kivy output
+
 from kivy.resources import resource_add_path, resource_find
 
 import json
@@ -243,6 +246,7 @@ class LogInScreen(Screen):
             else:
                 self.ids.FailedLoginLabel.text = 'Username not found'
         else:
+            print("Sending" + self.ids.UsernameInput.text + self.ids.PasswordInput.text)
             result = client.login(self.ids.UsernameInput.text, self.ids.PasswordInput.text)
             privilege = result["res"]
             user_name = result["name"]
@@ -1309,7 +1313,7 @@ admin_contact: AdminContactScreen
 admin_settings: AdminSettings
 
 
-class AppMaybe(MDApp):
+class StarLight(MDApp):
 
     def build(self):
         Window.size = (280, 650)
@@ -1361,4 +1365,5 @@ if __name__ == '__main__':
     # L nah
     if hasattr(sys, '_MEIPASS'):
         resource_add_path(os.path.join(sys._MEIPASS))
-    AppMaybe().run()
+
+    StarLight().run()
