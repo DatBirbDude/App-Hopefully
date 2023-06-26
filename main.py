@@ -381,7 +381,6 @@ class CalendarScreen(CalendarInfo, BaseScreen):
         # ^ Updates other Calendar properties ^
 
 
-# Self Explanatory
 class MonthAndYearLabel(Widget):
 
     size = (1, 1)
