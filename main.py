@@ -1,4 +1,5 @@
 import os, sys
+os.environ["KIVY_NO_CONSOLELOG"] = "1" # Suppress kivy output
 from kivy.resources import resource_add_path, resource_find
 import json
 import math
