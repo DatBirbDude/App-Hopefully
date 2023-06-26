@@ -4,6 +4,7 @@ import json
 import math
 import calendar
 import datetime
+import win32timezone
 from kivymd.icon_definitions import md_icons
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Canvas, Line, Callback
 from kivy import Config
