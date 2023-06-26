@@ -508,6 +508,7 @@ class EventWidgets(Widget):
                      close=True)
 
 
+# Creates the selection circle and weekday letters on the "calendar" screen
 class DayNumsLayout(Widget):
     day_of_weekdays = [str(CalendarInfo.day - CalendarInfo.weekday_offset),
                        str(CalendarInfo.day - CalendarInfo.weekday_offset + 1),
@@ -524,6 +525,7 @@ class DayNumsLayout(Widget):
                     Color(0, 0, 0, 0), Color(0, 0, 0, 0), Color(0, 0, 0, 0),
                     Color(0, 0, 0, 0)]
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -538,6 +540,7 @@ class DayNumsLayout(Widget):
                 Line(circle=[Window.size[0] * (3 / 18 + i / 9), Window.size[1] * 76.8 / 100, Window.size[0] / 20],
                      width=1)
 
+    # Updates the location of selection circle
     def update_canvas(self):
 
         self.canvas.clear()
@@ -553,6 +556,7 @@ class DayNumsLayout(Widget):
                 Line(circle=[Window.size[0] * (3 / 18 + i / 9), Window.size[1] * 7.15 / 10, Window.size[0] / 20],
                      width=1)
 
+    # Shifts layout after a change in week
     def week_change(self, change):
         if 0 < (CalendarInfo.day - CalendarInfo.weekday_offset + 6 + 7 * change) or change > 0:
             if (CalendarInfo.day - CalendarInfo.weekday_offset + 7 * change) < \
@@ -575,6 +579,7 @@ class DayNumsLayout(Widget):
         ListLayout.event_widgets.update_canvas()
         ListLayout.event_widgets.create_event_labels()
 
+    # Changes selection circle location after a change in day
     def on_being_clicked(self, button):
         for i in range(0, 7):
             self.is_selected[i] = False
@@ -590,6 +595,7 @@ class DayNumsLayout(Widget):
             self.update_canvas()
 
 
+# Shows the changing day numbers in the "calendar" screen
 class DayNumsLabels(Widget):
     size = (1, 1)
 
@@ -603,16 +609,19 @@ class DayNumsLabels(Widget):
         day_labels.append(day_label)
         box_layout.add_widget(day_label)
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.box_layout)
 
 
+# List layout for the "calendar" screen
 class ListLayout(CalendarInfo):
     event_widgets = EventWidgets()
     day_nums_layout = DayNumsLayout()
     day_nums_labels = DayNumsLabels()
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.event_widgets)
@@ -626,12 +635,14 @@ class LoadDialog(FloatLayout):
     cancel = ObjectProperty(None)
 
 
+# Screen that shows the posts on the Starlight instagram
 class PostsScreen(BaseScreen):
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-
+# Allows users to choose photos to upload to instagram
 class Filechooser(BoxLayout):
     def select(self, *args):
         try:
@@ -640,6 +651,7 @@ class Filechooser(BoxLayout):
             pass
 
 
+# Widgets with each post from the Starlight instagram
 class Posts(GridLayout):
     cols = 2
     size_hint_y = None
@@ -648,6 +660,7 @@ class Posts(GridLayout):
     text_buffer_x = 0
     text_buffer_y = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.start_load_thread()
@@ -655,6 +668,7 @@ class Posts(GridLayout):
     def start_load_thread(self, *args):
         Thread(target=self.loadPosts, daemon=True).start()
 
+    # Updates the canvas that is below the text on screen
     def update_canvas_before(self, posts):
 
         with self.canvas:
@@ -664,6 +678,7 @@ class Posts(GridLayout):
                 Rectangle(size=(Window.width * 9 / 10, Window.height / 3),
                           pos=(Window.width / 20, Window.height * (5 * item['num'] + 1) / 12))
 
+    # Updates the canvas that is above the text on screen
     def update_canvas_after(self, posts):
 
         with self.canvas:
@@ -682,6 +697,7 @@ class Posts(GridLayout):
                 Line(rectangle=[Window.width / 2, Window.height * (5 * item['num'] + 1) / 12,
                                 Window.width * 4.5 / 10, Window.height / 6])
 
+    # Loads the posts from instagram
     @mainthread
     def loadPosts(self, *_):
 
@@ -734,18 +750,22 @@ class Posts(GridLayout):
             self.update_canvas_after(posts)
 
 
+# Allows the "posts" screen to scroll
 class PostsScroll(ScrollView):
     posts_list = Posts()
     posts_list.bind(minimum_height=posts_list.setter('height'))
     always_overscroll = False
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.posts_list)
 
 
+# Screen in which users can add posts to the starlight instagram
 class AddPostScreen(BaseScreen):
 
+    # Method to add post to instagram
     def addPost(self, *args):
         global user_name
 
@@ -765,9 +785,7 @@ class AddPostScreen(BaseScreen):
         return
 
 
-# End Sam breaking things
-
-
+# List of clubs here at South River High School
 class ClubsList(GridLayout):
     cols = 1
     size_hint_y = None
@@ -855,11 +873,13 @@ class ClubsList(GridLayout):
     ]
     size = (Window.width, Window.height * len(clubs_list) / 12)
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.update_canvas()
         self.create_list()
 
+    # Creates the text widgets for each club
     def create_list(self):
 
         self.clear_widgets()
@@ -884,6 +904,7 @@ class ClubsList(GridLayout):
                                   color=(0.1, 0.1, 0.1, 1)
                                   ))
 
+    # Updates the boxes around each club's text widget
     def update_canvas(self):
 
         self.canvas.clear()
@@ -897,10 +918,12 @@ class ClubsList(GridLayout):
                                 Window.size[1] / 12])
 
 
+# Screen that shows all the clubs at South River High School
 class ClubsScreen(BaseScreen):
     pass
 
 
+# Allows clubs screen to scroll through all the clubs
 class ClubsScrollView(MDScrollView):
     clubs_list = ClubsList()
     clubs_list.bind(minimum_height=clubs_list.setter('height'))
@@ -911,7 +934,9 @@ class ClubsScrollView(MDScrollView):
         self.add_widget(self.clubs_list)
 
 
+# Screen where users can report absences to school administration
 class ContactScreen(BaseScreen):
+
     reason_for_contact = StringProperty('Absence')
     reason_num = 0
     reasons_for_contact = ['Absence', 'Late Arrival', 'Early Dismissal']
@@ -932,6 +957,7 @@ class ContactScreen(BaseScreen):
 
     need_time = BooleanProperty(False)
 
+    # Reveals the admin button for the "contact administration" screen if admin == True
     def make_admin(self):
         if admin:
             self.ids.AdminContactButton.disabled = False
@@ -940,16 +966,19 @@ class ContactScreen(BaseScreen):
             self.ids.AdminContactButton.disabled = True
             self.ids.AdminContactButton.opacity = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.make_admin()
 
+    # Changes the type of absence (i.e. Absent, Early Dismissal, Late Arrival)
     def change_reason(self):
         self.reason_num += 1
         self.reason_num %= 3
         self.change_reason_layout(self.reason_num)
         self.reason_for_contact = self.reasons_for_contact[self.reason_num]
 
+    # Changes the type of absence shown on screen
     def change_reason_layout(self, index):
         if index > 0:
             self.border_color = (0, 0, 0, 1)
@@ -958,44 +987,50 @@ class ContactScreen(BaseScreen):
             self.border_color = (0, 0, 0, 0)
             self.need_time = False
 
+    # Changes the day the user is reporting their absence
     def change_day(self):
         self.day = (self.day + 1) % (self.month_range[1] + 1) + math.floor(self.day / self.month_range[1])
         self.day_string = str(self.day)
 
+    # Changes the month the user is reporting their absence
     def change_month(self):
         self.month = (self.month + 1) % 13 + math.floor(self.month / 12)
         self.month_string = str(CalendarInfo.months[self.month])
         self.month_range = calendar.monthrange(self.year, self.month)
 
+    # Chnages the year the user is reporting their absence
     def change_year(self, change):
         self.year += change
         self.year_string = str(self.year)
 
+    # Changes the hour the user is reporting their absence
     def change_hour(self):
         self.hour = (self.hour + 1) % 24
         self.hour_string = str(self.hour)
 
+    # Changes the minute (in increments of 15) the user is reporting their absence
     def change_minute(self):
         self.minute = (self.minute + 15) % 60
         self.minute_string = str(self.minute)
         if self.minute_string == '0':
             self.minute_string = '00'
 
+    # Sends the absence notice to backend server
     def send_notice(self):
         global user_name
         if self.reason_num > 0:
             temp_dict = {
                 'Name': user_name,
                 'Type': self.reasons_for_contact[self.reason_num],
-                'Date': str(self.year) + '/' + str(self.month) + '/' + str(self.day) + '-' + str(self.hour) +
-                        ':' + str(self.minute),
+                'Date': str(self.month) + '/' + str(self.day) + '/' + str(self.year) + '-' + self.hour_string +
+                        ':' + self.minute_string,
                 'Notes': self.ids.Notes.text
             }
         else:
             temp_dict = {
                 'Name': user_name,
                 'Type': self.reasons_for_contact[self.reason_num],
-                'Date': str(self.year) + '/' + str(self.month) + '/' + str(self.day) + '-' + str(self.hour),
+                'Date': str(self.month) + '/' + str(self.day) + '/' + str(self.year),
                 'Notes': self.ids.Notes.text
             }
         if LOCAL:
@@ -1006,9 +1041,12 @@ class ContactScreen(BaseScreen):
                 json.dump(notices, result, indent=4)
         else:
             client.addNotice(temp_dict["Name"], temp_dict["Type"], temp_dict["Notes"], temp_dict["Date"])
+
+        AttendanceScroll.attendance_widgets.generate_reports()
         self.ids.Notes.text = ''
 
 
+# The list of widgets for each bug report on the "admin settings" screen
 class BugWidgets(GridLayout):
     cols = 1
     size_hint_y = None
@@ -1018,12 +1056,14 @@ class BugWidgets(GridLayout):
     text_buffer_x = 0
     text_buffer_y = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         self.text_buffer_x = Window.width / 40
         self.text_buffer_y = Window.height / 200
         super().__init__(**kwargs)
         self.generate_reports()
 
+    # Retrieves and generates bug reports
     def generate_reports(self):
         if not LOCAL:
             p = open("Bugs.json", "w")
@@ -1039,6 +1079,7 @@ class BugWidgets(GridLayout):
         self.create_bug_cards(bugs_list)
         self.create_bug_labels(bugs_list)
 
+    # Creates the boxes each bug report is inside of
     def create_bug_cards(self, file):
 
         self.canvas.clear()
@@ -1059,6 +1100,7 @@ class BugWidgets(GridLayout):
                      width=1,
                      close=True)
 
+    # Creates the text for each report
     def create_bug_labels(self, file):
         for i in range(len(file)):
             grid_layout = GridLayout(cols=1, spacing=(0, Window.height / 50), size_hint_y=None,
@@ -1084,8 +1126,10 @@ class BugWidgets(GridLayout):
             self.add_widget(grid_layout)
 
 
+# Screen where admins can see bug reports
 class AdminSettings(BaseScreen):
 
+    # Activates the return AdminButton if admin == True
     def make_admin(self):
         if admin:
             self.ids.ReturnSettingsButton.disabled = False
@@ -1094,21 +1138,26 @@ class AdminSettings(BaseScreen):
             self.ids.ReturnSettingsButton.disabled = True
             self.ids.ReturnSettingsButton.opacity = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.make_admin()
 
 
+# Allows "admin settings" screen to scroll through the bug reports
 class BugWidgetsScroll(ScrollView):
     bug_widgets = BugWidgets()
     bug_widgets.bind(minimum_height=bug_widgets.setter('height'))
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.bug_widgets)
 
 
+# List of widgets of absence reports for "admin contact administration" screen
 class AttendanceWidgets(GridLayout):
+
     cols = 1
     size_hint_y = None
     pos_hint = {'center_x': 0.5, 'center_y': 0.5}
@@ -1117,6 +1166,7 @@ class AttendanceWidgets(GridLayout):
     text_buffer_x = 0
     text_buffer_y = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         self.size = Window.size
         self.text_buffer_x = Window.width / 40
@@ -1124,6 +1174,7 @@ class AttendanceWidgets(GridLayout):
         super().__init__(**kwargs)
         self.generate_reports()
 
+    # Retrieves and creates absence reports
     def generate_reports(self):
         if not LOCAL:
             p = open("Notices.json", "w")
@@ -1133,10 +1184,11 @@ class AttendanceWidgets(GridLayout):
         temp = open('Notices.json')
         notices_list = json.load(temp)
 
-        self.size[1] = Window.height * len(notices_list) / 5
+        self.height = Window.height * (len(notices_list) / 5 - 1/60)
         self.create_attendance_cards(notices_list)
         self.create_attendance_labels(notices_list)
 
+    # Creates boxes for attendance reports to be inside of
     def create_attendance_cards(self, file):
 
         self.canvas.clear()
@@ -1157,28 +1209,29 @@ class AttendanceWidgets(GridLayout):
                      width=1,
                      close=True)
 
+    # Creates text widgets for attendance reports
     def create_attendance_labels(self, file):
 
         self.clear_widgets()
 
         for i in range(len(file)):
-            grid_layout = GridLayout(cols=1, spacing=(0, Window.height / 50), size_hint_y=None,
+            grid_layout = GridLayout(cols=1, size_hint_y=None,
                                      height=Window.height / 6)
             grid_layout.add_widget(
                 Label(text='Sent by: ' + file[i]['Name'] + '   ' + file[i]['Date'] + '   ' + file[i]['Type'],
-                      size_hint=(0.8, .2),
+                      size_hint=(0.8, .3),
                       pos_hint={'left': 0, 'center_y': 0.5},
                       text_size=[Window.size[0] * 8 / 10 - 2 * self.text_buffer_x,
-                                 Window.size[1] / 30],
+                                 Window.size[1] / 20],
                       halign='left',
                       valign='top',
                       font_size=Window.size[0] / 22.5,
                       color=(.1, .1, .1, 1)))
             grid_layout.add_widget(Label(text=file[i]['Notes'],
-                                         size_hint=(0.8, .8),
+                                         size_hint=(0.8, .7),
                                          pos_hint={'center_x': 0.5, 'top': 0},
                                          text_size=[Window.size[0] * 8 / 10 - 1.5 * self.text_buffer_x,
-                                                    Window.size[1] * 2 / 15],
+                                                    Window.size[1] * 7 / 60],
                                          halign='left',
                                          valign='top',
                                          font_size=Window.size[0] / 25,
@@ -1187,17 +1240,21 @@ class AttendanceWidgets(GridLayout):
             self.add_widget(grid_layout)
 
 
+# Allows "admin contact screen" to scroll through absence reports
 class AttendanceScroll(ScrollView):
     attendance_widgets = AttendanceWidgets()
     attendance_widgets.bind(minimum_height=attendance_widgets.setter('height'))
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(self.attendance_widgets)
 
 
+# Screen that allows admins to see absence reports from users
 class AdminContactScreen(BaseScreen):
 
+    # Activates the return AdminButton for this screen
     def make_admin(self):
         if admin:
             self.ids.ReturnContactButton.disabled = False
@@ -1206,11 +1263,13 @@ class AdminContactScreen(BaseScreen):
             self.ids.ReturnContactButton.disabled = True
             self.ids.ReturnContactButton.opacity = 0
 
+    # Initializer method
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.make_admin()
 
 
+# Instances of each screen
 log_in_screen: LogInScreen
 sign_up_screen: SignUpScreen
 calendar_screen: CalendarScreen
@@ -1223,8 +1282,10 @@ admin_contact: AdminContactScreen
 admin_settings: AdminSettings
 
 
+# App
 class StarLight(MDApp):
 
+    # Builds app
     def build(self):
         Window.size = (280, 650)
 
@@ -1252,6 +1313,7 @@ class StarLight(MDApp):
         admin_settings = AdminSettings(name='admin_settings')
         admin_contact = AdminContactScreen(name='admin_contact')
 
+        # Adds screens to screen manager
         sm.add_widget(log_in_screen)
         sm.add_widget(sign_up_screen)
         sm.add_widget(calendar_screen)
@@ -1265,14 +1327,9 @@ class StarLight(MDApp):
         return sm
 
 
+# Runs the file
 if __name__ == '__main__':
-    '''
-    in_file = jicson.fromFile('Calendar.ics')
-    with open('Calendar.json', "w") as result:
-            json.dump(in_file, result, indent=4)
-    '''
-    # Vincent if you want to comment control code, at least explain why
-    # L nah
+
     if hasattr(sys, '_MEIPASS'):
         resource_add_path(os.path.join(sys._MEIPASS))
 
